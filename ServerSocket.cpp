@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 14:53:35 by zsailine          #+#    #+#             */
-/*   Updated: 2025/06/16 15:36:05 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/06/17 13:22:38 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@ ServerSocket::ServerSocket(int port)
 		throw std::exception();
 	}
 	int opt = 1;
-	if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt,
+	if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &opt,
+		sizeof(opt)) != 0 || setsockopt(_socket, SOL_SOCKET, SO_REUSEPORT, &opt,
 		sizeof(opt)) != 0)
 	{
 			std::cerr << "Error configuring socket for port " << port << std::endl;

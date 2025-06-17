@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 14:10:30 by zsailine          #+#    #+#             */
-/*   Updated: 2025/06/16 15:59:08 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/06/17 13:22:42 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,7 @@
 
 #define SERVERSOCKET_HPP
 
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <fcntl.h>
-#include <sys/epoll.h>
+#include "lib.hpp"
 
 class ServerSocket
 {
