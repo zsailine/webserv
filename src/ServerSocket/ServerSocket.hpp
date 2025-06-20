@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 14:10:30 by zsailine          #+#    #+#             */
-/*   Updated: 2025/06/17 13:22:42 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/06/20 14:36:46 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #define SERVERSOCKET_HPP
 
-#include "lib.hpp"
+#include "../../lib/lib.hpp"
 
 class ServerSocket
 {

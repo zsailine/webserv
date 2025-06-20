@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 10:02:47 by zsailine          #+#    #+#             */
-/*   Updated: 2025/06/17 13:40:02 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/06/20 14:38:54 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 #include <fcntl.h>
 #include <sys/epoll.h>
 
-#include "ServerSocket.hpp"
+#include "../src/ServerSocket/ServerSocket.hpp"
 
 
 /*		EPOLL		*/
