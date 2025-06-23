@@ -1,27 +1,26 @@
 NAME = webserv
-
+COMPILER = c++
 FLAGS = -Wall -Werror -Wextra -std=c++98
 
-SRC = 	main.cpp \
-		epoll.cpp \
-		ServerSocket.cpp
+SRC =	main.cpp 	\
+		Socket.cpp
 
-OBJ = $(SRC:.cpp=.o)
+OBJ =	$(SRC:.cpp=.o)
 
-%.o: %.cpp
-	c++ $(FLAGS) -c $< -o $@
-
-all: $(NAME)
+%.o : %.cpp
+	$(COMPILER) $(FLAGS) -c $< -o $@
 
 $(NAME) : $(OBJ)
-		c++ $(FLAGS) $(OBJ) -o $(NAME)
+	$(COMPILER) $(FLAGS) $(OBJ) -o $(NAME)
+
+all : $(NAME)
 
 clean :
-		$(RM) $(OBJ) $(OBJ)
+	rm -f $(OBJ)
 
-fclean :
-		$(RM) $(OBJ) $(OBJ) $(NAME)
+fclean : clean
+	rm -f $(NAME)
 
-re : fclean all
+re : clean all
 
 .PHONY : all clean fclean re
