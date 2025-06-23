@@ -1,28 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Parser.hpp                                         :+:      :+:    :+:   */
+/*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/20 14:48:50 by zsailine          #+#    #+#             */
-/*   Updated: 2025/06/23 12:48:57 by zsailine         ###   ########.fr       */
+/*   Created: 2025/06/23 14:28:25 by zsailine          #+#    #+#             */
+/*   Updated: 2025/06/23 14:50:03 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PARSER_HPP
+#include "Server.hpp"
 
-#define PARSER_HPP
-
-#include <iostream>
-#include <>
-class Parser
+int main()
 {
-	private:
-		std::vector<Server> server;
-		std::map<key, Route> route;
-		
-			
+	try
+	{
+		/* code */
+		std::vector<std::string> block;
+		block.push_back("host = localhost");
+		block.push_back("port = 808a");
+		Server server(1, block);
+		std::map<std::string , std::string> map = server.getMap();
+		std::cout << map["port"] << std::endl;
+	}
+	catch(const std::exception& e)
+	{
+	}
+	
 }
-
-#endif
