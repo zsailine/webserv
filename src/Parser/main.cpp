@@ -1,37 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lib.hpp                                            :+:      :+:    :+:   */
+/*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/17 10:02:47 by zsailine          #+#    #+#             */
-/*   Updated: 2025/06/17 13:40:02 by zsailine         ###   ########.fr       */
+/*   Created: 2025/06/23 14:28:25 by zsailine          #+#    #+#             */
+/*   Updated: 2025/06/23 14:50:03 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIB_HPP
+#include "Server.hpp"
 
-#define LIB_HPP
-
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <fcntl.h>
-#include <sys/epoll.h>
-
-#include "ServerSocket.hpp"
-
-
-/*		EPOLL		*/
-void addEpollEvent(int epfd, int socket);
-void delEpollEvent(int epfd, int ocket);
-
-
-#endif
-
-
+int main()
+{
+	try
+	{
+		/* code */
+		std::vector<std::string> block;
+		block.push_back("host = localhost");
+		block.push_back("port = 808a");
+		Server server(1, block);
+		std::map<std::string , std::string> map = server.getMap();
+		std::cout << map["port"] << std::endl;
+	}
+	catch(const std::exception& e)
+	{
+	}
+	
+}

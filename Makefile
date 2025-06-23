@@ -2,9 +2,9 @@ NAME = webserv
 
 FLAGS = -Wall -Werror -Wextra -std=c++98
 
-SRC = 	main.cpp \
-		epoll.cpp \
-		ServerSocket.cpp
+SRC = 	src/main.cpp \
+		src/init/epoll.cpp \
+		src/ServerSocket/ServerSocket.cpp
 
 OBJ = $(SRC:.cpp=.o)
 
