@@ -3,27 +3,45 @@
 /*                                                        :::      ::::::::   */
 /*   ServerSocket.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: aranaivo <aranaivo@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 14:53:35 by zsailine          #+#    #+#             */
-/*   Updated: 2025/06/20 14:36:30 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/06/24 14:56:23 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ServerSocket.hpp"
+#include <string>
 
-sockaddr_in ServerSocket::init_adress(int port)
+#include "ServerSocket.hpp"
+#include "../Parser/Server.hpp"
+#include "../Utils/utils.cpp"
+
+
+sockaddr_in ServerSocket::init_adress(Server server)
 {
 	sockaddr_in adress;
-	adress.sin_addr.s_addr = INADDR_ANY;
+	std::memset(&adress, 0, sizeof(adress));
 	adress.sin_family = AF_INET;
-	adress.sin_port = htons(port);
+	adress.sin_addr = get_resolve_ip(server.getMap()["hostname"]);
+	try
+	{
+		int port = get_port_value(server.getMap()["port"]);
+		adress.sin_port = htons(port);
+	}
+	catch(std::exception &e)
+	{
+		std::cout << e.what() << std::endl;
+		exit(EXIT_FAILURE);
+	}
 	return adress;
 }
 
-ServerSocket::ServerSocket(int port)
+ServerSocket::ServerSocket(Server server)
 {
-	sockaddr_in adresse = init_adress(port);
+	std::string port;
+	sockaddr_in adresse = init_adress(server);
+
+	port = server.getMap()["port"];
 	if ((_socket = socket(AF_INET, SOCK_STREAM, 0)) == -1)
 	{
 		std::cerr << "Error Configuring socket for port " << port << std::endl;
