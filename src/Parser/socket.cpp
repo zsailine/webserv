@@ -1,29 +1,47 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ServerSocket.cpp                                   :+:      :+:    :+:   */
+/*   socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/16 14:53:35 by zsailine          #+#    #+#             */
-/*   Updated: 2025/06/27 14:18:54 by zsailine         ###   ########.fr       */
+/*   Created: 2025/06/27 14:12:25 by zsailine          #+#    #+#             */
+/*   Updated: 2025/06/27 15:24:32 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ServerSocket.hpp"
+#include "Server.hpp"
 
-sockaddr_in ServerSocket::init_adress(int port)
+static int	check_port(std::string &port)
+{
+	std::stringstream str(port);
+	int nbr;
+
+	str >> nbr;
+	if (nbr > 65535)
+	{
+		std::cerr << "Error: port can't be superior to 65535\n";
+		throw std::exception();
+	}
+	return (nbr);
+}
+
+sockaddr_in Server::init_adress()
 {
 	sockaddr_in adress;
+	struct addrinfo *result;
+	getaddrinfo(_map["host"].c_str(), NULL, NULL, &result);
 	adress.sin_addr.s_addr = INADDR_ANY;
 	adress.sin_family = AF_INET;
-	adress.sin_port = htons(port);
+	adress.sin_port = htons(check_port(_map["port"]));
+	freeaddrinfo(result);
 	return adress;
 }
 
-ServerSocket::ServerSocket(int port)
+void Server::init_socket()
 {
-	sockaddr_in adresse = init_adress(port);
+	sockaddr_in adresse = init_adress();
+	std::string port = _map["port"] ;
 	if ((_socket = socket(AF_INET, SOCK_STREAM, 0)) == -1)
 	{
 		std::cerr << "Error Configuring socket for port " << port << std::endl;
@@ -47,14 +65,4 @@ ServerSocket::ServerSocket(int port)
 		std::cerr << "Error listening socket for port " << port << std::endl;
 		throw std::exception();
 	}
-}
-
-ServerSocket::~ServerSocket()
-{
-	close(_socket);
-}
-
-int ServerSocket::getSocket() const
-{
-	return (_socket);
 }

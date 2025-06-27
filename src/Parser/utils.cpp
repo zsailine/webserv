@@ -1,33 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ServerSocket.hpp                                   :+:      :+:    :+:   */
+/*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/16 14:10:30 by zsailine          #+#    #+#             */
-/*   Updated: 2025/06/23 15:31:39 by zsailine         ###   ########.fr       */
+/*   Created: 2025/06/24 10:55:45 by zsailine          #+#    #+#             */
+/*   Updated: 2025/06/24 11:04:52 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SERVERSOCKET_HPP
+#include "Parser.hpp"
 
-#define SERVERSOCKET_HPP
-
-#include "../../lib/lib.hpp"
-
-class ServerSocket
+int isWord(std::string const &str)
 {
-	private:
-			int _socket;
+	if (str.size() == 0)
+		return (0);
+	return (1);
+}
 
-			sockaddr_in init_adress(int port);
-			ServerSocket(){}
-			ServerSocket(const ServerSocket &toCopy){(void)toCopy;}
-	public:
-			ServerSocket(int port);
-			~ServerSocket();
-			int getSocket() const;
-};
+int nbr_of_words(std::string const &str)
+{
+	int count = 0;
+	std::string word;
+	std::stringstream split(str);
+	while (split >> word)
+	  count++;
+	return (count);
+}
 
-#endif
+void RemoveWhiteSpace(std::string& str)
+{
+    str.erase(std::remove_if(str.begin(), str.end(), ::isspace), str.end());
+}

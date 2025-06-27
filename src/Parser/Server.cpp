@@ -6,18 +6,12 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:01:59 by zsailine          #+#    #+#             */
-/*   Updated: 2025/06/23 14:49:53 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/06/27 16:03:24 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
-
-std::string RemoveWhiteSpace(const std::string& str)
-{
-    std::string result = str;
-    result.erase(std::remove_if(result.begin(), result.end(), ::isspace), result.end());
-    return (result);
-}
+#include "Parser.hpp"
 
 std::map<std::string , std::string> Server::getMap() const
 {
@@ -29,17 +23,21 @@ void	Server::init_value()
 	_map.insert(std::pair<std::string, std::string>("port", ""));
 }
 
-void	Server::get_type(int number, std::string str, std::string &key, std::string &value)
+int	Server::get_type(int number, std::string tmp, std::string &key, std::string &value)
 {
-	std::string toSplit = RemoveWhiteSpace(str);
-    size_t pos = toSplit.find('=');
-    if (pos == std::string::npos)
+	if (tmp.size() == 0)
+		return (0);
+	std::string str = tmp;
+	RemoveWhiteSpace(str);
+    size_t pos = str.find('=');
+    if (pos == std::string::npos || nbr_of_words(tmp) != 3 || str[pos + 1] == '=')
 	{
-		std::cerr << "[ Server " << number << " ]\n" << "Error: " << str << " is not a valid argument\n";
+		std::cerr << "[ Server " << number << " ]\n" << "Error: " << tmp << " is not a valid argument\n";
 		throw std::exception();
 	}
-    key = toSplit.substr(0, pos);
-    value = toSplit.substr(pos + 1);
+    key = str.substr(0, pos);
+    value = str.substr(pos + 1);
+	return (1);
 }
 
 void	Server::change_value(int number, std::string &key, std::string &value)
@@ -88,6 +86,13 @@ void	Server::check_value(int number)
 	}
 }
 
+
+Server::Server(const Server &toCopy)
+{
+	_socket = toCopy._socket;
+	_map = toCopy._map;
+}
+
 Server::Server(int number, std::vector<std::string> const &block)
 {
 	init_value();
@@ -95,8 +100,13 @@ Server::Server(int number, std::vector<std::string> const &block)
 	{
 		std::string key;
 		std::string value;
-		get_type(number, *it, key, value);
-		change_value(number, key, value);
+		if (get_type(number, *it, key, value))
+			change_value(number, key, value);
 	}
 	check_value(number);
+}
+
+int Server::getSocket() const
+{
+	return (_socket);
 }
