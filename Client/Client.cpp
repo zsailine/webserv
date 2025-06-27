@@ -1,21 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/20 04:03:41 by mitandri          #+#    #+#             */
-/*   Updated: 2025/06/20 06:23:09 by mitandri         ###   ########.fr       */
+/*   Created: 2025/06/27 15:47:42 by mitandri          #+#    #+#             */
+/*   Updated: 2025/06/27 15:48:12 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Socket.hpp"
+#include "Client.hpp"
 
-int	main()
-{
-	Socket	socks;
-	
-	socks.startSocket();
-	return 0;
-}
+Client::Client() {}
+
+Client::~Client() {}

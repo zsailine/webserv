@@ -1,25 +1,35 @@
 NAME = webserv
+SERV = server
+CLI = client
 COMPILER = c++
 FLAGS = -Wall -Werror -Wextra -std=c++98
 
-SRC =	main.cpp 	\
-		Socket.cpp
+SERVER =	Server/main.cpp 	\
+			Server/Server.cpp
 
-OBJ =	$(SRC:.cpp=.o)
+# CLIENT =
+
+OBJS =	$(SERVER:.cpp=.o)
+# OBJC =	$(CLIENT:.cpp=.o)
 
 %.o : %.cpp
 	$(COMPILER) $(FLAGS) -c $< -o $@
 
-$(NAME) : $(OBJ)
-	$(COMPILER) $(FLAGS) $(OBJ) -o $(NAME)
+# $(NAME) :
 
-all : $(NAME)
+$(SERV) : $(OBJS)
+	$(COMPILER) $(FLAGS) $(OBJS) -o $(SERV)
+
+# $(CLI) : $(OBJC)
+# 	$(COMPILER) $(FLAGS) $(OBJC) -o $(CLI)
+
+all : $(SERV)
 
 clean :
-	rm -f $(OBJ)
+	rm -f $(OBJS) $(OBJC)
 
 fclean : clean
-	rm -f $(NAME)
+	rm -f $(SERV) $(CLI)
 
 re : clean all
 

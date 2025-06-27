@@ -1,45 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Socket.hpp                                         :+:      :+:    :+:   */
+/*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 06:12:36 by mitandri          #+#    #+#             */
-/*   Updated: 2025/06/20 06:47:47 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/06/27 15:35:50 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SOCKET_HPP
-#define SOCKET_HPP
+#ifndef SERVER_HPP
+#define SERVER_HPP
 
-#include <fstream>
-#include <iostream>
-#include <unistd.h>
-#include <sys/socket.h>
-#include <stdexcept>
-#include <exception>
+#include "define.hpp"
 
-#define RED "\033[1;31m"
-#define GREEN "\033[1;32m"
-#define BLUE "\033[1;35m"
-#define YELLOW "\033[1;33m"
-#define CYAN "\033[1;36m"
-#define RESET "\033[0m"
-#define UNDERLINE "\033[4m"
-
-class Socket
+class Server
 {
 	private:
 	
-		int	_socket;
+		int					_socket;
+		int					_server;
+		struct sockaddr_in	_identity;
 	
 	public:
 
-		Socket();
-		~Socket();
-		
+		Server();
+		~Server();
+
+		int 	getSocket() const;
+		int 	getServer() const;
+
+		// init and bind _socket;
 		void	startSocket();
+		// _socket is waiting for something and accpet first connection
+		void	listenSocket();
+		// while until there is a connection
+		void	whileSocket();
 };
 
 #endif
