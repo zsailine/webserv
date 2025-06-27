@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 15:45:20 by mitandri          #+#    #+#             */
-/*   Updated: 2025/06/27 15:47:32 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/06/27 16:00:36 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,14 @@ class	Client
 {
 	private:
 
+		int		_socket;
+
 	public:
 
 		Client();
 		~Client();
+
+		int		getSocket() const;
 };
 
 #endif
