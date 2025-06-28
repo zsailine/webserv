@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 06:14:22 by mitandri          #+#    #+#             */
-/*   Updated: 2025/06/27 15:36:45 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/06/28 18:45:49 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,22 +67,25 @@ void	Server::listenSocket()
 
 void	Server::whileSocket()
 {
-	string	something("Hello world !");
+	string	something("Hello world from server!");
 
 	while (true)
 	{
 		// _socket is waiting for any first connection
+		int	len = sizeof(this->_identity);
 		this->_server = accept(this->_socket, (struct sockaddr *)&this->_identity, \
-			(socklen_t *)&this->_identity);
+			(socklen_t *)&len);
 		if (this->_server == -1)
 			throw(std::invalid_argument(RED "ACCEPT ERROR !" RESET));
 
 		// _socket is reading and writing after that
 		string	str(BUFFER, 0);
 		if (read(this->_server, (char *)str.c_str(), BUFFER) == -1)
-			throw(std::invalid_argument(RED "DONE !" RESET));
+			throw(std::invalid_argument(RED "DONE IN SERVER!" RESET));
 		std::cout << "Message : " << str << std::endl;
 		write(this->_server, something.c_str(), something.size());
+		std::cout << std::endl;
+		std::cout << "MESSAGE SENT FROM SERVER !" << std::endl;
 		close(this->_server);
 	}
 }

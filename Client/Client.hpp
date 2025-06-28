@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 15:45:20 by mitandri          #+#    #+#             */
-/*   Updated: 2025/06/27 16:00:36 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/06/28 18:30:03 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ class	Client
 {
 	private:
 
-		int		_socket;
+		int					_socket;
+		struct sockaddr_in	_identity;
 
 	public:
 
@@ -27,6 +28,9 @@ class	Client
 		~Client();
 
 		int		getSocket() const;
+		
+		// start and init the socket in client
+		void	startSocket();
 };
 
 #endif

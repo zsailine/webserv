@@ -7,10 +7,11 @@ FLAGS = -Wall -Werror -Wextra -std=c++98
 SERVER =	Server/main.cpp 	\
 			Server/Server.cpp
 
-# CLIENT =
+CLIENT =	Client/main.cpp		\
+			Client/Client.cpp
 
 OBJS =	$(SERVER:.cpp=.o)
-# OBJC =	$(CLIENT:.cpp=.o)
+OBJC =	$(CLIENT:.cpp=.o)
 
 %.o : %.cpp
 	$(COMPILER) $(FLAGS) -c $< -o $@
@@ -20,10 +21,10 @@ OBJS =	$(SERVER:.cpp=.o)
 $(SERV) : $(OBJS)
 	$(COMPILER) $(FLAGS) $(OBJS) -o $(SERV)
 
-# $(CLI) : $(OBJC)
-# 	$(COMPILER) $(FLAGS) $(OBJC) -o $(CLI)
+$(CLI) : $(OBJC)
+	$(COMPILER) $(FLAGS) $(OBJC) -o $(CLI)
 
-all : $(SERV)
+all : $(SERV) $(CLI)
 
 clean :
 	rm -f $(OBJS) $(OBJC)
