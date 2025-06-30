@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:01:59 by zsailine          #+#    #+#             */
-/*   Updated: 2025/06/27 16:03:24 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/06/30 14:36:36 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	Server::init_value()
 {
 	_map.insert(std::pair<std::string, std::string>("host", ""));
 	_map.insert(std::pair<std::string, std::string>("port", ""));
+	_map.insert(std::pair<std::string, std::string>("servername", ""));
 }
 
 int	Server::get_type(int number, std::string tmp, std::string &key, std::string &value)

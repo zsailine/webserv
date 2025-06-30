@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 14:48:50 by zsailine          #+#    #+#             */
-/*   Updated: 2025/06/27 15:18:56 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/06/30 14:59:07 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,16 @@ class Parser
 {
 	private:
 		std::vector<Server> server;
-		int _socket;
 
 		Parser(){}
 		void ft_read(std::string data, std::vector<std::string> &block);
 		void	get_blocks( std::vector<std::string> &block);
 		int		insert_server(size_t i, std::vector<std::string> &block);
+		void	init_socket();
 	public:
 		Parser(std::string data);
-		~Parser(){}	
+		~Parser(){}
+		std::vector<Server> &getServer();
 };
 
 int isWord(std::string const &str);

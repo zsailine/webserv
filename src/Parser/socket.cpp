@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 14:12:25 by zsailine          #+#    #+#             */
-/*   Updated: 2025/06/27 15:24:32 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/06/30 15:22:44 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,13 @@ sockaddr_in Server::init_adress()
 {
 	sockaddr_in adress;
 	struct addrinfo *result;
-	getaddrinfo(_map["host"].c_str(), NULL, NULL, &result);
-	adress.sin_addr.s_addr = INADDR_ANY;
+	if (getaddrinfo(_map["host"].c_str(), NULL, NULL, &result) != 0)
+	{
+		std::cerr << "Error Configuring socket for host" << _map["host"] << " in port " << _map["port"] << std::endl;
+		throw std::exception();
+	}
+	struct sockaddr_in *tmp = (struct sockaddr_in *)result->ai_addr;
+	adress.sin_addr.s_addr = tmp->sin_addr.s_addr;
 	adress.sin_family = AF_INET;
 	adress.sin_port = htons(check_port(_map["port"]));
 	freeaddrinfo(result);
@@ -44,7 +49,7 @@ void Server::init_socket()
 	std::string port = _map["port"] ;
 	if ((_socket = socket(AF_INET, SOCK_STREAM, 0)) == -1)
 	{
-		std::cerr << "Error Configuring socket for port " << port << std::endl;
+		std::cerr << "Error Configuring socket for host" << _map["host"] << " in port " << port << std::endl;
 		throw std::exception();
 	}
 	int opt = 1;
@@ -52,17 +57,17 @@ void Server::init_socket()
 		sizeof(opt)) != 0 || setsockopt(_socket, SOL_SOCKET, SO_REUSEPORT, &opt,
 		sizeof(opt)) != 0)
 	{
-			std::cerr << "Error configuring socket for port " << port << std::endl;
+			std::cerr << "Error configuring socket for host" << _map["host"] << " in port " << port << std::endl;
 			throw std::exception();
 	}
 	if (bind(_socket, (sockaddr *)&adresse, sizeof(adresse)) != 0)
 	{
-		std::cerr << "Error binding socket for port " << port << std::endl;
+		std::cerr << "Error binding socket for host" << _map["host"] << " in port " << port << std::endl;
 		throw std::exception();
 	}
 	if (listen(_socket, 2) != 0)
 	{
-		std::cerr << "Error listening socket for port " << port << std::endl;
+		std::cerr << "Error listening socket for host" << _map["host"] << " in port " << port << std::endl;
 		throw std::exception();
 	}
 }

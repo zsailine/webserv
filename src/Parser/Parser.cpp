@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 15:41:42 by zsailine          #+#    #+#             */
-/*   Updated: 2025/06/27 16:02:38 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/06/30 13:47:33 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,13 @@ int Parser::insert_server(size_t i, std::vector<std::string> &block)
 	return (i);
 }
 
+void	Parser::init_socket()
+{
+	size_t i = 0;
+	while (i < server.size())
+		server[i++].init_socket();
+}
+
 void	Parser::get_blocks( std::vector<std::string> &block)
 {
 	size_t i = 0;
@@ -109,15 +116,16 @@ void	Parser::get_blocks( std::vector<std::string> &block)
 			i++;
 		}
 	}
-	server[0].init_socket();
-	server[1].init_socket();
-	std::cout << "Socket " << server[0].getSocket() << " has been created\n";
-	std::cout << "Socket " << server[1].getSocket() << " has been created\n";
 }
 
+std::vector<Server> &Parser::getServer()
+{
+	return (server);
+}
 Parser::Parser(std::string data)
 {
 	std::vector<std::string> block;
 	ft_read(data, block);
 	get_blocks(block);
+	init_socket();
 }
