@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 14:10:30 by zsailine          #+#    #+#             */
-/*   Updated: 2025/06/20 14:36:46 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/06/23 15:31:39 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ class ServerSocket
 {
 	private:
 			int _socket;
-
 
 			sockaddr_in init_adress(int port);
 			ServerSocket(){}

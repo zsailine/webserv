@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 14:53:35 by zsailine          #+#    #+#             */
-/*   Updated: 2025/06/20 14:36:30 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/06/27 14:18:54 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ ServerSocket::ServerSocket(int port)
 
 ServerSocket::~ServerSocket()
 {
-	close(_socket);	
+	close(_socket);
 }
 
 int ServerSocket::getSocket() const
