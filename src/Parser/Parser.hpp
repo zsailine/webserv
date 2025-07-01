@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 14:48:50 by zsailine          #+#    #+#             */
-/*   Updated: 2025/06/30 14:59:07 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/01 10:51:50 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 
 #define PARSER_HPP
 
-#include "Server.hpp"
-
+#include "../Server/Server.hpp"
 class Parser
 {
 	private:

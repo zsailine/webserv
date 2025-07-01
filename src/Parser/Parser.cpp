@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 15:41:42 by zsailine          #+#    #+#             */
-/*   Updated: 2025/06/30 13:47:33 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/01 10:42:43 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@ void Parser::ft_read(std::string data, std::vector<std::string> &block)
 	}
 }
 
+#include <fcntl.h>
+
 int Parser::insert_server(size_t i, std::vector<std::string> &block)
 {
 	i++;
@@ -77,8 +79,7 @@ int Parser::insert_server(size_t i, std::vector<std::string> &block)
 	{
 		if (!ft_continue(block[i]))
 		{
-			Server tmp = Server(number, blocks);
-			server.push_back(tmp);
+			server.push_back(Server(number, blocks));
 			return (i);
 		}
 		blocks.push_back(block[i]);
@@ -96,6 +97,7 @@ void	Parser::init_socket()
 		server[i++].init_socket();
 }
 
+
 void	Parser::get_blocks( std::vector<std::string> &block)
 {
 	size_t i = 0;
@@ -105,7 +107,9 @@ void	Parser::get_blocks( std::vector<std::string> &block)
 		if (isWord(block[i]) && (type = isDollar(block[i])))
 		{
 			if (type == 1)
+			{
 				i = insert_server(i, block);
+			}
 			else
 			{
 				i++;
@@ -122,6 +126,7 @@ std::vector<Server> &Parser::getServer()
 {
 	return (server);
 }
+
 Parser::Parser(std::string data)
 {
 	std::vector<std::string> block;
