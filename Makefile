@@ -2,7 +2,7 @@ NAME = webserv
 SERV = server
 CLI = client
 COMPILER = c++
-FLAGS = -Wall -Werror -Wextra -std=c++98
+FLAGS = -Wall -Werror -Wextra -g -std=c++98
 
 SERVER =	Server/main.cpp 	\
 			Server/Server.cpp
@@ -25,6 +25,8 @@ $(CLI) : $(OBJC)
 	$(COMPILER) $(FLAGS) $(OBJC) -o $(CLI)
 
 all : $(SERV) $(CLI)
+
+Server : $(SERV)
 
 clean :
 	rm -f $(OBJS) $(OBJC)

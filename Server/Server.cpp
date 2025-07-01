@@ -6,11 +6,13 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 06:14:22 by mitandri          #+#    #+#             */
-/*   Updated: 2025/06/28 18:45:49 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/01 12:39:06 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+
+int	_temp;
 
 Server::Server() : _socket() {}
 
@@ -28,6 +30,7 @@ int	Server::getServer() const
 {
 	return this->_server;
 }
+
 
 void	Server::startSocket()
 {
@@ -58,7 +61,10 @@ void	Server::listenSocket()
 {
 	// _socket is listening and waiting from anything
 	if (listen(this->_socket, BACKLOG) == -1)
+	{
+		std::cout << this->_socket << std::endl;
 		throw(std::invalid_argument(RED "BIND ERROR !" RESET));
+	}
 	
 	//Log message
 	std::cout << "Socket is listening..." << std::endl;
@@ -67,11 +73,13 @@ void	Server::listenSocket()
 
 void	Server::whileSocket()
 {
-	string	something("Hello world from server!");
+	string	something(HTTP);
 
 	while (true)
 	{
 		// _socket is waiting for any first connection
+		_temp = this->_socket;
+		signal(SIGINT, signalHandler);
 		int	len = sizeof(this->_identity);
 		this->_server = accept(this->_socket, (struct sockaddr *)&this->_identity, \
 			(socklen_t *)&len);
@@ -85,7 +93,14 @@ void	Server::whileSocket()
 		std::cout << "Message : " << str << std::endl;
 		write(this->_server, something.c_str(), something.size());
 		std::cout << std::endl;
-		std::cout << "MESSAGE SENT FROM SERVER !" << std::endl;
+		std::cout << "MESSAGE SENT FROM SERVER ! => NEXT" << std::endl << std::endl;
 		close(this->_server);
 	}
 }
+
+void	signalHandler( int sigNum )
+{
+	close(_temp);
+	std::cout << std::endl << GREEN "DONE : " << sigNum << RESET << std::endl;
+	std::exit(sigNum);
+} 
