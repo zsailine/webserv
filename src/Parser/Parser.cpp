@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 15:41:42 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/01 10:42:43 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/01 13:20:40 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,18 +74,17 @@ int Parser::insert_server(size_t i, std::vector<std::string> &block)
 	static int number = 0;
 	std::vector<std::string> blocks;
 
-	number++;
 	while (i < block.size())
 	{
 		if (!ft_continue(block[i]))
 		{
-			server.push_back(Server(number, blocks));
+			server.push_back(Server(number++, blocks));
 			return (i);
 		}
 		blocks.push_back(block[i]);
 		i++;
 	}
-	Server tmp = Server(number, blocks);
+	Server tmp = Server(number++, blocks);
 	server.push_back(tmp);
 	return (i);
 }
@@ -97,7 +96,12 @@ void	Parser::init_socket()
 		server[i++].init_socket();
 }
 
-
+void	Parser::closeFds()
+{
+	size_t i = 0;
+	while (i < server.size())
+		server[i++].closeFds();
+}
 void	Parser::get_blocks( std::vector<std::string> &block)
 {
 	size_t i = 0;

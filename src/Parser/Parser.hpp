@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 14:48:50 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/01 10:51:50 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/01 13:17:51 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ class Parser
 		Parser(std::string data);
 		~Parser(){}
 		std::vector<Server> &getServer();
+		void closeFds();
 };
 
 int isWord(std::string const &str);

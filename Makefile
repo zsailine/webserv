@@ -2,9 +2,26 @@ NAME = webserv
 
 FLAGS = -Wall -Werror -Wextra -std=c++98
 
-SRC = 	src/main.cpp \
-		src/init/epoll.cpp \
-		src/ServerSocket/ServerSocket.cpp
+DIR_PARSER = src/Parser/
+DIR_SERVER = src/Server/
+DIR_EPOLL = src/epoll/
+DIR_UTILS = src/utils/
+
+SRC_PARSER =	$(DIR_PARSER)Parser.cpp
+				
+SRC_SERVER = 	$(DIR_SERVER)Server.cpp \
+				$(DIR_SERVER)socket.cpp 
+
+SRC_UTILS =		$(DIR_UTILS)utils.cpp	\
+				$(DIR_UTILS)socket.cpp
+
+SRC_EPOLL = $(DIR_EPOLL)epoll.cpp
+
+SRC = 	main.cpp		\
+		$(SRC_PARSER)	\
+		$(SRC_EPOLL)	\
+		$(SRC_UTILS)	\
+		$(SRC_SERVER)
 
 OBJ = $(SRC:.cpp=.o)
 

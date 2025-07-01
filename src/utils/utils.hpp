@@ -1,37 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lib.hpp                                            :+:      :+:    :+:   */
+/*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/17 10:02:47 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/01 10:42:24 by zsailine         ###   ########.fr       */
+/*   Created: 2025/07/01 10:50:05 by zsailine          #+#    #+#             */
+/*   Updated: 2025/07/01 13:11:59 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIB_HPP
+#ifndef UTILS_HPP
 
-#define LIB_HPP
+#define UTILS_HPP
 
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <fcntl.h>
-#include <sys/epoll.h>
+#include <string>
+#include <sstream>
+#include <algorithm>
+#include "../Server/Server.hpp"
 
-#include "../src/Parser/Parser.hpp"
-
-
-/*		EPOLL		*/
-void addEpollEvent(int epfd, int socket);
-void delEpollEvent(int epfd, int ocket);
-
+int		nbr_of_words(std::string const &str);
+int		isWord(std::string const &str);
+void	RemoveWhiteSpace(std::string& str);
+int		isSocket(int fd, std::vector<Server> server);
 
 #endif
-
-

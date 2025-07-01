@@ -1,37 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lib.hpp                                            :+:      :+:    :+:   */
+/*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/17 10:02:47 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/01 10:42:24 by zsailine         ###   ########.fr       */
+/*   Created: 2025/06/24 10:55:45 by zsailine          #+#    #+#             */
+/*   Updated: 2025/07/01 10:56:29 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIB_HPP
+#include "utils.hpp"
 
-#define LIB_HPP
+int isWord(std::string const &str)
+{
+	if (str.size() == 0)
+		return (0);
+	return (1);
+}
 
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <fcntl.h>
-#include <sys/epoll.h>
+int nbr_of_words(std::string const &str)
+{
+	int count = 0;
+	std::string word;
+	std::stringstream split(str);
+	while (split >> word)
+	  count++;
+	return (count);
+}
 
-#include "../src/Parser/Parser.hpp"
-
-
-/*		EPOLL		*/
-void addEpollEvent(int epfd, int socket);
-void delEpollEvent(int epfd, int ocket);
-
-
-#endif
-
-
+void RemoveWhiteSpace(std::string& str)
+{
+    str.erase(std::remove_if(str.begin(), str.end(), ::isspace), str.end());
+}

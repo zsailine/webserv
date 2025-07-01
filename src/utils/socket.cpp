@@ -1,33 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ServerSocket.hpp                                   :+:      :+:    :+:   */
+/*   socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/16 14:10:30 by zsailine          #+#    #+#             */
-/*   Updated: 2025/06/23 15:31:39 by zsailine         ###   ########.fr       */
+/*   Created: 2025/07/01 13:07:59 by zsailine          #+#    #+#             */
+/*   Updated: 2025/07/01 13:11:53 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SERVERSOCKET_HPP
+#include "utils.hpp"
 
-#define SERVERSOCKET_HPP
-
-#include "../../lib/lib.hpp"
-
-class ServerSocket
+int isSocket(int fd, std::vector<Server> server)
 {
-	private:
-			int _socket;
-
-			sockaddr_in init_adress(int port);
-			ServerSocket(){}
-			ServerSocket(const ServerSocket &toCopy){(void)toCopy;}
-	public:
-			ServerSocket(int port);
-			~ServerSocket();
-			int getSocket() const;
-};
-
-#endif
+	for (size_t i = 0; i < server.size(); i++)
+	{
+		std::cout << "fd is " << fd << " toCmp is " << server[i].getSocket() << " index is " << server[i].getIndex() << std::endl;;
+		if (fd == server[i].getSocket())
+			return (server[i].getIndex());
+	}
+	return (-1);
+}
