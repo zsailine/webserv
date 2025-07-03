@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: aranaivo <aranaivo@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 14:28:25 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/01 14:16:02 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/03 14:58:45 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,72 @@ void	signalHandler( int sigNum )
 	flag = 0;
 	(void)sigNum;
 }
+
+std::string get_path(const std::string &req)
+{
+	std::istringstream ss(req);
+	std::string method;
+	std::string path;
+	std::string version;
+
+	ss >> method >> path >> version;
+	if (path == "/")
+		path = "/index.html";
+
+	return ("www" + path);
+}
+
+
+std::string get_file_content(const std::string &path)
+{
+	int fd = open(path.c_str(), O_RDONLY);
+	if (fd == -1)
+	{
+		perror("open");
+		return "";
+	}
+
+	std::string content;
+	char buffer[4096];
+	ssize_t bytes_read;
+
+	while ((bytes_read = read(fd, buffer, sizeof(buffer))) > 0)
+		content.append(buffer, bytes_read);
+
+	if (bytes_read == -1)
+		perror("read");
+
+	close(fd);
+	return content;
+}
+
+bool ft_ends_with(const std::string& str, const std::string& suffix) {
+    if (str.length() < suffix.length())
+        return false;
+    return str.compare(str.length() - suffix.length(), suffix.length(), suffix) == 0;
+}
+
+
+std::string getMimeType(const std::string &path) {
+    if (ft_ends_with(path , ".html")) return "text/html";
+    if (ft_ends_with(path , ".css")) return "text/css";
+    if (ft_ends_with(path , ".js")) return "application/javascript";
+    if (ft_ends_with(path , ".png")) return "image/png";
+    if (ft_ends_with(path , ".jpg") || ft_ends_with(path , ".jpeg")) return "image/jpeg";
+    return "text/plain";
+}
+
+std::string makeHttpResponse(const std::string &body, const std::string &mime, int status = 200) {
+    std::ostringstream response;
+    response << "HTTP/1.1 " << status << " " << (status == 200 ? "OK" : "Not Found") << "\r\n"
+             << "Content-Type: " << mime << "\r\n"
+             << "Content-Length: " << body.size() << "\r\n"
+             << "Connection: close\r\n"
+             << "\r\n"
+             << body;
+    return response.str();
+}
+
 
 int main()
 {
@@ -62,18 +128,20 @@ int main()
 				{
             	    // Handle client socket
             	    char buffer[1024];
-					std::cout << "tafiditra\n";
             	    ssize_t count = read(fd, buffer, sizeof(buffer));
-					std::cout << "fd manao " << fd << " dia count " << count << std::endl;
 					std::string msg(buffer, count);
 					std::cout << "Received: " << msg;
 					std::cout << msg << std::endl;
-					send(fd, "HTTP/1.1 200 OK\n", 16, 0);
-					send(fd, "Content-length: 49\n", 19, 0);
-					send(fd, "Content-Type: text/html\n\n", 25, 0);
-					send(fd, "<html><body><input METHOD="POST">Hello webserv</h1></body></html>", 151, 0); //here problems start
+					
+					std::string path = get_path(msg);
+					std::string content = get_file_content(path);
+
+					std::string mime = getMimeType(path);
+					std::string response = makeHttpResponse(content, mime, content == "<h1>404 Not Found</h1>" ? 404 : 200);
+
+					send(fd, response.c_str(), response.size(), 0);
+					close(fd); 
 				}
-				std::cout << "tapitra ho an'ny fd " << fd << std::endl;
 			}
 		}
 		test.closeFds();
