@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 14:28:25 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/01 14:16:02 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/04 13:42:26 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ int main()
                     }
                 	int opt = 1;
 					setsockopt(client_fd, SOL_SOCKET, SO_KEEPALIVE, &opt, sizeof(1));
+					server[index].addClient(client_fd);
 					addEpollEvent(epoll, client_fd);
             	} 
 				else
@@ -71,7 +72,7 @@ int main()
 					send(fd, "HTTP/1.1 200 OK\n", 16, 0);
 					send(fd, "Content-length: 49\n", 19, 0);
 					send(fd, "Content-Type: text/html\n\n", 25, 0);
-					send(fd, "<html><body><input METHOD="POST">Hello webserv</h1></body></html>", 151, 0); //here problems start
+					send(fd, "<html><body><h1>Hello webserv</h1></body></html>", 151, 0); //here problems start
 				}
 				std::cout << "tapitra ho an'ny fd " << fd << std::endl;
 			}

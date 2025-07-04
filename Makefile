@@ -10,6 +10,8 @@ DIR_UTILS = src/utils/
 SRC_PARSER =	$(DIR_PARSER)Parser.cpp
 				
 SRC_SERVER = 	$(DIR_SERVER)Server.cpp \
+				$(DIR_SERVER)Router.cpp \
+				$(DIR_SERVER)utils.cpp  \
 				$(DIR_SERVER)socket.cpp 
 
 SRC_UTILS =		$(DIR_UTILS)utils.cpp	\

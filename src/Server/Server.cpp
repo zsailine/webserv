@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:01:59 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/01 13:21:17 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/04 16:06:37 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,27 @@ void	Server::init_value()
 {
 	_map.insert(std::pair<std::string, std::string>("host", ""));
 	_map.insert(std::pair<std::string, std::string>("port", ""));
-	_map.insert(std::pair<std::string, std::string>("servername", ""));
+	_map.insert(std::pair<std::string, std::string>("server_name", ""));
+	_map.insert(std::pair<std::string, std::string>("routes", ""));
+}
+
+static int oneValue(int number, std::string const &key, std::string &str, std::string &value)
+{
+	size_t pos = str.find('=');
+    if (key.compare("routes") != 0 && key.compare("server_name"))
+	{
+		std::string value = str.substr(pos + 1);
+		if (nbr_of_words(value) > 1)
+		{
+			std::cerr << "[ Route " << number << " ]\n" << "Error: " << key << " can only have one value\n";
+			throw std::exception();
+		}
+		RemoveWhiteSpace(str);
+		pos = str.find('=');
+		value = str.substr(pos + 1);
+	}
+	value = str.substr(pos + 1);
+	return 1;
 }
 
 int	Server::get_type(int number, std::string tmp, std::string &key, std::string &value)
@@ -26,13 +46,13 @@ int	Server::get_type(int number, std::string tmp, std::string &key, std::string 
 	std::string str = tmp;
 	RemoveWhiteSpace(str);
     size_t pos = str.find('=');
-    if (pos == std::string::npos || nbr_of_words(tmp) != 3 || str[pos + 1] == '=')
+    if (pos == std::string::npos || !afterEquals(pos, str) || str[pos + 1] == '=')
 	{
 		std::cerr << "[ Server " << number << " ]\n" << "Error: " << tmp << " is not a valid argument\n";
 		throw std::exception();
 	}
     key = str.substr(0, pos);
-    value = str.substr(pos + 1);
+	oneValue(number, key, tmp, value);
 	return (1);
 }
 
@@ -51,25 +71,10 @@ void	Server::change_value(int number, std::string &key, std::string &value)
 	_map[key] = value;
 }
 
-static int ft_isdigit(std::string &str)
-{
-	int i = 0;
-	while (str[i])
-	{
-		if (str[i] < '0' || str[i] > '9')
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
 void	Server::check_value(int number)
 {
 	if (_map["host"].size() == 0)
-	{
-		std::cerr << "[ Server " << number << " ]\n" << "Error: host is not defined\n";
-		throw std::exception();
-	}
+		_map["host"] = "0.0.0.0";
 	if (_map["port"].size() == 0)
 	{
 		std::cerr << "[ Server " << number << " ]\n" << "Error: port is not defined\n";
@@ -78,6 +83,11 @@ void	Server::check_value(int number)
 	if (!ft_isdigit(_map["port"]))
 	{
 		std::cerr << "[ Server " << number << " ]\n" << "Error: port is invalid\n";
+		throw std::exception();
+	}
+	if (!valid_host(_map["host"]))
+	{
+		std::cerr << "[ Server " << number << " ]\n" << "Error: host is invalid\n";
 		throw std::exception();
 	}
 }
@@ -90,8 +100,11 @@ int Server::getIndex() const
 void Server::closeFds()
 {
 	close(_socket);
-	for (size_t i = 0; i < client_fds.size(); i++)
-		close(client_fds[i]);
+}
+
+void	Server::addClient(int fd)
+{
+	client_fds.push_back(fd);	
 }
 
 Server::Server(const Server &toCopy)

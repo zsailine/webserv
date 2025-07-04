@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 15:41:42 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/01 13:20:40 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/04 16:10:18 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,6 @@ void Parser::ft_read(std::string data, std::vector<std::string> &block)
 	}
 }
 
-#include <fcntl.h>
-
 int Parser::insert_server(size_t i, std::vector<std::string> &block)
 {
 	i++;
@@ -84,8 +82,26 @@ int Parser::insert_server(size_t i, std::vector<std::string> &block)
 		blocks.push_back(block[i]);
 		i++;
 	}
-	Server tmp = Server(number++, blocks);
-	server.push_back(tmp);
+	server.push_back(Server(number++, blocks));
+	return (i);
+}
+
+int Parser::insert_route(size_t i, std::string name, std::vector<std::string> &block)
+{
+	i++;
+	std::vector<std::string> blocks;
+	RemoveWhiteSpace(name);
+	while (i < block.size())
+	{
+		if (!ft_continue(block[i]))
+		{
+			routes.insert(std::pair<std::string, Router>(name, Router(name, blocks)));
+			return (i);
+		}
+		blocks.push_back(block[i]);
+		i++;
+	}
+	routes.insert(std::pair<std::string, Router>(name, Router(name, blocks)));
 	return (i);
 }
 
@@ -114,9 +130,9 @@ void	Parser::get_blocks( std::vector<std::string> &block)
 			{
 				i = insert_server(i, block);
 			}
-			else
+			else if (type == 2)
 			{
-				i++;
+				i = insert_route(i, block[i].substr(1), block);
 			}
 		}
 		else if (!isWord(block[i]))
@@ -124,6 +140,8 @@ void	Parser::get_blocks( std::vector<std::string> &block)
 			i++;
 		}
 	}
+	std::map<std::string, Router>::iterator it = routes.begin();
+	std::cout << it->second.getMap()["allowedMethods"] << std::endl;
 }
 
 std::vector<Server> &Parser::getServer()

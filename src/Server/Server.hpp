@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 14:53:57 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/01 13:19:24 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/04 16:06:29 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,17 +33,18 @@
 class Server
 {
 	private:
-	std::map<std::string , std::string> _map;
-	int	_socket;
-	int index;
-	
-	std::vector<int> client_fds;
-	Server(){}
-	void	init_value();
-	void	change_value(int number, std::string &key, std::string &value);
-	int		get_type(int number, std::string str, std::string &type, std::string &value);
-	void	check_value(int number);
-	sockaddr_in init_adress();
+		std::map<std::string , std::string> _map;
+		int	_socket;
+		int index;
+		
+		std::vector<int> client_fds;
+		Server(){}
+		void	init_value();
+		void	change_value(int number, std::string &key, std::string &value);
+		int		get_type(int number, std::string str, std::string &type, std::string &value);
+		void	check_value(int number);
+		sockaddr_in init_adress();
+
 	public:
 		Server(int number, std::vector<std::string> const &block);
 		~Server(){}
@@ -53,9 +54,15 @@ class Server
 		int getSocket() const;
 		int getIndex() const;
 		void	closeFds();
+		void	addClient(int fd);
 	
 };
 
 #include "../utils/utils.hpp"
+
+int ft_isdigit(std::string &str);
+int valid_host(std::string &str);
+int afterEquals(int pos, std::string str);
+
 
 #endif
