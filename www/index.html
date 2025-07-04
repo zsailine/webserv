@@ -4,10 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./style.css"> 
-    <title>Document</title>
+    <title>Webserv</title>
 </head>
 <body>
-    <h1>Hello world !</h1>
-    <img src="./assets/download.jpeg" alt="42">
+    <div id="main">
+        <h1>Hello webserv !</h1>
+        <img src="./assets/download.jpeg" alt="42">
+        <form method="POST" action="/form" >
+            <label for="name"> Nom</label>
+            <input type="text" name="name"/>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
 </body>
 </html>
