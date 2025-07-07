@@ -6,11 +6,23 @@
 /*   By: aranaivo <aranaivo@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:55:45 by zsailine          #+#    #+#             */
+/*   Updated: 2025/07/04 16:11:20 by zsailine         ###   ########.fr       */
 /*   Updated: 2025/07/04 10:22:45 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.hpp"
+
+int afterEquals(int pos, std::string str)
+{	pos++;
+	while (str[pos])
+	{
+		if (str[pos] > 32)
+			return (1);
+		pos++;
+	}
+	return (0);
+}
 
 int isWord(std::string const &str)
 {

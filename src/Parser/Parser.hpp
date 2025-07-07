@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 14:48:50 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/01 13:17:51 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/04 15:07:38 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,19 @@
 #define PARSER_HPP
 
 #include "../Server/Server.hpp"
+#include "../Server/Router.hpp"
+
 class Parser
 {
 	private:
 		std::vector<Server> server;
+		std::map<std::string, Router> routes;
 
 		Parser(){}
-		void ft_read(std::string data, std::vector<std::string> &block);
+		void	ft_read(std::string data, std::vector<std::string> &block);
 		void	get_blocks( std::vector<std::string> &block);
 		int		insert_server(size_t i, std::vector<std::string> &block);
+		int		insert_route(size_t i, std::string name, std::vector<std::string> &block);
 		void	init_socket();
 	public:
 		Parser(std::string data);

@@ -6,6 +6,7 @@
 /*   By: aranaivo <aranaivo@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 14:28:25 by zsailine          #+#    #+#             */
+/*   Updated: 2025/07/04 13:42:26 by zsailine         ###   ########.fr       */
 /*   Updated: 2025/07/04 15:18:33 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
@@ -57,6 +58,7 @@ int main()
                     }
                 	int opt = 1;
 					setsockopt(client_fd, SOL_SOCKET, SO_KEEPALIVE, &opt, sizeof(1));
+					server[index].addClient(client_fd);
 					addEpollEvent(epoll, client_fd);
             	} 
 				else
