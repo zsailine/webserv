@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 14:53:57 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/04 16:06:29 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/07 16:15:58 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,15 @@
 #include <netdb.h>
 #include <unistd.h>
 #include <signal.h>
+#include <set>
 
+class Router;
 
 class Server
 {
 	private:
 		std::map<std::string , std::string> _map;
+		std::vector<Router> _routes;
 		int	_socket;
 		int index;
 		
@@ -50,6 +53,7 @@ class Server
 		~Server(){}
 		Server(const Server &toCopy);
 		
+		void	addRoute(std::map<std::string, Router> routes);
 		void init_socket();
 		int getSocket() const;
 		int getIndex() const;
@@ -64,5 +68,7 @@ int ft_isdigit(std::string &str);
 int valid_host(std::string &str);
 int afterEquals(int pos, std::string str);
 
+
+#include "Router.hpp"
 
 #endif

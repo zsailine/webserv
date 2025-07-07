@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 15:41:42 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/04 16:10:18 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/07 16:02:52 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,11 @@ int Parser::insert_route(size_t i, std::string name, std::vector<std::string> &b
 	i++;
 	std::vector<std::string> blocks;
 	RemoveWhiteSpace(name);
+	if (routes.count(name) != 0)
+	{
+		std::cerr << "[ Route ]\n" << "Error: " << name << " is already define\n";
+		throw std::exception();
+	}
 	while (i < block.size())
 	{
 		if (!ft_continue(block[i]))
@@ -140,8 +145,13 @@ void	Parser::get_blocks( std::vector<std::string> &block)
 			i++;
 		}
 	}
-	std::map<std::string, Router>::iterator it = routes.begin();
-	std::cout << it->second.getMap()["allowedMethods"] << std::endl;
+}
+
+void	Parser::addRoute()
+{
+	size_t i = 0;
+	while (i < server.size())
+		server[i++].addRoute(routes);
 }
 
 std::vector<Server> &Parser::getServer()
@@ -155,4 +165,5 @@ Parser::Parser(std::string data)
 	ft_read(data, block);
 	get_blocks(block);
 	init_socket();
+	addRoute();
 }

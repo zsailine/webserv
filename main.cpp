@@ -3,13 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranaivo <aranaivo@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 14:28:25 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/04 13:42:26 by zsailine         ###   ########.fr       */
-/*   Updated: 2025/07/04 15:18:33 by aranaivo         ###   ########.fr       */
+/*   Updated: 2025/07/07 14:09:27 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 // #include "Parser.hpp"
 
@@ -81,7 +81,7 @@ int main()
 						status = 400;
 					response.make_Http_response(status);
 					send(fd, response.get_response().c_str(), response.get_response().size(), 0);
-					close(fd); 
+					close(fd); 				
 				}
 			}
 		}

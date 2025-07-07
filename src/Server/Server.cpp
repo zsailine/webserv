@@ -6,11 +6,13 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:01:59 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/04 16:06:37 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/07 16:21:26 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+#include "Router.hpp"
+
 
 void	Server::init_value()
 {
@@ -71,6 +73,25 @@ void	Server::change_value(int number, std::string &key, std::string &value)
 	_map[key] = value;
 }
 
+static int twice(int index, std::string str)
+{
+	std::istringstream iss(str);
+    std::string tmp;
+    std::set<std::string> tab;
+
+    while (iss >> tmp)
+	{
+        if (tab.count(tmp))
+        {
+			std::cerr << "[ Server " << index << " ]\n" << "Error: " << tmp << " is called more than one time\n";
+			throw std::exception();
+		}
+		else
+            tab.insert(tmp);
+    }
+	return (1);
+}
+
 void	Server::check_value(int number)
 {
 	if (_map["host"].size() == 0)
@@ -88,6 +109,12 @@ void	Server::check_value(int number)
 	if (!valid_host(_map["host"]))
 	{
 		std::cerr << "[ Server " << number << " ]\n" << "Error: host is invalid\n";
+		throw std::exception();
+	}
+	twice(index, _map["routes"]);
+	if (_map["routes"].size() == 0)
+	{
+		std::cerr << "[ Server " << number << " ]\n" << "Error: routes are empty\n";
 		throw std::exception();
 	}
 }
@@ -131,4 +158,27 @@ Server::Server(int number, std::vector<std::string> const &block)
 int Server::getSocket() const
 {
 	return (_socket);
+}
+
+void	Server::addRoute(std::map<std::string, Router> routes)
+{
+	std::stringstream split(_map["routes"]);
+	std::string word;
+	while (split >> word)
+	{
+		if (routes.count(word) == 0)
+		{
+			std::cerr << "[ Server " << index << " ]\n" << "Error: " << word <<  " is not a defined route\n";
+			throw std::exception();
+		}
+		std::map<std::string, Router>::iterator it = routes.begin();
+		while (it != routes.end())
+		{
+			if (it->first.compare(word) == 0)
+			{
+				_routes.push_back(it->second);
+			}
+			it++;
+		}
+	}
 }
