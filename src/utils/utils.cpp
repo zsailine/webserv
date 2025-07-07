@@ -3,10 +3,11 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: aranaivo <aranaivo@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:55:45 by zsailine          #+#    #+#             */
 /*   Updated: 2025/07/04 16:11:20 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/04 10:22:45 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,4 +44,11 @@ int nbr_of_words(std::string const &str)
 void RemoveWhiteSpace(std::string& str)
 {
     str.erase(std::remove_if(str.begin(), str.end(), ::isspace), str.end());
+}
+
+bool ft_ends_with(const std::string& str, const std::string& suffix) 
+{
+    if (str.length() < suffix.length())
+        return false;
+    return str.compare(str.length() - suffix.length(), suffix.length(), suffix) == 0;
 }

@@ -3,10 +3,11 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: aranaivo <aranaivo@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 14:28:25 by zsailine          #+#    #+#             */
 /*   Updated: 2025/07/04 13:42:26 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/04 15:18:33 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +27,7 @@ void	signalHandler( int sigNum )
 	flag = 0;
 	(void)sigNum;
 }
+
 
 int main()
 {
@@ -63,18 +65,24 @@ int main()
 				{
             	    // Handle client socket
             	    char buffer[1024];
-					std::cout << "tafiditra\n";
             	    ssize_t count = read(fd, buffer, sizeof(buffer));
-					std::cout << "fd manao " << fd << " dia count " << count << std::endl;
 					std::string msg(buffer, count);
-					std::cout << "Received: " << msg;
-					std::cout << msg << std::endl;
-					send(fd, "HTTP/1.1 200 OK\n", 16, 0);
-					send(fd, "Content-length: 49\n", 19, 0);
-					send(fd, "Content-Type: text/html\n\n", 25, 0);
-					send(fd, "<html><body><h1>Hello webserv</h1></body></html>", 151, 0); //here problems start
+					std::cout << "****************\n";
+					std::cout << "Received: " << msg << std::endl;
+					std::cout << "****************\n";
+					//std::cout << msg << std::endl;
+					
+					ServerResponse response(msg);
+					response.get_full_path(msg);
+					response.get_file_content();
+					response.get_mime_type();
+					int status = 200;
+					if (open(response.get_path().c_str(), O_RDONLY) < 0)
+						status = 400;
+					response.make_Http_response(status);
+					send(fd, response.get_response().c_str(), response.get_response().size(), 0);
+					close(fd); 
 				}
-				std::cout << "tapitra ho an'ny fd " << fd << std::endl;
 			}
 		}
 		test.closeFds();
