@@ -3,22 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranaivo <aranaivo@student.42antananari    +#+  +:+       +#+        */
+/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 14:28:25 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/04 13:42:26 by zsailine         ###   ########.fr       */
-/*   Updated: 2025/07/04 15:18:33 by aranaivo         ###   ########.fr       */
+/*   Updated: 2025/07/08 10:39:25 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // #include "Parser.hpp"
 
 #include "lib/lib.hpp"
-
-#include <netinet/in.h>
-#include <arpa/inet.h>
-
-#define MAX_EVENTS 4
+#include "class.hpp"
 
 int	flag = 1;
 
@@ -56,6 +51,7 @@ int main()
                     if (client_fd == -1) {
 						break;
                     }
+					server[index].addClient(client_fd);
                 	int opt = 1;
 					setsockopt(client_fd, SOL_SOCKET, SO_KEEPALIVE, &opt, sizeof(1));
 					server[index].addClient(client_fd);
@@ -70,7 +66,7 @@ int main()
 					std::cout << "****************\n";
 					std::cout << "Received: " << msg << std::endl;
 					std::cout << "****************\n";
-					//std::cout << msg << std::endl;
+					// std::cout << msg << std::endl;
 					
 					ServerResponse response(msg);
 					response.get_full_path(msg);
@@ -90,6 +86,5 @@ int main()
 	}
 	catch(const std::exception& e)
 	{
-	}
-	
+	}	
 }

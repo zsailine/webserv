@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 13:07:59 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/01 13:11:53 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/08 11:43:50 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ int isSocket(int fd, std::vector<Server> server)
 {
 	for (size_t i = 0; i < server.size(); i++)
 	{
-		std::cout << "fd is " << fd << " toCmp is " << server[i].getSocket() << " index is " << server[i].getIndex() << std::endl;;
 		if (fd == server[i].getSocket())
 			return (server[i].getIndex());
 	}

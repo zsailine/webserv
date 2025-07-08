@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 14:53:57 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/04 16:06:29 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/08 08:21:42 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,7 @@
 
 #define SERVER_HPP
 
-#include <iostream>
-#include <fstream>
-#include <iomanip>
-#include <sstream>
-#include <string>
-#include <exception>
-#include <algorithm>
-#include <map>
-#include <vector>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <unistd.h>
-#include <signal.h>
-
+#include "lib.hpp"
 
 class Server
 {

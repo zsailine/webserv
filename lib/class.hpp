@@ -1,29 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.hpp                                          :+:      :+:    :+:   */
+/*   class.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/01 10:50:05 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/08 10:35:27 by mitandri         ###   ########.fr       */
+/*   Created: 2025/07/08 09:57:36 by mitandri          #+#    #+#             */
+/*   Updated: 2025/07/08 11:22:43 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef UTILS_HPP
+#ifndef CLASS_HPP
+#define CLASS_HPP
 
-#define UTILS_HPP
-
-#include <string>
-#include <sstream>
-#include <algorithm>
-#include "class.hpp"
-// #include "../Server/Server.hpp"
-
-int		nbr_of_words(std::string const &str);
-int		isWord(std::string const &str);
-void	RemoveWhiteSpace(std::string& str);
-int		isSocket(int fd, std::vector<Server> server);
-bool ft_ends_with(const std::string& str, const std::string& suffix); 
+#include "../src/Server/Router.hpp"
+#include "../src/Server/Server.hpp"
+#include "../src/Parser/Run.hpp"
+#include "../src/Parser/Parser.hpp"
+#include "../src/Sender/ServerResponse.hpp"
+#include "../src/Sender/Sender.hpp"
 
 #endif

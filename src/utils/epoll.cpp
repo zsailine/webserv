@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   epoll.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 10:02:38 by zsailine          #+#    #+#             */
-/*   Updated: 2025/06/20 14:01:21 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/08 12:03:41 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,18 @@ void addEpollEvent(int epfd, int socket)
 	event.data.fd = socket;
 	event.events = EPOLLIN;
 	epoll_ctl(epfd, EPOLL_CTL_ADD, socket, &event);
-	std::cout << "Socket " << socket << " has been successfully added to epoll.\n";
+	std::cout << std::endl;
+	std::cout << PIPGREEN "... " RESET;
+	std::cout << "Socket " << socket << " has been successfully added to epoll";
+	std::cout << PIPGREEN " ... " RESET << std::endl;
 }
 
 
 void delEpollEvent(int epfd, int socket)
 {
 	epoll_ctl(epfd, EPOLL_CTL_DEL, socket, NULL);
-	std::cout << "Socket " << socket << " has been successfully deleted to epoll.\n";
+	std::cout << std::endl;
+	std::cout << RED "... " RESET;
+	std::cout << "Socket " << socket << " has been successfully deleted to epoll";
+	std::cout << RED " ... " RESET << std::endl;
 }

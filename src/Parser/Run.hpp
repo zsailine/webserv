@@ -1,29 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.hpp                                          :+:      :+:    :+:   */
+/*   Run.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/01 10:50:05 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/08 10:35:27 by mitandri         ###   ########.fr       */
+/*   Created: 2025/07/08 09:50:39 by mitandri          #+#    #+#             */
+/*   Updated: 2025/07/08 10:58:14 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef UTILS_HPP
+#ifndef RUN_HPP
+#define RUN_HPP
 
-#define UTILS_HPP
-
-#include <string>
-#include <sstream>
-#include <algorithm>
+#include "lib.hpp"
 #include "class.hpp"
-// #include "../Server/Server.hpp"
 
-int		nbr_of_words(std::string const &str);
-int		isWord(std::string const &str);
-void	RemoveWhiteSpace(std::string& str);
-int		isSocket(int fd, std::vector<Server> server);
-bool ft_ends_with(const std::string& str, const std::string& suffix); 
+class Run
+{
+	private:
+
+		int					_client;
+		int					_epoll;
+		std::string			_parameter;
+		struct epoll_event	_events[MAX_EVENTS];
+
+		Run() {}
+
+	public:
+
+		Run( std::string const &parameter );
+		~Run() {}
+		void	run();
+		void	runEpoll( std::vector<Server> &server );
+		void	handleSocket( std::vector<Server> &server, int &index );
+		void	handleClient( int fd );
+};
 
 #endif
