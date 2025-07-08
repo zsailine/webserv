@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 10:02:47 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/08 12:01:36 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/08 13:39:52 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@
 #define UNDERLINE "\033[4m"
 
 #define MAX_EVENTS 4
+
+typedef std::string	string;
 
 /*		EPOLL		*/
 void addEpollEvent(int epfd, int socket);

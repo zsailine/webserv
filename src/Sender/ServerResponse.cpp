@@ -6,18 +6,28 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 09:53:26 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/07/08 11:14:11 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/08 14:18:35 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./ServerResponse.hpp"
 
-ServerResponse::ServerResponse(/* args */)
-{}
-
-ServerResponse::ServerResponse(std::string buffer)
+ServerResponse::ServerResponse(std::string buffer) : _buffer(buffer)
 {
-    _buffer = buffer;
+	std::string		line;
+	std::ifstream	file("./../../files/mimes.conf");
+
+	if (not file.is_open())
+		return ;
+	while (getline(file, line))
+	{
+		int	index = line.find(' ');
+		string	extension, mime;
+		mime = line.c_str() + (index + 1);
+		extension = line.substr(0, index);
+		if (mime.size() && extension.size())
+			this->_mimetype.insert(std::pair<string, string>(extension, mime));
+	}
 }
 
 void ServerResponse::get_full_path(const std::string &req)
@@ -30,7 +40,6 @@ void ServerResponse::get_full_path(const std::string &req)
 	ss >> method >> path >> version;
 	if (path == "/")
 		path = "/index.html";
-
 	_path = "www" + path;
 }
 
@@ -84,8 +93,7 @@ void ServerResponse::get_mime_type()
 	{
 		_mime = "image/jpeg";
 		return;
-	}	
-    
+	}
 	_mime = "text/plain";
 }
 

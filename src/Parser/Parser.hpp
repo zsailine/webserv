@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 14:48:50 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/08 10:42:13 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/07 15:57:25 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,8 @@
 
 #define PARSER_HPP
 
-#include "class.hpp"
-
-class Router;
+#include "../Server/Server.hpp"
+#include "../Server/Router.hpp"
 
 class Parser
 {
@@ -35,6 +34,7 @@ class Parser
 		~Parser(){}
 		std::vector<Server> &getServer();
 		void closeFds();
+		void	addRoute();
 };
 
 int isWord(std::string const &str);

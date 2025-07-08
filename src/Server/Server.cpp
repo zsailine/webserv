@@ -6,11 +6,13 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:01:59 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/04 16:06:37 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/08 13:53:40 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+#include "Router.hpp"
+
 
 void	Server::init_value()
 {
@@ -23,7 +25,7 @@ void	Server::init_value()
 static int oneValue(int number, std::string const &key, std::string &str, std::string &value)
 {
 	size_t pos = str.find('=');
-    if (key.compare("routes") != 0 && key.compare("server_name"))
+    if (key.compare("host") == 0)
 	{
 		std::string value = str.substr(pos + 1);
 		if (nbr_of_words(value) > 1)
@@ -90,6 +92,12 @@ void	Server::check_value(int number)
 		std::cerr << "[ Server " << number << " ]\n" << "Error: host is invalid\n";
 		throw std::exception();
 	}
+	if (_map["routes"].size() == 0)
+	{
+		std::cerr << "[ Server " << number << " ]\n" << "Error: routes are empty\n";
+		throw std::exception();
+	}
+	twice(index, "Server", _map["routes"]);
 }
 
 int Server::getIndex() const
@@ -131,4 +139,75 @@ Server::Server(int number, std::vector<std::string> const &block)
 int Server::getSocket() const
 {
 	return (_socket);
+}
+
+std::vector<Router> &Server::getRoutes()
+{
+	return (_routes);
+}
+
+int		Server::ft_repeat(std::string url)
+{
+	size_t i = 0;
+	while (i < _routes.size())
+	{
+		if (url.compare(_routes[i].getValue("url")) == 0)
+		{
+			std::cerr << "[ Server " << index << " ]\n" << "Error: Some routes have the same url\n";
+			throw std::exception();
+		}
+		i++;
+	}
+	return (1);
+}
+
+void	Server::addRoute(std::map<std::string, Router> routes)
+{
+	std::stringstream split(_map["routes"]);
+	std::string word;
+	while (split >> word)
+	{
+		if (routes.count(word) == 0)
+		{
+			std::cerr << "[ Server " << index << " ]\n" << "Error: " << word <<  " is not a defined route\n";
+			throw std::exception();
+		}
+		std::map<std::string, Router>::iterator it = routes.begin();
+		while (it != routes.end())
+		{
+			if (it->first.compare(word) == 0 && ft_repeat(it->second.getValue("url")))
+			{
+				_routes.push_back(it->second);
+			}
+			it++;
+		}
+	}
+}
+
+std::string Server::getValue(int index, std::string key)
+{
+	return (_routes[index].getValue(key));
+}
+
+int Server::check_url(std::string url)
+{
+	size_t i = 0;
+	int index = -1;
+	int absolute = -1;
+	while (i < _routes.size())
+	{
+		std::string str = getValue(index, "url");
+		if (url.size() >= str.size())
+		{
+			std::string tmp = url.substr(0, str.size());
+			if (tmp.size() == 1)
+				absolute = i;
+			else if (tmp.compare(str) == 0)
+				index = i;
+		}
+		i++;
+	}
+	if (absolute >= 0 && index == -1)
+		return (absolute);
+	return (index);
 }

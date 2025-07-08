@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:23:21 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/08 11:35:42 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/08 12:53:23 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,11 @@ void	Sender::sendMessage( std::string message, int fd )
 		status = 400;
 	response.make_Http_response(status);
 	send(fd, response.get_response().c_str(), response.get_response().size(), 0);
+}
+
+void	Sender::httpResponse()
+{
+	
 }
 
 int	Sender::getStatus() const

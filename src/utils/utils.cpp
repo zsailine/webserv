@@ -3,13 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranaivo <aranaivo@student.42antananari    +#+  +:+       +#+        */
+/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:55:45 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/04 16:11:20 by zsailine         ###   ########.fr       */
-/*   Updated: 2025/07/04 10:22:45 by aranaivo         ###   ########.fr       */
+/*   Updated: 2025/07/08 14:16:38 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "utils.hpp"
 
@@ -52,3 +52,5 @@ bool ft_ends_with(const std::string& str, const std::string& suffix)
         return false;
     return str.compare(str.length() - suffix.length(), suffix.length(), suffix) == 0;
 }
+
+// std::string	getFileExtension( string const )
