@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 15:41:42 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/08 10:16:13 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/08 14:39:38 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,5 +166,4 @@ Parser::Parser(std::string data)
 	get_blocks(block);
 	init_socket();
 	addRoute();
-	std::cout << server[0].getRoutes()[0].getValue("url") << std::endl;
 }

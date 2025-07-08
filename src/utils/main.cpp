@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 08:22:27 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/08 12:15:40 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/08 14:41:04 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,6 @@ int	main( int ac, char **av )
 		start.run();
 	}
 	catch( const std::exception& e )
-	{
-		std::cout << e.what() << std::endl;
-	}
+	{}
 	return 0;
 }
