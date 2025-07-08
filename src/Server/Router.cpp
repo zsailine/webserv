@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 10:33:07 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/04 16:15:40 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/08 10:15:43 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,9 +70,29 @@ void	Router::change_value(std::string const &name, std::string &key, std::string
 	_map[key] = value;
 }
 
+static int valid(std::string index, std::string type ,std::string str)
+{
+	std::istringstream iss(str);
+    std::string tmp;
+    std::set<std::string> tab;
+
+    while (iss >> tmp)
+	{
+        if (tmp.compare("GET") != 0 && tmp.compare("POST") != 0
+			&& tmp.compare("DELETE") != 0)
+        {
+			std::cerr << "[ " << type << " " << index << " ]\n" << "Error: " << tmp << " is not a valid method\n";
+			throw std::exception();
+		}
+		else
+            tab.insert(tmp);
+    }
+	return (1);
+}
+
 void	Router::check_value(std::string const &name)
 {
-	if (_map["url"].size() == 0)
+	if (_map["url"].size() == 0 || _map["url"][0] != '/')
 	{
 		std::cerr << "[ Route " << name << " ]\n" << "Error: url is not defined\n";
 		throw std::exception();
@@ -87,6 +107,8 @@ void	Router::check_value(std::string const &name)
 		std::cerr << "[ Route " << name << " ]\n" << "Error: allowedMethods is not defined\n";
 		throw std::exception();
 	}
+	twice(name, "Route", _map["allowedMethods"]);
+	valid(name, "Route", _map["allowedMethods"]);
 }
 
 Router::Router(const Router &toCopy)
@@ -110,4 +132,9 @@ Router::Router(std::string const &name, std::vector<std::string> block)
 std::map<std::string , std::string> Router::getMap() const
 {
 	return _map;
+}
+
+std::string Router::getValue(std::string key)
+{
+	return (_map[key]);
 }

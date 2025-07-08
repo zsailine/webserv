@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:01:59 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/07 16:21:26 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/08 13:53:40 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	Server::init_value()
 static int oneValue(int number, std::string const &key, std::string &str, std::string &value)
 {
 	size_t pos = str.find('=');
-    if (key.compare("routes") != 0 && key.compare("server_name"))
+    if (key.compare("host") == 0)
 	{
 		std::string value = str.substr(pos + 1);
 		if (nbr_of_words(value) > 1)
@@ -73,25 +73,6 @@ void	Server::change_value(int number, std::string &key, std::string &value)
 	_map[key] = value;
 }
 
-static int twice(int index, std::string str)
-{
-	std::istringstream iss(str);
-    std::string tmp;
-    std::set<std::string> tab;
-
-    while (iss >> tmp)
-	{
-        if (tab.count(tmp))
-        {
-			std::cerr << "[ Server " << index << " ]\n" << "Error: " << tmp << " is called more than one time\n";
-			throw std::exception();
-		}
-		else
-            tab.insert(tmp);
-    }
-	return (1);
-}
-
 void	Server::check_value(int number)
 {
 	if (_map["host"].size() == 0)
@@ -111,12 +92,12 @@ void	Server::check_value(int number)
 		std::cerr << "[ Server " << number << " ]\n" << "Error: host is invalid\n";
 		throw std::exception();
 	}
-	twice(index, _map["routes"]);
 	if (_map["routes"].size() == 0)
 	{
 		std::cerr << "[ Server " << number << " ]\n" << "Error: routes are empty\n";
 		throw std::exception();
 	}
+	twice(index, "Server", _map["routes"]);
 }
 
 int Server::getIndex() const
@@ -160,6 +141,26 @@ int Server::getSocket() const
 	return (_socket);
 }
 
+std::vector<Router> &Server::getRoutes()
+{
+	return (_routes);
+}
+
+int		Server::ft_repeat(std::string url)
+{
+	size_t i = 0;
+	while (i < _routes.size())
+	{
+		if (url.compare(_routes[i].getValue("url")) == 0)
+		{
+			std::cerr << "[ Server " << index << " ]\n" << "Error: Some routes have the same url\n";
+			throw std::exception();
+		}
+		i++;
+	}
+	return (1);
+}
+
 void	Server::addRoute(std::map<std::string, Router> routes)
 {
 	std::stringstream split(_map["routes"]);
@@ -174,11 +175,39 @@ void	Server::addRoute(std::map<std::string, Router> routes)
 		std::map<std::string, Router>::iterator it = routes.begin();
 		while (it != routes.end())
 		{
-			if (it->first.compare(word) == 0)
+			if (it->first.compare(word) == 0 && ft_repeat(it->second.getValue("url")))
 			{
 				_routes.push_back(it->second);
 			}
 			it++;
 		}
 	}
+}
+
+std::string Server::getValue(int index, std::string key)
+{
+	return (_routes[index].getValue(key));
+}
+
+int Server::check_url(std::string url)
+{
+	size_t i = 0;
+	int index = -1;
+	int absolute = -1;
+	while (i < _routes.size())
+	{
+		std::string str = getValue(index, "url");
+		if (url.size() >= str.size())
+		{
+			std::string tmp = url.substr(0, str.size());
+			if (tmp.size() == 1)
+				absolute = i;
+			else if (tmp.compare(str) == 0)
+				index = i;
+		}
+		i++;
+	}
+	if (absolute >= 0 && index == -1)
+		return (absolute);
+	return (index);
 }

@@ -6,20 +6,25 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 13:42:36 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/04 15:33:04 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/08 13:43:27 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
-int ft_isdigit(std::string &str)
+int ft_isdigit(std::string &tmp)
 {
 	int i = 0;
-	while (str[i])
+	std::istringstream is(tmp);
+	std::string str;
+	while (is >> str)
 	{
-		if (str[i] < '0' || str[i] > '9')
-			return (0);
-		i++;
+		while (str[i])
+		{
+			if (str[i] < '0' || str[i] > '9')
+				return (0);
+			i++;
+		}
 	}
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 10:22:07 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/07 15:19:48 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/08 10:15:42 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ class Router
 		 		Router(std::string const &name, std::vector<std::string> blocks);
 				Router(const Router &toCopy);
 				~Router(){}
-
+				std::string getValue(std::string key);
 				std::map<std::string , std::string> getMap() const;
 };
 
