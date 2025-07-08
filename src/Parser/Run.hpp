@@ -1,36 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Client.hpp                                         :+:      :+:    :+:   */
+/*   Run.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/27 15:45:20 by mitandri          #+#    #+#             */
-/*   Updated: 2025/06/28 18:30:03 by mitandri         ###   ########.fr       */
+/*   Created: 2025/07/08 09:50:39 by mitandri          #+#    #+#             */
+/*   Updated: 2025/07/08 10:58:14 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CLIENT_HPP
-#define CLIENT_HPP
+#ifndef RUN_HPP
+#define RUN_HPP
 
-#include "../Server/define.hpp"
+#include "lib.hpp"
+#include "class.hpp"
 
-class	Client
+class Run
 {
 	private:
 
-		int					_socket;
-		struct sockaddr_in	_identity;
+		int					_client;
+		int					_epoll;
+		std::string			_parameter;
+		struct epoll_event	_events[MAX_EVENTS];
+
+		Run() {}
 
 	public:
 
-		Client();
-		~Client();
-
-		int		getSocket() const;
-		
-		// start and init the socket in client
-		void	startSocket();
+		Run( std::string const &parameter );
+		~Run() {}
+		void	run();
+		void	runEpoll( std::vector<Server> &server );
+		void	handleSocket( std::vector<Server> &server, int &index );
+		void	handleClient( int fd );
 };
 
 #endif

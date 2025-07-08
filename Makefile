@@ -1,39 +1,52 @@
 NAME = webserv
-SERV = server
-CLI = client
-COMPILER = c++
-FLAGS = -Wall -Werror -Wextra -g -std=c++98
 
-SERVER =	Server/main.cpp 	\
-			Server/Server.cpp
+FLAGS = -Wall -Werror -Wextra -std=c++98
 
-CLIENT =	Client/main.cpp		\
-			Client/Client.cpp
+OBJ_DIR = .obj/
 
-OBJS =	$(SERVER:.cpp=.o)
-OBJC =	$(CLIENT:.cpp=.o)
+DIR_PARSER = src/Parser/
+DIR_SERVER = src/Server/
+DIR_UTILS = src/utils/
+DIR_SENDER = src/Sender/
 
-%.o : %.cpp
-	$(COMPILER) $(FLAGS) -c $< -o $@
+SRC_PARSER =	$(DIR_PARSER)Parser.cpp	\
+				$(DIR_PARSER)Run.cpp
+				
+SRC_SERVER = 	$(DIR_SERVER)Server.cpp	\
+				$(DIR_SERVER)Router.cpp	\
+				$(DIR_SERVER)utils.cpp	\
+				$(DIR_SERVER)socket.cpp	\
 
-# $(NAME) :
+SRC_UTILS =		$(DIR_UTILS)utils.cpp	\
+				$(DIR_UTILS)socket.cpp	\
+				$(DIR_UTILS)epoll.cpp	\
+				$(DIR_UTILS)main.cpp
 
-$(SERV) : $(OBJS)
-	$(COMPILER) $(FLAGS) $(OBJS) -o $(SERV)
+SRC_SENDER	=	$(DIR_SENDER)ServerResponse.cpp	\
+				$(DIR_SENDER)Sender.cpp
 
-$(CLI) : $(OBJC)
-	$(COMPILER) $(FLAGS) $(OBJC) -o $(CLI)
+SRC =	$(SRC_PARSER)	\
+		$(SRC_UTILS)	\
+		$(SRC_SERVER)	\
+		$(SRC_SENDER)
 
-all : $(SERV) $(CLI)
+OBJ = $(SRC:%.cpp=$(OBJ_DIR)%.o)
 
-Server : $(SERV)
+$(OBJ_DIR)%.o: %.cpp
+	@mkdir -p $(dir $@)
+	c++ $(FLAGS) -c $< -o $@ -I ./lib
+
+all: $(NAME)
+
+$(NAME) : $(OBJ)
+	c++ $(FLAGS) $(OBJ) -o $(NAME) -I ./lib
 
 clean :
-	rm -f $(OBJS) $(OBJC)
+	rm -rf $(OBJ_DIR)
 
 fclean : clean
-	rm -f $(SERV) $(CLI)
+	rm -f $(NAME)
 
-re : clean all
+re : fclean all
 
 .PHONY : all clean fclean re

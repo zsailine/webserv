@@ -1,42 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Server.hpp                                         :+:      :+:    :+:   */
+/*   Sender.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/20 06:12:36 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/01 12:20:08 by mitandri         ###   ########.fr       */
+/*   Created: 2025/07/08 11:19:34 by mitandri          #+#    #+#             */
+/*   Updated: 2025/07/08 13:04:33 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SERVER_HPP
-#define SERVER_HPP
+#ifndef SENDER_HPP
+#define SENDER_HPP
 
-#include "define.hpp"
+#include "lib.hpp"
+#include "class.hpp"
 
-class Server
+class Sender
 {
 	private:
-	
-		int					_socket;
-		int					_server;
-		struct sockaddr_in	_identity;
-	
+
+		int	_status;
+
 	public:
 
-		Server();
-		~Server();
-
-		int 	getSocket() const;
-		int 	getServer() const;
-
-		// init and bind _socket;
-		void	startSocket();
-		// _socket is waiting for something and accpet first connection
-		void	listenSocket();
-		// while until there is a connection
-		void	whileSocket();
+		Sender() {}
+		int		getStatus() const;
+		void	sendMessage( std::string message, int fd );
+		void	httpResponse();
 };
 
 #endif
