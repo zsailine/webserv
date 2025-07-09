@@ -6,16 +6,16 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 09:53:26 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/07/08 14:18:35 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/08 16:26:59 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./ServerResponse.hpp"
+#include "ServerResponse.hpp"
 
-ServerResponse::ServerResponse(std::string buffer) : _buffer(buffer)
+ServerResponse::ServerResponse()
 {
 	std::string		line;
-	std::ifstream	file("./../../files/mimes.conf");
+	std::ifstream	file("./files/mimes.conf");
 
 	if (not file.is_open())
 		return ;
@@ -40,15 +40,17 @@ void ServerResponse::get_full_path(const std::string &req)
 	ss >> method >> path >> version;
 	if (path == "/")
 		path = "/index.html";
-	_path = "www" + path;
+	this->_path = "www" + path;
+	this->_method = method;
+	this->_version = version;
 }
 
 void ServerResponse::get_file_content()
 {
-	int fd;
-	char buffer[4096];
-	std::string content;
-	ssize_t bytes_read;
+	int			fd;
+	char		buffer[4096];
+	std::string	content;
+	ssize_t		bytes_read;
     
     fd = open(_path.c_str(), O_RDONLY);
 	if (fd == -1)
@@ -56,51 +58,31 @@ void ServerResponse::get_file_content()
 		perror("open");
 		return;
 	}
-
 	while ((bytes_read = read(fd, buffer, sizeof(buffer))) > 0)
 		content.append(buffer, bytes_read);
-
 	if (bytes_read == -1)
 		perror("read");
-
 	close(fd);
 	_content = content;
 }
 
-void ServerResponse::get_mime_type()
+void ServerResponse::getExtension()
 {
-    if (ft_ends_with(_path , ".html"))
-	{
-		_mime = "text/html";
-		return;
-	}
-    if (ft_ends_with(_path , ".css"))
-	{
-		_mime = "text/css";
-		return;
-	}
-    if (ft_ends_with(_path , ".js"))
-	{
-		_mime = "application/javascript";
-		return;
-	}
-    if (ft_ends_with(_path , ".png")) 
-	{
-		_mime = "image/png";
-		return;
-	}
-    if (ft_ends_with(_path , ".jpg") || ft_ends_with(_path , ".jpeg")) 
-	{
-		_mime = "image/jpeg";
-		return;
-	}
-	_mime = "text/plain";
+	int 	index;
+	std::string	extension;
+	
+	index = this->_path.rfind('.');
+	extension = this->_path.c_str() + index;
+	if (not this->_mimetype.count(extension))
+		this->_mime = "text/plain";
+	else
+		this->_mime = this->_mimetype[extension];
 }
 
 void ServerResponse::make_Http_response(int status) 
 {
     std::ostringstream response;
-    
+
     response << "HTTP/1.1 " << status << " " << (status == 200 ? "OK" : "Not Found") << "\r\n"
              << "Content-Type: " << _mime << "\r\n"
              << "Content-Length: " << _content.size() << "\r\n"
@@ -110,26 +92,16 @@ void ServerResponse::make_Http_response(int status)
     _response = response.str();
 }
 
-std::string ServerResponse::get_path()
-{
-    return _path;
-}
+std::string	ServerResponse::getPath() const { return this->_path; }
 
-std::string ServerResponse::get_content()
-{
-    return _content;
-}
+std::string	ServerResponse::getContent() const { return this->_content; }
 
-std::string ServerResponse::get_mime()
-{
-    return _mime;
-}
+std::string	ServerResponse::getMime() const { return this->_mime; }
 
-std::string ServerResponse::get_response()
-{
-    return _response;
-}
+std::string	ServerResponse::getResponse() const { return this->_response; }
 
-ServerResponse::~ServerResponse()
-{
-}
+std::string	ServerResponse::getVersion() const { return this->_version; }
+
+std::string	ServerResponse::getMethod() const { return this->_method; }
+
+ServerResponse::~ServerResponse() {}

@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:55:45 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/08 14:16:38 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/08 14:56:46 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,5 +52,3 @@ bool ft_ends_with(const std::string& str, const std::string& suffix)
         return false;
     return str.compare(str.length() - suffix.length(), suffix.length(), suffix) == 0;
 }
-
-// std::string	getFileExtension( string const )
