@@ -6,13 +6,13 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 09:53:26 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/07/08 16:26:59 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/09 15:17:51 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ServerResponse.hpp"
 
-ServerResponse::ServerResponse()
+ServerResponse::ServerResponse( std::string const &message ) : _message(message)
 {
 	std::string		line;
 	std::ifstream	file("./files/mimes.conf");
@@ -45,25 +45,23 @@ void ServerResponse::get_full_path(const std::string &req)
 	this->_version = version;
 }
 
-void ServerResponse::get_file_content()
+std::string	ServerResponse::get_file_content( std::string path )
 {
 	int			fd;
 	char		buffer[4096];
 	std::string	content;
 	ssize_t		bytes_read;
     
-    fd = open(_path.c_str(), O_RDONLY);
+    fd = open(path.c_str(), O_RDONLY);
 	if (fd == -1)
-	{
-		perror("open");
-		return;
-	}
+		return "";
 	while ((bytes_read = read(fd, buffer, sizeof(buffer))) > 0)
 		content.append(buffer, bytes_read);
 	if (bytes_read == -1)
 		perror("read");
 	close(fd);
-	_content = content;
+	this->_content = content;
+	return (content);
 }
 
 void ServerResponse::getExtension()
@@ -79,17 +77,12 @@ void ServerResponse::getExtension()
 		this->_mime = this->_mimetype[extension];
 }
 
-void ServerResponse::make_Http_response(int status) 
+void	ServerResponse::run()
 {
-    std::ostringstream response;
-
-    response << "HTTP/1.1 " << status << " " << (status == 200 ? "OK" : "Not Found") << "\r\n"
-             << "Content-Type: " << _mime << "\r\n"
-             << "Content-Length: " << _content.size() << "\r\n"
-             << "Connection: close\r\n"
-             << "\r\n"
-             << _content;
-    _response = response.str();
+	this->get_full_path(this->_message);
+	if (this->_method != "POST")
+		this->get_file_content(this->_path);
+	this->getExtension();
 }
 
 std::string	ServerResponse::getPath() const { return this->_path; }

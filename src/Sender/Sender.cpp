@@ -6,32 +6,57 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:23:21 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/08 16:23:30 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/09 15:17:15 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Sender.hpp"
 
-void	Sender::sendMessage( std::string message, int fd )
+void	Sender::getMessage( std::string message, int fd )
 {
-	int				status = 200;
-	ServerResponse	response;
+	ServerResponse	response(message);
 	
-	response.get_full_path(message);
-	response.get_file_content();
-	response.getExtension();
-	if (open(response.get_path().c_str(), O_RDONLY) < 0)
-		status = 400;
-	response.make_Http_response(status);
-	send(fd, response.get_response().c_str(), response.get_response().size(), 0);
+	response.run();
+	this->defineStatus();
+	if (response.getMethod() == "GET")
+		this->getResponse(response);
+	if (response.getMethod() == "POST")
+		this->postResponse(message, response);
+	this->sendMessage(fd);
 }
 
-void	Sender::httpResponse()
+void	Sender::defineStatus()
 {
-	
+	this->_status = 200;
+	this->_description = "OK";
 }
 
-int	Sender::getStatus() const
+void	Sender::getResponse( ServerResponse &ref )
 {
-	return this->_status;
+	std::ostringstream	response;
+
+	response << ref.getVersion() << " "
+			<< this->_status << " " << this->_description << "\r\n"
+			<< "Content-Type: " << ref.getMime() << "\r\n"
+			<< "Content-Length: " << ref.getContent().size() << "\r\n"
+			<< "\r\n" << ref.getContent();
+	this->_response = response.str();
 }
+
+void	Sender::postResponse( std::string &message, ServerResponse &ref )
+{
+	Store	store;
+
+	(void) ref;
+	store.storeData(message);
+}
+
+void	Sender::sendMessage( int fd )
+{
+	size_t	size;
+
+	size = this->_response.size();
+	send(fd, this->_response.c_str(), size, 0);
+}
+
+int	Sender::getStatus() const {	return this->_status; }

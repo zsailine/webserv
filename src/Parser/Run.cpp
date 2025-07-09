@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 09:51:36 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/08 11:45:04 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/09 14:58:30 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,11 +82,11 @@ void	Run::handleClient( int fd )
 	size_t		count = read(fd, buffer, sizeof(buffer));
 	std::string	message(buffer, count);
 	
-	std::cout << std::endl;
+	std::cout << std::endl << std::endl;
 	std::cout << CYAN "****************************************" RESET << std::endl << std::endl;
 	std::cout << CYAN "Received: " RESET << message;
 	std::cout << CYAN "****************************************" RESET << std::endl;
 	
-	sender.sendMessage(message, fd);
+	sender.getMessage(message, fd);
 	close(fd);
 }

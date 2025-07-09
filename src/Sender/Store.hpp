@@ -1,41 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Sender.hpp                                         :+:      :+:    :+:   */
+/*   Store.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/08 11:19:34 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/09 14:31:25 by mitandri         ###   ########.fr       */
+/*   Created: 2025/07/09 14:11:53 by mitandri          #+#    #+#             */
+/*   Updated: 2025/07/09 15:26:37 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SENDER_HPP
-#define SENDER_HPP
+#ifndef STORE_HPP
+#define STORE_HPP
 
 #include "lib.hpp"
 #include "class.hpp"
 
-class ServerResponse;
-
-class Sender
+class Store
 {
 	private:
 
-		int			_status;
-		std::string	_description;
-		std::string	_response;
-
+		static std::multimap<string, string>	_storer;
+		
 	public:
 
-		Sender() {}
-		int		getStatus() const;
-		void	getMessage( std::string message, int fd );
-		void	sendMessage( int fd );
-		void	defineStatus();
-		// void	httpResponse();
-		void	getResponse( ServerResponse &ref );
-		void	postResponse( std::string &message, ServerResponse &ref );
+		Store() {}
+		~Store() {}
+		void	storeData( string &message );
 };
 
 #endif

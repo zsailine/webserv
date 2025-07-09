@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 09:53:09 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/07/08 16:26:14 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/09 15:08:53 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,17 +26,17 @@ class ServerResponse
         std::string                         _response;
         std::string                         _version;
         std::string                         _method;
+        std::string                         _message;
         std::map<std::string, std::string>  _mimetype;
 
     public:
     
-        ServerResponse();
+        ServerResponse( std::string const &message );
 
-        void    get_full_path(const std::string &req);
-        void    get_file_content();
-        void    getExtension();
-        void    make_Http_response(int status);
-        void    run();
+        void        get_full_path(const std::string &req);
+        std::string get_file_content( std::string path );
+        void        getExtension();
+        void        run();
 
         std::string getPath() const;
         std::string getContent() const;
