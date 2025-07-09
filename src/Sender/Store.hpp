@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 14:11:53 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/09 15:26:37 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/09 21:35:43 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ class Store
 		Store() {}
 		~Store() {}
 		void	storeData( string &message );
+		void	printStorer() const; // can delete at the end
+		
 };
 
 #endif

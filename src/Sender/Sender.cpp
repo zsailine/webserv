@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:23:21 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/09 15:17:15 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/09 21:26:04 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ void	Sender::postResponse( std::string &message, ServerResponse &ref )
 
 	(void) ref;
 	store.storeData(message);
+	store.printStorer();
 }
 
 void	Sender::sendMessage( int fd )
