@@ -8,6 +8,10 @@ DIR_PARSER = src/Parser/
 DIR_SERVER = src/Server/
 DIR_UTILS = src/utils/
 DIR_SENDER = src/Sender/
+DIR_MAIN = src/main/
+
+SRC_MAIN = $(DIR_MAIN)main.cpp
+
 
 SRC_PARSER =	$(DIR_PARSER)Parser.cpp	\
 				$(DIR_PARSER)Run.cpp
@@ -19,13 +23,13 @@ SRC_SERVER = 	$(DIR_SERVER)Server.cpp	\
 
 SRC_UTILS =		$(DIR_UTILS)utils.cpp	\
 				$(DIR_UTILS)socket.cpp	\
-				$(DIR_UTILS)epoll.cpp	\
-				$(DIR_UTILS)main.cpp
+				$(DIR_UTILS)epoll.cpp
 
 SRC_SENDER	=	$(DIR_SENDER)ServerResponse.cpp	\
 				$(DIR_SENDER)Sender.cpp
 
-SRC =	$(SRC_PARSER)	\
+SRC =	$(SRC_MAIN)		\
+		$(SRC_PARSER)	\
 		$(SRC_UTILS)	\
 		$(SRC_SERVER)	\
 		$(SRC_SENDER)
