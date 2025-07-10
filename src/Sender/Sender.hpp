@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:19:34 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/09 14:31:25 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/10 13:53:51 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ class Sender
 		void	getMessage( std::string message, int fd );
 		void	sendMessage( int fd );
 		void	defineStatus();
-		// void	httpResponse();
 		void	getResponse( ServerResponse &ref );
 		void	postResponse( std::string &message, ServerResponse &ref );
 };

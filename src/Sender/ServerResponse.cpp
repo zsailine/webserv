@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 09:53:26 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/07/09 15:17:51 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/10 13:41:14 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,17 @@ void ServerResponse::get_full_path(const std::string &req)
 	std::string version;
 
 	ss >> method >> path >> version;
+	this->_method = method;	
+	this->_version = version;
+	if (this->_method == "GET")
+		std::cout << CYAN "LOGS GET : " << this->_method << " " << path << " " << this->_version << RESET << std::endl;
+	if (this->_method == "POST")
+		std::cout << GREEN "LOGS POST : " << this->_method << " " << path << " " << this->_version << RESET << std::endl;
+	if (this->_method == "DELETE")
+		std::cout << YELLOW "LOGS DELETE : " << this->_method << " " << path << " " << this->_version << RESET << std::endl;
 	if (path == "/")
 		path = "/index.html";
 	this->_path = "www" + path;
-	this->_method = method;
-	this->_version = version;
 }
 
 std::string	ServerResponse::get_file_content( std::string path )
@@ -51,7 +57,7 @@ std::string	ServerResponse::get_file_content( std::string path )
 	char		buffer[4096];
 	std::string	content;
 	ssize_t		bytes_read;
-    
+	
     fd = open(path.c_str(), O_RDONLY);
 	if (fd == -1)
 		return "";

@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:23:21 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/09 21:26:04 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/10 13:52:48 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ void	Sender::getMessage( std::string message, int fd )
 		this->getResponse(response);
 	if (response.getMethod() == "POST")
 		this->postResponse(message, response);
+	// if (response.getMethod() == "DELETE")
+	// 	this->deleteResponse();
 	this->sendMessage(fd);
 }
 
@@ -45,11 +47,12 @@ void	Sender::getResponse( ServerResponse &ref )
 
 void	Sender::postResponse( std::string &message, ServerResponse &ref )
 {
-	Store	store;
+	Store				store;
 
-	(void) ref;
 	store.storeData(message);
-	store.printStorer();
+	store.setPath(string("../index.html"));
+	store.sendAnswer(this->_status, this->_description, ref);
+	this->_response = store.getAnswer();
 }
 
 void	Sender::sendMessage( int fd )
