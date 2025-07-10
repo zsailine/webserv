@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:01:59 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/08 13:53:40 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/10 10:18:37 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,25 +189,35 @@ std::string Server::getValue(int index, std::string key)
 	return (_routes[index].getValue(key));
 }
 
+static int for_url(std::string &str, std::string &toCmp)
+{
+	int size = -1;
+	std::string tmp = str.substr(0, toCmp.size());
+	if (str[toCmp.size() - 1] != '/' && str[toCmp.size()] && str[toCmp.size()] != '/')
+		return (size);
+	if (tmp.compare(toCmp) == 0)
+		size = toCmp.size();
+	return (size);
+}
+
 int Server::check_url(std::string url)
 {
 	size_t i = 0;
 	int index = -1;
-	int absolute = -1;
+	int size = -1;
 	while (i < _routes.size())
 	{
-		std::string str = getValue(index, "url");
+		std::string str = getValue(i, "url");
 		if (url.size() >= str.size())
 		{
-			std::string tmp = url.substr(0, str.size());
-			if (tmp.size() == 1)
-				absolute = i;
-			else if (tmp.compare(str) == 0)
+			int tmp = for_url(url, str);
+			if (tmp > size)
+			{
+				size = tmp;
 				index = i;
+			}
 		}
 		i++;
 	}
-	if (absolute >= 0 && index == -1)
-		return (absolute);
 	return (index);
 }
