@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Run.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 09:50:39 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/08 10:58:14 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/11 15:21:43 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ class Run
 		~Run() {}
 		void	run();
 		void	runEpoll( std::vector<Server> &server );
-		void	handleSocket( std::vector<Server> &server, int &index );
+		void	handleSocket( int fd, std::vector<Server> &server, int &index );
 		void	handleClient( int fd );
 };
 

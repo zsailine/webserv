@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 15:41:42 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/10 10:28:26 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/11 15:07:41 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,7 +166,4 @@ Parser::Parser(std::string data)
 	get_blocks(block);
 	init_socket();
 	addRoute();
-	std::cout << server[0].check_url("/blan/") << std::endl;
-	std::cout << server[0].check_url("/blan/man") << std::endl;
-	std::cout << server[0].check_url("/bla") << std::endl;
 }

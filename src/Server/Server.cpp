@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:01:59 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/10 10:18:37 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/11 15:51:58 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,7 @@
 
 void	Server::init_value()
 {
-	_map.insert(std::pair<std::string, std::string>("host", ""));
-	_map.insert(std::pair<std::string, std::string>("port", ""));
+	_map.insert(std::pair<std::string, std::string>("listen", ""));
 	_map.insert(std::pair<std::string, std::string>("server_name", ""));
 	_map.insert(std::pair<std::string, std::string>("routes", ""));
 }
@@ -73,31 +72,60 @@ void	Server::change_value(int number, std::string &key, std::string &value)
 	_map[key] = value;
 }
 
+void	Add(std::string &tmp)
+{
+	if (!ft_isdigit(tmp))
+		tmp = tmp + ":80";
+	else
+		tmp = "0.0.0.0:" + tmp;
+}
+std::string change(std::string &tmp, int i)
+{
+	std::string result, port, str = tmp;
+	size_t index = tmp.find(':');
+	if (index == std::string::npos)
+		Add(tmp);
+	port = tmp.substr(tmp.find(':') + 1);
+	if (!ft_isdigit(port) || !check_port(port))
+	{
+		std::cerr << "[ Server " << i << " ]\n" << "Error: listen " << str << " is not valid\n";
+		throw std::exception();
+	}
+	result = tmp;
+	return (result);
+}
+
+void	Server::ft_listen()
+{
+	if (_map["listen"].size() == 0)
+	{
+		std::cerr << "[ Server " << index << " ]\n" << "Error: listen is empty\n";
+		throw std::exception();
+	}
+	std::istringstream iss(_map["listen"]);
+    std::string tmp;
+    std::vector<std::string> tab;
+    while (iss >> tmp)
+		tab.push_back(change(tmp, index));
+	_map["listen"].clear();
+	size_t i =0;
+	while (i < tab.size())
+	{
+		_map["listen"] = _map["listen"] + tab[i] + ' ';
+		i++;
+	}
+}
+
 void	Server::check_value(int number)
 {
-	if (_map["host"].size() == 0)
-		_map["host"] = "0.0.0.0";
-	if (_map["port"].size() == 0)
-	{
-		std::cerr << "[ Server " << number << " ]\n" << "Error: port is not defined\n";
-		throw std::exception();
-	}
-	if (!ft_isdigit(_map["port"]))
-	{
-		std::cerr << "[ Server " << number << " ]\n" << "Error: port is invalid\n";
-		throw std::exception();
-	}
-	if (!valid_host(_map["host"]))
-	{
-		std::cerr << "[ Server " << number << " ]\n" << "Error: host is invalid\n";
-		throw std::exception();
-	}
 	if (_map["routes"].size() == 0)
 	{
 		std::cerr << "[ Server " << number << " ]\n" << "Error: routes are empty\n";
 		throw std::exception();
 	}
+	ft_listen();
 	twice(index, "Server", _map["routes"]);
+	twice(index, "Server", _map["server_name"]);
 }
 
 int Server::getIndex() const
@@ -107,7 +135,8 @@ int Server::getIndex() const
 
 void Server::closeFds()
 {
-	close(_socket);
+	for (size_t i = 0; i < _socket.size(); i++)
+		close(_socket[i]);
 }
 
 void	Server::addClient(int fd)
@@ -119,6 +148,7 @@ Server::Server(const Server &toCopy)
 {
 	_socket = toCopy._socket;
 	_map = toCopy._map;
+	_routes = toCopy._routes;
 	index = toCopy.index;
 }
 
@@ -136,7 +166,7 @@ Server::Server(int number, std::vector<std::string> const &block)
 	check_value(number);
 }
 
-int Server::getSocket() const
+std::vector<int> 	&Server::getSocket()
 {
 	return (_socket);
 }

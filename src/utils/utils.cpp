@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:55:45 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/08 14:16:38 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/11 15:46:30 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,14 @@ bool ft_ends_with(const std::string& str, const std::string& suffix)
     if (str.length() < suffix.length())
         return false;
     return str.compare(str.length() - suffix.length(), suffix.length(), suffix) == 0;
+}
+
+int ft_atoi(std::string number)
+{
+	std::stringstream iss(number);
+	int tmp;
+	iss >> tmp;
+	return (tmp);
 }
 
 // std::string	getFileExtension( string const )
