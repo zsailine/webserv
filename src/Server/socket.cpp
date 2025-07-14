@@ -6,68 +6,70 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 14:12:25 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/08 13:38:46 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/11 15:46:56 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
-static int	check_port(std::string &port)
+sockaddr_in init_adress(std::string str)
 {
-	std::stringstream str(port);
-	int nbr;
-
-	str >> nbr;
-	if (nbr > 65535)
-	{
-		std::cerr << "Error: port can't be superior to 65535\n";
-		throw std::exception();
-	}
-	return (nbr);
-}
-
-sockaddr_in Server::init_adress()
-{
-	sockaddr_in adress;
 	struct addrinfo *result;
-	if (getaddrinfo(_map["host"].c_str(), NULL, NULL, &result) != 0)
+	sockaddr_in adress;
+	std::string host = str.substr(0, str.find(':'));
+	std::string port = str.substr(str.find(':') + 1);
+	addrinfo hints;
+    hints.ai_family   = AF_INET;
+    hints.ai_socktype = SOCK_STREAM;
+	if (getaddrinfo(host.c_str(), port.c_str(), NULL, &result) != 0)
 	{
-		std::cerr << "Error Configuring socket for host" << _map["host"] << " in port " << _map["port"] << std::endl;
+		std::cerr << "Error Configuring socket for host " << host << " in port " << port << std::endl;
 		throw std::exception();
 	}
 	struct sockaddr_in *tmp = (struct sockaddr_in *)result->ai_addr;
 	adress.sin_addr.s_addr = tmp->sin_addr.s_addr;
 	adress.sin_family = AF_INET;
-	adress.sin_port = htons(check_port(_map["port"]));
+	adress.sin_port = htons(ft_atoi(port));
 	freeaddrinfo(result);
 	return adress;
 }
 
+int Server::socketer(std::string tmp)
+{
+	int sock;
+	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == -1)
+	{
+		std::cerr << "Error Configuring socket for Server " << index << std::endl; 
+		throw std::exception();
+	}
+	// int opt = 1;
+	// if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt,
+	// 	sizeof(opt)) != 0 || setsockopt(sock, SOL_SOCKET, SO_REUSEPORT, &opt,
+	// 		sizeof(opt)) != 0)
+	// 		{
+	// 			std::cerr << "Error configuring socket for Server " << index << std::endl; 
+	// 			throw std::exception();
+	// 		}
+	sockaddr_in adresse = init_adress(tmp);
+	if (bind(sock, (sockaddr *)&adresse, sizeof(adresse)) != 0)
+	{
+		std::cerr << "Error binding socket for Server " << index << std::endl; 
+		throw std::exception();
+	}
+	if (listen(sock, 2) != 0)
+	{
+		std::cerr << "Error listening socket for Server " << index << std::endl; 
+		throw std::exception();
+	}
+	return (sock);
+}
+
 void Server::init_socket()
 {
-	sockaddr_in adresse = init_adress();
-	std::string port = _map["port"] ;
-	if ((_socket = socket(AF_INET, SOCK_STREAM, 0)) == -1)
+	std::string tmp;
+	std::stringstream iss(_map["listen"]);
+	while (iss >> tmp)
 	{
-		std::cerr << "Error Configuring socket for host" << _map["host"] << " in port " << port << std::endl;
-		throw std::exception();
-	}
-	int opt = 1;
-	if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &opt,
-		sizeof(opt)) != 0 || setsockopt(_socket, SOL_SOCKET, SO_REUSEPORT, &opt,
-		sizeof(opt)) != 0)
-	{
-			std::cerr << "Error configuring socket for host" << _map["host"] << " in port " << port << std::endl;
-			throw std::exception();
-	}
-	if (bind(_socket, (sockaddr *)&adresse, sizeof(adresse)) != 0)
-	{
-		std::cerr << "Error binding socket for host" << _map["host"] << " in port " << port << std::endl;
-		throw std::exception();
-	}
-	if (listen(_socket, 2) != 0)
-	{
-		std::cerr << "Error listening socket for host" << _map["host"] << " in port " << port << std::endl;
-		throw std::exception();
+		_socket.push_back(socketer(tmp));
 	}
 }

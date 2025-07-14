@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Sender.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:23:21 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/08 12:53:23 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/11 15:19:00 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
