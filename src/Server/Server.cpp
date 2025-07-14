@@ -166,6 +166,18 @@ Server::Server(int number, std::vector<std::string> const &block)
 	check_value(number);
 }
 
+const Server & Server::operator=(const Server & obj)
+{
+	if (this != &obj)
+	{
+		_map = obj._map;
+		_routes = obj._routes;
+		_socket = obj._socket;
+		index = obj.index;
+		client_fds = obj.client_fds;
+	}
+}
+
 std::vector<int> 	&Server::getSocket()
 {
 	return (_socket);
@@ -250,4 +262,9 @@ int Server::check_url(std::string url)
 		i++;
 	}
 	return (index);
+}
+
+std::vector<int> Server::getClientFds()
+{
+	return (client_fds);
 }

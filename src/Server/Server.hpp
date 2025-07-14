@@ -41,7 +41,6 @@ class Server
 		int index;
 		
 		std::vector<int> client_fds;
-		Server(){}
 		void		init_value();
 		void		change_value(int number, std::string &key, std::string &value);
 		int			get_type(int number, std::string str, std::string &type, std::string &value);
@@ -51,7 +50,9 @@ class Server
 		int 		socketer(std::string tmp);
 
 	public:
+		Server(){}
 		Server(int number, std::vector<std::string> const &block);
+		const Server & operator=(const Server & obj);
 		~Server(){}
 		Server(const Server &toCopy);
 		
@@ -64,6 +65,7 @@ class Server
 		std::vector<Router> &getRoutes();
 		int 				check_url(std::string url);
 		std::string 		getValue(int index, std::string key);
+		std::vector<int> 	getClientFds();
 };
 
 #include "../utils/utils.hpp"

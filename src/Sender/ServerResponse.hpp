@@ -42,6 +42,7 @@ class ServerResponse
         std::string get_content();
         std::string get_mime();
         std::string get_response();
+        void set_path(std::string path);
 
         ~ServerResponse();
 };

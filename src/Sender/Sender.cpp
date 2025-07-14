@@ -12,18 +12,28 @@
 
 #include "Sender.hpp"
 
-void	Sender::sendMessage( std::string message, int fd )
+void	Sender::sendMessage( std::string message, int fd, Server server )
 {
 	int				status = 200;
 	ServerResponse	response(message);
-	
+	std::string     request;
+
+
 	response.get_full_path(message);
+	int url = server.check_url(response.get_path());
+	std::string path = server.getValue(url, "root");
+
+	response.set_path(path);
+	std::cout << "****************" << std::endl;
+	std::cout << response.get_path() << std::endl;
+	std::cout << "****************" << std::endl;
 	response.get_file_content();
 	response.get_mime_type();
 	if (open(response.get_path().c_str(), O_RDONLY) < 0)
-		status = 400;
+		status = 404;
 	response.make_Http_response(status);
 	send(fd, response.get_response().c_str(), response.get_response().size(), 0);
+
 }
 
 void	Sender::httpResponse()

@@ -26,7 +26,7 @@ class Sender
 
 		Sender() {}
 		int		getStatus() const;
-		void	sendMessage( std::string message, int fd );
+		void	sendMessage( std::string message, int fd, Server server );
 		void	httpResponse();
 };
 

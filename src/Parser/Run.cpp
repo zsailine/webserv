@@ -40,7 +40,22 @@ void	Run::run()
 			if (index >= 0)
 				this->handleSocket(fd, server, index);
 			else
-				this->handleClient(fd);
+			{
+				Server tmp;
+				for (size_t i = 0; i < server.size(); i++)
+				{
+					std::vector<int> fds = server[i].getClientFds();
+					for (size_t j = 0; j < fds.size(); j++)
+					{
+						if (fd == fds[j])
+						{
+							tmp = server[i];
+							break;
+						}
+					}
+				}
+				this->handleClient(fd, tmp);
+			}
 		}
 	}
 	parse.closeFds();
@@ -78,7 +93,7 @@ void	Run::handleSocket( int fd, std::vector<Server> &server, int &index )
 	addEpollEvent(this->_epoll, client_fd);
 }
 
-void	Run::handleClient( int fd )
+void	Run::handleClient( int fd , Server server)
 {
 	Sender		sender;
 	char		buffer[1024];
@@ -90,6 +105,6 @@ void	Run::handleClient( int fd )
 	std::cout << CYAN "Received: " RESET << message;
 	std::cout << CYAN "****************************************" RESET << std::endl;
 	
-	sender.sendMessage(message, fd);
+	sender.sendMessage(message, fd, server);
 	close(fd);
 }

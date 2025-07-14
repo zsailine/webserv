@@ -40,7 +40,12 @@ void ServerResponse::get_full_path(const std::string &req)
 	ss >> method >> path >> version;
 	if (path == "/")
 		path = "/index.html";
-	_path = "www" + path;
+	_path = path;
+}
+
+void ServerResponse::set_path(std::string path)
+{
+	
 }
 
 void ServerResponse::get_file_content()

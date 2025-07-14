@@ -34,7 +34,7 @@ class Run
 		void	run();
 		void	runEpoll( std::vector<Server> &server );
 		void	handleSocket( int fd, std::vector<Server> &server, int &index );
-		void	handleClient( int fd );
+		void	handleClient( int fd , Server server);
 };
 
 #endif
