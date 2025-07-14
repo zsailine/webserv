@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:23:21 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/10 13:52:48 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/14 12:42:20 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ void	Sender::getMessage( std::string message, int fd )
 		this->getResponse(response);
 	if (response.getMethod() == "POST")
 		this->postResponse(message, response);
-	// if (response.getMethod() == "DELETE")
-	// 	this->deleteResponse();
+	if (response.getMethod() == "DELETE")
+		this->deleteResponse();
 	this->sendMessage(fd);
 }
 
@@ -37,22 +37,24 @@ void	Sender::getResponse( ServerResponse &ref )
 {
 	std::ostringstream	response;
 
-	response << ref.getVersion() << " "
-			<< this->_status << " " << this->_description << "\r\n"
-			<< "Content-Type: " << ref.getMime() << "\r\n"
-			<< "Content-Length: " << ref.getContent().size() << "\r\n"
-			<< "\r\n" << ref.getContent();
+	response	<< ref.getVersion() << " "
+				<< this->_status << " " << this->_description << "\r\n"
+				<< "Content-Type: " << ref.getMime() << "\r\n"
+				<< "Content-Length: " << ref.getContent().size() << "\r\n"
+				<< "\r\n" << ref.getContent();
 	this->_response = response.str();
 }
 
 void	Sender::postResponse( std::string &message, ServerResponse &ref )
 {
-	Store				store;
+	Store	store;
 
-	store.storeData(message);
-	store.setPath(string("../index.html"));
-	store.sendAnswer(this->_status, this->_description, ref);
-	this->_response = store.getAnswer();
+	store.parsePost(message);
+	(void) ref;
+}
+
+void	Sender::deleteResponse()
+{
 }
 
 void	Sender::sendMessage( int fd )

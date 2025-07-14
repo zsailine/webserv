@@ -6,36 +6,30 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 14:15:29 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/10 13:56:46 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/14 16:02:13 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Store.hpp"
 
-int					_already = 0;
-std::string			_value = "";
-std::vector<string>	Store::_storer;
+std::vector<string>	Store::_simple;
 
-void	Store::storeData( string &message )
+void	Store::parsePost( string &message )
 {
-	int		index = message.rfind('\n');
-	string	data = message.c_str() + index + 1;
-	string	value;
-
-	value = data.c_str() + data.find('=') + 1;
-	if (std::find(this->_storer.begin(), this->_storer.end(), value) != this->_storer.end())
-		_already = 1;
+	if (message.find("boundary=") == string::npos)
+		this->parseSimple(message);
 	else
 	{
-		_already = 0;
-		this->_storer.push_back(value);
+		int		index = message.find("boundary=");
+		string	boundary = message.c_str() + index;
+		boundary = boundary.substr(boundary.find('=') + 1, boundary.find('\r'));
+		this->parseComplex(message, boundary);
 	}
-	_value = value;
 }
 
 void	Store::printStorer() const
 {
-	for (auto it = this->_storer.begin(); it != this->_storer.end(); ++it)
+	for (auto it = this->_simple.begin(); it != this->_simple.end(); ++it)
 		std::cout << "[" << *it << "]" << std::endl;
 }
 
@@ -43,10 +37,10 @@ void	Store::sendAnswer( int &status, string &description, ServerResponse &ref )
 {
 	std::ostringstream	response;
 
-	if (_already)
-		this->generateAlready();
-	else
-		this->generateNew();
+	// if (_already)
+	// 	this->generateAlready();
+	// else
+	// 	this->generateNew();
 	response << ref.getVersion() << " "
 		<< status << " " << description << "\r\n"
 		<< "Content-Type: text/html" << "\r\n"
@@ -62,8 +56,7 @@ void	Store::generateAlready()
 	this->_http.append("<html>");
 	this->_http.append("<body>");
 	this->_http.append("<h1 style=\"text-align: center;\" > Sent ! </h1>");
-	this->_http.append("<p style=\"text-align: center;\" >"
-		+ _value + " is already there </p>");
+	this->_http.append("<p style=\"text-align: center;\" > is already there </p>");
 	this->_http.append("<div class=\"center\"><a href=\""
 		+ this->_path + "\"><- Go back to home page</a></div>");
 	this->_http.append("</body>");
@@ -77,12 +70,36 @@ void	Store::generateNew()
 	this->_http.append("<html>");
 	this->_http.append("<body>");
 	this->_http.append("<h1 style=\"text-align: center;\" > Sent ! </h1>");
-	this->_http.append("<p style=\"text-align: center;\" > Welcome "
-		+ _value + "</p>");
+	this->_http.append("<p style=\"text-align: center;\" > Welcome </p>");
 	this->_http.append("<div class=\"center\"><a href=\""
 		+ this->_path + "\"><- Go back to home page</a></div>");
 	this->_http.append("</body>");
 	this->_http.append("</html>");
+}
+
+void	Store::parseSimple( string &message )
+{
+	int		index = message.rfind("\n");
+	string	data = message.c_str() + index + 1;
+	int		count = std::count(data.begin(), data.end(), '&');
+
+	this->_type = "simple";
+	for (int i = 0; i <= count; i++)
+	{
+		index = data.find('&');
+		if ((unsigned long)index == string::npos)
+			index = (int)data.size();
+		this->_simple.push_back(data.substr(0, index));
+		if (index != (int)data.size())
+			data = data.substr(index + 1, data.size());
+	}
+	this->printStorer();
+}
+
+void	Store::parseComplex( string &message, string &sep )
+{
+	(void)message;
+	(void)sep;
 }
 
 std::string Store::getHttp() const { return this->_http; }

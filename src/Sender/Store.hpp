@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 14:11:53 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/10 13:49:48 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/14 16:01:04 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,16 @@ class Store
 		std::string					_http;
 		std::string					_path;
 		std::string					_answer;
-		static std::vector<string>	_storer;
+		std::string					_type;
+		static std::vector<string>	_simple;
 		
 	public:
 
 		Store() {}
 		~Store() {}
-		void		storeData( string &message );
+		void		parsePost( string &message );
+		void		parseSimple( string &message );
+		void		parseComplex( string &message, string &sep );
 		void		printStorer() const; // can delete at the end
 		void		sendAnswer( int &status, string &description, ServerResponse &ref );
 		void		generateAlready();

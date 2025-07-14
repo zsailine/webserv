@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 09:53:26 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/07/10 13:41:14 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/11 11:01:35 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ std::string	ServerResponse::get_file_content( std::string path )
 	std::string	content;
 	ssize_t		bytes_read;
 	
-    fd = open(path.c_str(), O_RDONLY);
+	fd = open(path.c_str(), O_RDONLY);
 	if (fd == -1)
 		return "";
 	while ((bytes_read = read(fd, buffer, sizeof(buffer))) > 0)
