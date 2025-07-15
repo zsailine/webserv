@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 14:12:25 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/14 15:59:36 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/11 15:46:56 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int Server::socketer(std::string tmp)
 	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == -1)
 	{
 		std::cerr << "Error Configuring socket for Server " << index << std::endl; 
-		return (0);
+		throw std::exception();
 	}
 	// int opt = 1;
 	// if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt,
@@ -48,34 +48,28 @@ int Server::socketer(std::string tmp)
 	// 		sizeof(opt)) != 0)
 	// 		{
 	// 			std::cerr << "Error configuring socket for Server " << index << std::endl; 
-	// 			return (0);
+	// 			throw std::exception();
 	// 		}
 	sockaddr_in adresse = init_adress(tmp);
 	if (bind(sock, (sockaddr *)&adresse, sizeof(adresse)) != 0)
 	{
-		close (sock);
 		std::cerr << "Error binding socket for Server " << index << std::endl; 
-		return (0);
+		throw std::exception();
 	}
 	if (listen(sock, 2) != 0)
 	{
-		close (sock);
 		std::cerr << "Error listening socket for Server " << index << std::endl; 
-		return (0);
+		throw std::exception();
 	}
 	return (sock);
 }
 
-int Server::init_socket()
+void Server::init_socket()
 {
 	std::string tmp;
 	std::stringstream iss(_map["listen"]);
 	while (iss >> tmp)
 	{
-		int fd = socketer(tmp);
-		if (!fd)
-			return (0);
-		_socket.push_back(fd);
+		_socket.push_back(socketer(tmp));
 	}
-	return (1);
 }
