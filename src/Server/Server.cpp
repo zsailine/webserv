@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:01:59 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/14 15:58:16 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/15 11:58:39 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,9 +136,7 @@ int Server::getIndex() const
 void Server::closeFds()
 {
 	for (size_t i = 0; i < _socket.size(); i++)
-	{
 		close(_socket[i]);
-	}
 }
 
 void	Server::addClient(int fd)
@@ -193,7 +191,7 @@ int		Server::ft_repeat(std::string url)
 	return (1);
 }
 
-int	Server::addRoute(std::map<std::string, Router> routes)
+void	Server::addRoute(std::map<std::string, Router> routes)
 {
 	std::stringstream split(_map["routes"]);
 	std::string word;
@@ -202,7 +200,7 @@ int	Server::addRoute(std::map<std::string, Router> routes)
 		if (routes.count(word) == 0)
 		{
 			std::cerr << "[ Server " << index << " ]\n" << "Error: " << word <<  " is not a defined route\n";
-			return (0);
+			throw std::exception();
 		}
 		std::map<std::string, Router>::iterator it = routes.begin();
 		while (it != routes.end())
@@ -214,7 +212,6 @@ int	Server::addRoute(std::map<std::string, Router> routes)
 			it++;
 		}
 	}
-	return (1);
 }
 
 std::string Server::getValue(int index, std::string key)

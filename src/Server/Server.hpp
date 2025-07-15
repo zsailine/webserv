@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 14:53:57 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/14 15:50:06 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/11 15:41:20 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,8 @@ class Server
 		~Server(){}
 		Server(const Server &toCopy);
 		
-		int					addRoute(std::map<std::string, Router> routes);
-		int 				init_socket();
+		void				addRoute(std::map<std::string, Router> routes);
+		void 				init_socket();
 		std::vector<int> 	&getSocket();
 		int 				getIndex() const;
 		void				closeFds();
