@@ -176,6 +176,7 @@ const Server & Server::operator=(const Server & obj)
 		index = obj.index;
 		client_fds = obj.client_fds;
 	}
+	return (*this);
 }
 
 std::vector<int> 	&Server::getSocket()

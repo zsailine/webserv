@@ -45,7 +45,11 @@ void ServerResponse::get_full_path(const std::string &req)
 
 void ServerResponse::set_path(std::string path)
 {
-	
+	_path = path;
+	// verifier l'extension du fichier ;;;
+	// Si C'est un fichier, verifier s'il existe ;;;
+	// Si derctory, chercher l'index.html dans le directory ;;;
+
 }
 
 void ServerResponse::get_file_content()
