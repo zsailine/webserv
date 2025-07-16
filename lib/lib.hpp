@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 10:02:47 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/08 15:06:48 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/16 13:32:56 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 // ========== INCLUDE ==========
 
 #include <stdio.h>
+#include <dirent.h>
 #include <iostream>
 #include <stdlib.h>
 #include <string.h>
@@ -48,6 +49,7 @@
 #define UNDERLINE "\033[4m"
 
 #define MAX_EVENTS 4
+#define MAX_SIZE 5000
 
 typedef std::string	string;
 

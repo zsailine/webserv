@@ -1,6 +1,6 @@
 NAME = webserv
 
-FLAGS = -Wall -Werror -Wextra # -std=c++98
+FLAGS = -Wall -Werror -Wextra -std=c++98
 
 OBJ_DIR = .obj/
 
@@ -22,11 +22,12 @@ SRC_SERVER = 	$(DIR_SERVER)Server.cpp	\
 
 SRC_UTILS =		$(DIR_UTILS)utils.cpp	\
 				$(DIR_UTILS)socket.cpp	\
-				$(DIR_UTILS)epoll.cpp
+				$(DIR_UTILS)epoll.cpp	\
+				$(DIR_UTILS)Tools.cpp
 
-SRC_SENDER	=	$(DIR_SENDER)ServerResponse.cpp	\
-				$(DIR_SENDER)Sender.cpp			\
-				$(DIR_SENDER)Store.cpp
+SRC_SENDER	=	$(DIR_SENDER)Response.cpp	\
+				$(DIR_SENDER)Sender.cpp		\
+				$(DIR_SENDER)Post.cpp
 
 SRC =	$(SRC_MAIN)		\
 		$(SRC_PARSER)	\
@@ -49,7 +50,7 @@ clean :
 	rm -rf $(OBJ_DIR)
 
 fclean : clean
-	rm -f $(NAME)
+	rm -f $(NAME) upload/*
 
 re : fclean all
 

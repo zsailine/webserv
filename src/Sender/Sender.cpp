@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:23:21 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/14 12:42:20 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/16 14:34:11 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,55 +14,38 @@
 
 void	Sender::getMessage( std::string message, int fd )
 {
-	ServerResponse	response(message);
+	Response	response(message);
 	
 	response.run();
-	this->defineStatus();
+	response.defineStatus();
 	if (response.getMethod() == "GET")
-		this->getResponse(response);
+		response.http(response.getStatus(), "");
 	if (response.getMethod() == "POST")
 		this->postResponse(message, response);
 	if (response.getMethod() == "DELETE")
 		this->deleteResponse();
-	this->sendMessage(fd);
+	this->sendMessage(fd, response.getResponse());
 }
 
-void	Sender::defineStatus()
+void	Sender::postResponse( string &message, Response &ref )
 {
-	this->_status = 200;
-	this->_description = "OK";
-}
+	int		stat = ref.getStatus();
+	Post	post(message);
 
-void	Sender::getResponse( ServerResponse &ref )
-{
-	std::ostringstream	response;
-
-	response	<< ref.getVersion() << " "
-				<< this->_status << " " << this->_description << "\r\n"
-				<< "Content-Type: " << ref.getMime() << "\r\n"
-				<< "Content-Length: " << ref.getContent().size() << "\r\n"
-				<< "\r\n" << ref.getContent();
-	this->_response = response.str();
-}
-
-void	Sender::postResponse( std::string &message, ServerResponse &ref )
-{
-	Store	store;
-
-	store.parsePost(message);
-	(void) ref;
+	post.parseRequest();
+	if (post.isEmpty()) { ref.http(stat, "./files/empty.html"); return ; }
+	(post.getData()) ? ref.http(stat, "./files/presentData.html")
+		: ref.http(stat, "./files/newData.html");
 }
 
 void	Sender::deleteResponse()
 {
 }
 
-void	Sender::sendMessage( int fd )
+void	Sender::sendMessage( int fd, string message )
 {
 	size_t	size;
 
-	size = this->_response.size();
-	send(fd, this->_response.c_str(), size, 0);
+	size = message.size();
+	send(fd, message.c_str(), size, 0);
 }
-
-int	Sender::getStatus() const {	return this->_status; }

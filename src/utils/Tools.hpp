@@ -1,37 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Sender.hpp                                         :+:      :+:    :+:   */
+/*   Tools.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/08 11:19:34 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/16 10:45:57 by mitandri         ###   ########.fr       */
+/*   Created: 2025/07/16 09:52:58 by mitandri          #+#    #+#             */
+/*   Updated: 2025/07/16 14:47:19 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SENDER_HPP
-#define SENDER_HPP
+#ifndef TOOLS_HPP
+#define TOOLS_HPP
 
-#include "lib.hpp"
 #include "class.hpp"
+#include "lib.hpp"
 
-class Response;
-class Post;
-
-class Sender
+class Tools
 {
 	private:
-
-		std::string	_response;
-
+	
 	public:
 
-		Sender() {}
-		void	getMessage( string message, int fd );
-		void	sendMessage( int fd, string message );
-		void	postResponse( string &message, Response &ref );
-		void	deleteResponse();
+		Tools() {}
+		~Tools() {}
+		string	readFile( string path );
+		string	getType( string message, string toFind, string end );
+		void	printLogs( string method, string path, string version );
+		void	writeDir( string file, std::vector< std::map<string, string> > c );
+		
+		template<typename T>
+		string	toString( T number )
+		{
+			std::stringstream	ss;
+			ss << number;
+			return ss.str();
+		}
 };
 
 #endif
