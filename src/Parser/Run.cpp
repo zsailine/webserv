@@ -58,7 +58,8 @@ void	Run::run()
 			}
 		}
 	}
-	parse.closeFds();
+	for (size_t i = 0; i < server.size(); i++)
+		server[i].closeFds();
 	close(this->_epoll);
 }
 

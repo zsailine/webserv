@@ -23,8 +23,8 @@ sockaddr_in init_adress(std::string str)
     hints.ai_socktype = SOCK_STREAM;
 	if (getaddrinfo(host.c_str(), port.c_str(), NULL, &result) != 0)
 	{
-		std::cerr << "Error Configuring socket for host " << host << " in port " << port << std::endl;
-		throw std::exception();
+		std::cerr << "Error Configuring socket for host " << host << " in port " << port <<  std::endl;
+		return adress;
 	}
 	struct sockaddr_in *tmp = (struct sockaddr_in *)result->ai_addr;
 	adress.sin_addr.s_addr = tmp->sin_addr.s_addr;
@@ -42,19 +42,18 @@ int Server::socketer(std::string tmp)
 		std::cerr << "Error Configuring socket for Server " << index << std::endl; 
 		return (0);
 	}
-	// int opt = 1;
-	// if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt,
-	// 	sizeof(opt)) != 0 || setsockopt(sock, SOL_SOCKET, SO_REUSEPORT, &opt,
-	// 		sizeof(opt)) != 0)
-	// 		{
-	// 			std::cerr << "Error configuring socket for Server " << index << std::endl; 
-	// 			return (0);
-	// 		}
+	int opt = 1;
+	if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) != 0)
+			{
+				std::cerr << "Error configuring socket for Server " << index << std::endl; 
+				return (0);
+			}
 	sockaddr_in adresse = init_adress(tmp);
 	if (bind(sock, (sockaddr *)&adresse, sizeof(adresse)) != 0)
 	{
 		close (sock);
 		std::cerr << "Error binding socket for Server " << index << std::endl; 
+		fprintf(stderr, "Message d'erreur : %s\n", strerror(errno)); // Affiche le message d'erreur associé à errno
 		return (0);
 	}
 	if (listen(sock, 2) != 0)

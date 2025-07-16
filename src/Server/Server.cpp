@@ -139,6 +139,10 @@ void Server::closeFds()
 	{
 		close(_socket[i]);
 	}
+	for (size_t j = 0; j < client_fds.size(); j++)
+	{
+		close(client_fds[j]);
+	}
 }
 
 void	Server::addClient(int fd)
