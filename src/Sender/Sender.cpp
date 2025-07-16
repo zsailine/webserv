@@ -21,11 +21,16 @@ void	Sender::sendMessage( std::string message, int fd, Server server )
 
 	response.get_full_path(message);
 	int url = server.check_url(response.get_path());
+	if (url == -1)
+		return;
 	std::string path = server.getValue(url, "root");
 
-	response.set_path(path);
+
+	//response.set_path(path);
 	std::cout << "****************" << std::endl;
 	std::cout << response.get_path() << std::endl;
+	std::cout << url << std::endl;
+	std::cout << path << std::endl;
 	std::cout << "****************" << std::endl;
 	response.get_file_content();
 	response.get_mime_type();
