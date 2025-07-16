@@ -6,12 +6,11 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 10:33:07 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/15 11:55:55 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/16 14:34:32 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Router.hpp"
-
 void	Router::init_value()
 {
 	_map.insert(std::pair<std::string, std::string>("url", ""));
