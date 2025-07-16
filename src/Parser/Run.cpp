@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 09:51:36 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/15 11:59:39 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/11 15:48:48 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	signalHandler( int sigNum )
 {
 	flag = 0;
 	std::cout << std::endl;
-	std::cout << GREEN "Webserv is quitting..." RESET << std::endl;
+	std::cout << GREEN "Websev is quitting..." RESET << std::endl;
 	(void) sigNum;
 }
 
@@ -64,7 +64,6 @@ void	Run::run()
 
 void	Run::runEpoll( std::vector<Server> &server )
 {
-	std::cout << server[0].getValue(0, "index");
 	this->_epoll = epoll_create(true);
 	for (size_t i = 0; i < server.size(); i++)
 	{
@@ -100,7 +99,7 @@ void	Run::handleClient( int fd , Server server)
 	char		buffer[1024];
 	size_t		count = read(fd, buffer, sizeof(buffer));
 	std::string	message(buffer, count);
-
+	
 	std::cout << std::endl;
 	std::cout << CYAN "****************************************" RESET << std::endl << std::endl;
 	std::cout << CYAN "Received: " RESET << message;
