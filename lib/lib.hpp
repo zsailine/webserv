@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 10:02:47 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/16 13:32:56 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/17 15:10:21 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@
 #define RED "\033[1;31m"
 #define GREEN "\033[1;32m"
 #define PIPGREEN "\033[1;5;32m"
-#define BLUE "\033[1;35m"
+#define BLUE "\e[1;34m"
+#define PURPLE "\033[1;95m"
 #define YELLOW "\033[1;33m"
 #define CYAN "\033[1;36m"
 #define RESET "\033[0m"

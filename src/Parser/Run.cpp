@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 09:51:36 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/17 14:04:29 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/17 15:22:43 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	signalHandler( int sigNum )
 {
 	flag = 0;
 	std::cout << std::endl;
-	std::cout << RED "Websev is quitting..." RESET << std::endl;
+	std::cout << PURPLE "... Websev is quitting..." RESET << std::endl;
 	(void) sigNum;
 }
 
@@ -28,6 +28,8 @@ void	Run::run()
 	Parser				parse(this->_parameter);
 	std::vector<Server>	server = parse.getServer();
 
+	std::cout << PURPLE "... WELCOME TO OUR WEBSERVER ..." RESET;
+	std::cout << std::endl << std::endl;
 	this->runEpoll(server);
 	while(flag)
 	{
@@ -101,6 +103,10 @@ void	Run::handleClient( int fd , Server server)
 	size_t		count = read(fd, buffer, sizeof(buffer));
 	std::string	message(buffer, count);
 	
+	string temp = message.substr(0, 6);
+	if (temp == "DELETE")
+		std::cout << message << std::endl;
+
 	sender.handleRequest(message, fd, server);
 	close(fd);
 }

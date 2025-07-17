@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:23:21 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/17 14:16:28 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/17 15:23:10 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,12 @@
 
 void	Sender::handleGet(Server &server, Response &response)
 {
-	// int				status = 200;
 	int url = server.check_url(response.getPath());
 	if (url == -1)
 		return;
 	std::string path = server.getValue(url, "root");
 
 	response.set_path(server.getValue(url, "index"), server.getValue(url, "url"),  path);
-	// response.get_file_content();
-	// response.get_mime_type();
-	// if (open(response.get_path().c_str(), O_RDONLY) < 0)
-	// 	status = 404;
-	// response.make_Http_response(status);
-	// send(fd, response.get_response().c_str(), response.get_response().size(), 0);
 }
 
 void	Sender::handleRequest( std::string message, int fd, Server &server )
@@ -42,10 +35,10 @@ void	Sender::handleRequest( std::string message, int fd, Server &server )
 		response.run();
 		response.http(response.getStatus(), "");
 	}
-	if (response.getMethod() == "POST")
+	else if (response.getMethod() == "POST")
 		this->postResponse(message, response);
-	if (response.getMethod() == "DELETE")
-		this->deleteResponse();
+	else if (response.getMethod() == "DELETE")
+		this->deleteResponse(response);
 	tools.printAnswer(response);
 	this->sendMessage(fd, response.getResponse());
 }
@@ -58,8 +51,9 @@ void	Sender::postResponse( string &message, Response &ref )
 	post.checkError(ref, ref.getStatus());
 }
 
-void	Sender::deleteResponse()
+void	Sender::deleteResponse( Response &ref )
 {
+	(void)ref;
 }
 
 void	Sender::sendMessage( int fd, string message )
