@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Sender.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:19:34 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/08 13:04:33 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/17 10:29:14 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,20 @@
 #include "lib.hpp"
 #include "class.hpp"
 
+class ServerResponse;
+
 class Sender
 {
 	private:
 
 		int	_status;
+		void	handleGet(int fd, Server &Server, ServerResponse &response);
 
 	public:
 
 		Sender() {}
 		int		getStatus() const;
-		void	sendMessage( std::string message, int fd, Server server );
+		void	handleRequest( std::string message, int fd, Server &server );
 		void	httpResponse();
 };
 

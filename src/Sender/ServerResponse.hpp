@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerResponse.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 09:53:09 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/07/08 13:56:16 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/17 12:56:39 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ class ServerResponse
         std::string                         _path;
         std::string                         _content;
         std::string                         _mime;
+        std::string                         _method;
         std::string                         _response;
         std::map<std::string, std::string>  _mimetype;
         ServerResponse(/* args */);
@@ -31,8 +32,8 @@ class ServerResponse
     public:
     
         ServerResponse(std::string _buffer);
-
-        void    get_full_path(const std::string &req);
+        ServerResponse(ServerResponse const &toCopy);
+        void    set_header(const std::string &req);
         void    get_file_content();
         void    get_mime_type();
         void    make_Http_response(int status);
@@ -42,7 +43,8 @@ class ServerResponse
         std::string get_content();
         std::string get_mime();
         std::string get_response();
-        void set_path(std::string path);
+        std::string get_method();
+        void set_path(std::string index,std::string url, std::string path);
 
         ~ServerResponse();
 };

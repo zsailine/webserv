@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 09:53:26 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/07/09 15:37:31 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/17 13:32:31 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,26 +30,42 @@ ServerResponse::ServerResponse(std::string buffer) : _buffer(buffer)
 	}
 }
 
-void ServerResponse::get_full_path(const std::string &req)
+ServerResponse::ServerResponse(ServerResponse const &toCopy)
 {
-	std::istringstream ss(req);
-	std::string method;
-	std::string path;
-	std::string version;
-
-	ss >> method >> path >> version;
-	if (path == "/")
-		path = "/index.html";
-	_path = path;
+	_buffer = toCopy._buffer;
+	_path = toCopy._path;
+	_content = toCopy._content;
+	_mime = toCopy._mime;
+	_method = toCopy._method;
+	_response = toCopy._response;
 }
 
-void ServerResponse::set_path(std::string path)
+void ServerResponse::set_header(const std::string &req)
 {
-	_path = path;
-	// verifier l'extension du fichier ;;;
-	// Si C'est un fichier, verifier s'il existe ;;;
-	// Si derctory, chercher l'index.html dans le directory ;;;
+	std::istringstream ss(req);
+	std::string version;
 
+	ss >> _method >> _path >> version;
+}
+
+void	ServerResponse::set_path(std::string index, std::string url, std::string path)
+{
+	std::cout << "The first path is " << _path << std::endl;
+	if (path[path.size() - 1] == '/')
+		path = path.substr(0, path.size() - 1);
+	char tmp = _path.substr(url.size())[0];
+	if (tmp != '/')
+		_path = path + '/'  +_path.substr(url.size());
+	else
+		_path = path + _path.substr(url.size());
+	if (isDirectory(_path))
+	{
+		if (_path[path.size() - 1] != '/')
+			_path = _path + '/' + index;
+		else
+			_path += index;
+	}
+	std::cout << "The new path is " << _path << std::endl;
 }
 
 void ServerResponse::get_file_content()
@@ -106,7 +122,8 @@ void ServerResponse::get_mime_type()
 	_mime = "text/plain";
 }
 
-void ServerResponse::make_Http_response(int status) 
+void ServerResponse::
+make_Http_response(int status) 
 {
     std::ostringstream response;
     
@@ -139,6 +156,10 @@ std::string ServerResponse::get_response()
     return _response;
 }
 
+std::string ServerResponse::get_method()
+{
+	return _method;
+}
 ServerResponse::~ServerResponse()
 {
 }
