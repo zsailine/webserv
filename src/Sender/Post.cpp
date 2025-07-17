@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 10:47:32 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/16 15:45:59 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/17 11:24:34 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,9 @@ void	Post::parseSimple( string &body )
 		if (value == "")
 			this->_empty = true;
 	}
-	if (find(_simple.begin(), _simple.end(), tmp) == _simple.end()
-		&& not this->_empty)
+	if ((this->_simple.size() == 0 && not this->_empty) ||
+		(find(_simple.begin(), _simple.end(), tmp) == _simple.end()
+		&& not this->_empty))
 		this->_simple.push_back(tmp);
 	else
 		this->_stored[0] = true;
@@ -55,12 +56,116 @@ void	Post::parseSimple( string &body )
 void	Post::parseComplex( string &body )
 {
 	Tools	tools;
-	string	boundary = tools.getType(this->_message, "")
+	string	boundary = tools.getType(this->_message, "boundary", "\r\n");
 	string	multi = tools.getType(this->_message, "Content-Type:", ";");
 	
 	if (multi != "multipart/form-data")
 		return ;
+	boundary.insert(0, "--");
+	size_t	i = 0;
+	while (true)
+	{
+		string	toParse;
+		size_t	first, second;
+		first = body.find(boundary, i) + boundary.size();
+		if (body.substr(first, 2) == "\r\n")
+			first += 2;
+		second = body.find(boundary, first);
+		if (second == std::string::npos)
+			break;
+		toParse = body.substr(first, second - first);
+		this->parseContent(toParse);
+		i = second;
+	}
+}
+
+void	Post::parseContent( string content )
+{
+	Tools	tools;
+	size_t	head = content.find("\r\n\r\n");
+	string	header = content.substr(0, head);
+	string	name = tools.getType(header, "name", ";");
 	
+	if (name != "\"myFile\"")
+		this->storeData(content, head);
+	else
+		this->storeFile(content, head);
+}
+
+void	Post::storeData( string content, size_t head )
+{
+	Tools	tools;
+	string	name = tools.getType(content, "name=", "\"\r\n");
+	std::map<string, string>	tmp;
+
+	if (content.substr(head, 4) == "\r\n\r\n")
+		head += 4;
+	size_t	end = content.find("\r\n", head);
+	string	value = content.substr(head, end - head);
+	if (value == "")
+		this->_empty = true;
+	tmp.insert(std::pair<string, string>(name, value));
+	if ((this->_simple.size() == 0 && not this->_empty) ||
+		(find(_simple.begin(), _simple.end(), tmp) == _simple.end()
+		&& not this->_empty))
+		this->_simple.push_back(tmp);
+	else
+		this->_stored[0] = true;
+	tmp.clear();
+	tools.writeDir("upload/data.txt", this->_simple);
+}
+
+void	Post::storeFile( string content, size_t head )
+{
+	Tools	tools;
+	string	file = tools.getType(content, "filename=", "\"\r\n"), path;
+	
+	if (file == "")
+	{
+		this->_empty = true;
+		return ;
+	}
+	path = "upload/" + file;
+	int	fd = open(path.c_str(), O_RDONLY, 0644);
+	if (fd != -1) { this->_stored[1] = true; std::cout << "Lasa\n";return; }
+	close(fd);
+	fd = open(path.c_str(), O_CREAT | O_RDWR, 0644);
+	if (fd == -1)
+		return;
+	if (content.substr(head, 4) == "\r\n\r\n")
+		head += 4;
+	size_t	end = content.find("\r\n", head);
+	string	inside = content.substr(head, end - head);
+	write(fd, inside.c_str(), inside.size());
+	close(fd);
+}
+void	Post::checkError( Response &ref, int stat )
+{
+	if (isEmpty())
+	{
+		ref.http(stat, "./files/empty.html");
+		return ;
+	}
+	if (not getFile() && not getData())
+	{
+		ref.http(stat, "./files/newData.html");
+		return ;
+	}
+	if (getFile() && getData())
+	{
+		ref.http(stat, "./files/presentData.html");
+		return ;
+	}
+	if (getFile() && not getData())
+	{
+		ref.http(stat, "./files/presentFile.html");
+		return ;
+	}
+	if (getData() && not getFile())
+	{
+		ref.http(stat, "./files/presentData.html");
+		return ;
+	}
 }
 
 string	Post::getBody()

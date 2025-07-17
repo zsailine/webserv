@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 09:58:05 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/16 15:06:53 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/17 11:14:36 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,8 @@ void	Tools::writeDir( string file, std::vector< std::map<string, string> > c )
 	std::ostringstream	oss;
 	
 	int fd = open(file.c_str(), O_CREAT | O_TRUNC | O_WRONLY, 0640);
-	if (fd == -1){
-		std::cout << "Bourre\n";	
+	if (fd == -1)
 		return ;
-	}
 	std::map<string, string>::iterator	it;
 	for (size_t i = 0; i < c.size(); i++)
 	{

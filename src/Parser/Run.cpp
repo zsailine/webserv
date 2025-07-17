@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 09:51:36 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/16 10:43:06 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/17 11:24:22 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,9 +82,6 @@ void	Run::handleClient( int fd )
 	size_t		count = read(fd, buffer, sizeof(buffer));
 	std::string	message(buffer, count);
 	
-	string temp = message.substr(0, 4);
-	if (temp == "POST")
-		std::cout << message << std::endl;
 	sender.getMessage(message, fd);
 	close(fd);
 }
