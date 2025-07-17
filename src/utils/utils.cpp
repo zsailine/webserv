@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:55:45 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/11 15:46:30 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/17 13:00:40 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,4 +61,15 @@ int ft_atoi(std::string number)
 	return (tmp);
 }
 
+int isDirectory(std::string str)
+{
+	int i = str.size() - 1;
+	while (str[i] != '/')
+	{
+		if (str[i] == '.')
+			return (0);
+		i--;
+	}
+	return (1);
+}
 // std::string	getFileExtension( string const )

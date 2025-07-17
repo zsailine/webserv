@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:19:34 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/08 13:04:33 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/17 14:05:21 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,24 @@
 #include "lib.hpp"
 #include "class.hpp"
 
+class Response;
+class Post;
+
 class Sender
 {
 	private:
 
-		int	_status;
+		std::string	_response;
 
+		void	handleGet(Server &server, Response &response);
+		
 	public:
 
 		Sender() {}
-		int		getStatus() const;
-		void	sendMessage( std::string message, int fd, Server server );
-		void	httpResponse();
+		void	handleRequest( std::string message, int fd, Server &server );
+		void	sendMessage( int fd, string message );
+		void	postResponse( string &message, Response &ref );
+		void	deleteResponse();
 };
 
 #endif
