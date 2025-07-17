@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 14:48:50 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/07 15:57:25 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/11 15:45:54 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,5 +40,6 @@ class Parser
 int isWord(std::string const &str);
 void RemoveWhiteSpace(std::string& str);
 int nbr_of_words(std::string const &str);
+int ft_atoi(std::string number);
 
 #endif

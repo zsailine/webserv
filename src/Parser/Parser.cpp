@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 15:41:42 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/08 14:39:38 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/14 15:58:18 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,14 +114,22 @@ void	Parser::init_socket()
 {
 	size_t i = 0;
 	while (i < server.size())
-		server[i++].init_socket();
+	{
+		if (!server[i++].init_socket())
+		{
+			closeFds();
+			throw std::exception();
+		}
+	}
 }
 
 void	Parser::closeFds()
 {
 	size_t i = 0;
 	while (i < server.size())
+	{
 		server[i++].closeFds();
+	}
 }
 void	Parser::get_blocks( std::vector<std::string> &block)
 {
@@ -151,7 +159,13 @@ void	Parser::addRoute()
 {
 	size_t i = 0;
 	while (i < server.size())
-		server[i++].addRoute(routes);
+	{
+		if (!server[i++].addRoute(routes))
+		{
+			closeFds();
+			throw std::exception();
+		}
+	}
 }
 
 std::vector<Server> &Parser::getServer()

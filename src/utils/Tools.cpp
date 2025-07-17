@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 09:58:05 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/17 13:17:46 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/17 14:18:41 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ void	Tools::printLogs( string method, string path, string version )
 {
 	string	intro;
 
+	if (method != "GET" && method != "POST" && method != "DELETE")
+		return ;
 	if (method == "GET")
 		intro = string(CYAN "REQUEST GET\t:\t");
 	if (method == "POST")
@@ -30,6 +32,8 @@ void	Tools::printAnswer( Response &ref )
 {
 	string	intro;
 
+	if (ref.getMethod() != "GET" && ref.getMethod() != "POST" && ref.getMethod() != "DELETE")
+		return ;
 	if (ref.getMethod() == "GET")
 		intro = string(CYAN "ANSWER GET\t:\t");
 	if (ref.getMethod() == "POST")

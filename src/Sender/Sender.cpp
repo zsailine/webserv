@@ -6,21 +6,42 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:23:21 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/17 12:58:16 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/17 14:16:28 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Sender.hpp"
 
-void	Sender::getMessage( std::string message, int fd )
+void	Sender::handleGet(Server &server, Response &response)
+{
+	// int				status = 200;
+	int url = server.check_url(response.getPath());
+	if (url == -1)
+		return;
+	std::string path = server.getValue(url, "root");
+
+	response.set_path(server.getValue(url, "index"), server.getValue(url, "url"),  path);
+	// response.get_file_content();
+	// response.get_mime_type();
+	// if (open(response.get_path().c_str(), O_RDONLY) < 0)
+	// 	status = 404;
+	// response.make_Http_response(status);
+	// send(fd, response.get_response().c_str(), response.get_response().size(), 0);
+}
+
+void	Sender::handleRequest( std::string message, int fd, Server &server )
 {
 	Tools		tools;
 	Response	response(message);
 	
-	response.run();
 	response.defineStatus();
+	response.set_header(message);
 	if (response.getMethod() == "GET")
+	{
+		this->handleGet(server, response);
+		response.run();
 		response.http(response.getStatus(), "");
+	}
 	if (response.getMethod() == "POST")
 		this->postResponse(message, response);
 	if (response.getMethod() == "DELETE")

@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 09:53:26 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/07/17 12:59:47 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/17 14:17:02 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ Response::Response( std::string const &message ) : _message(message)
 	}
 }
 
-void Response::get_full_path(const std::string &req)
+void Response::set_header(const std::string &req)
 {
 	Tools				tools;
 	std::istringstream ss(req);
@@ -40,9 +40,25 @@ void Response::get_full_path(const std::string &req)
 	this->_method = method;	
 	this->_version = version;
 	tools.printLogs(this->_method, path, this->_version);
-	if (path == "/")
-		path = "/index.html";
-	this->_path = "www" + path;
+	this->_path = path;
+}
+
+void	Response::set_path(std::string index, std::string url, std::string path)
+{
+	if (path[path.size() - 1] == '/')
+		path = path.substr(0, path.size() - 1);
+	char tmp = _path.substr(url.size())[0];
+	if (tmp != '/')
+		_path = path + '/'  +_path.substr(url.size());
+	else
+		_path = path + _path.substr(url.size());
+	if (isDirectory(_path))
+	{
+		if (_path[path.size() - 1] != '/')
+			_path = _path + '/' + index;
+		else
+			_path += index;
+	}
 }
 
 void Response::getExtension()
@@ -62,7 +78,6 @@ void	Response::run()
 {
 	Tools	tools;
 
-	this->get_full_path(this->_message);
 	if (this->_method != "POST")
 		this->_content = tools.readFile(this->_path);
 	this->getExtension();

@@ -6,17 +6,17 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 10:33:07 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/08 10:15:43 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/16 14:34:32 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Router.hpp"
-
 void	Router::init_value()
 {
 	_map.insert(std::pair<std::string, std::string>("url", ""));
 	_map.insert(std::pair<std::string, std::string>("root", ""));
 	_map.insert(std::pair<std::string, std::string>("allowedMethods", ""));
+	_map.insert(std::pair<std::string, std::string>("index", ""));
 }
 
 static int oneValue(std::string const &name, std::string const &key, std::string &str, std::string &value)
@@ -107,6 +107,8 @@ void	Router::check_value(std::string const &name)
 		std::cerr << "[ Route " << name << " ]\n" << "Error: allowedMethods is not defined\n";
 		throw std::exception();
 	}
+	if (_map["index"].size() == 0)
+		_map["index"] = "index.html";
 	twice(name, "Route", _map["allowedMethods"]);
 	valid(name, "Route", _map["allowedMethods"]);
 }

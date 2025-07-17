@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 09:53:09 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/07/16 10:37:01 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/17 13:51:43 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,10 @@ class Response
     
         Response( std::string const &message );
 
-        void        get_full_path(const std::string &req);
+        void        set_header(const std::string &req);
         void        defineStatus();
         void        getExtension();
+        void        set_path(std::string index, std::string url, std::string path);
         void        http( int status, string file );
         string      description ( int status );
         void        run();
