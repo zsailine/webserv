@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 14:53:57 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/14 15:50:06 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/17 13:59:46 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
