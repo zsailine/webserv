@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 09:53:26 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/07/16 14:03:44 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/17 12:59:47 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void Response::get_full_path(const std::string &req)
 	ss >> method >> path >> version;
 	this->_method = method;	
 	this->_version = version;
-	tools.printLogs(this->_method, this->_path, this->_version);
+	tools.printLogs(this->_method, path, this->_version);
 	if (path == "/")
 		path = "/index.html";
 	this->_path = "www" + path;

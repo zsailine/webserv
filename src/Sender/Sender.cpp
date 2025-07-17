@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:23:21 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/17 10:59:12 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/17 12:58:16 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 void	Sender::getMessage( std::string message, int fd )
 {
+	Tools		tools;
 	Response	response(message);
 	
 	response.run();
@@ -24,6 +25,7 @@ void	Sender::getMessage( std::string message, int fd )
 		this->postResponse(message, response);
 	if (response.getMethod() == "DELETE")
 		this->deleteResponse();
+	tools.printAnswer(response);
 	this->sendMessage(fd, response.getResponse());
 }
 
@@ -33,14 +35,6 @@ void	Sender::postResponse( string &message, Response &ref )
 
 	post.parseRequest();
 	post.checkError(ref, ref.getStatus());
-	// if (post.isEmpty()) { ref.http(stat, "./files/empty.html"); return ; }
-	// // if (post.getData() && not post.getFile())
-	// (post.getData()) ? ref.http(stat, "./files/presentData.html")
-	// 	: ref.http(stat, "./files/newData.html");
-	// (post.getFile()) ? ref.http(stat, "./files/presentFile.html")
-	// 	: ref.http(stat, "./files/newFile.html");
-	// if (not post.getFile() && not post.getData())
-	// 	ref.http(stat, "./files/newData.html");
 }
 
 void	Sender::deleteResponse()

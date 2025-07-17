@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 09:52:58 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/16 14:47:19 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/17 13:13:34 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 
 #include "class.hpp"
 #include "lib.hpp"
+
+class Response;
 
 class Tools
 {
@@ -27,6 +29,7 @@ class Tools
 		string	readFile( string path );
 		string	getType( string message, string toFind, string end );
 		void	printLogs( string method, string path, string version );
+		void	printAnswer( Response &ref );
 		void	writeDir( string file, std::vector< std::map<string, string> > c );
 		
 		template<typename T>

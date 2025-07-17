@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 09:51:36 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/17 11:24:22 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/17 13:18:09 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	signalHandler( int sigNum )
 {
 	flag = 0;
 	std::cout << std::endl;
-	std::cout << GREEN "Websev is quitting..." RESET << std::endl;
+	std::cout << RED "Websev is quitting..." RESET << std::endl;
 	(void) sigNum;
 }
 

@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 10:47:32 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/17 11:24:34 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/17 13:20:02 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ void	Post::storeFile( string content, size_t head )
 	}
 	path = "upload/" + file;
 	int	fd = open(path.c_str(), O_RDONLY, 0644);
-	if (fd != -1) { this->_stored[1] = true; std::cout << "Lasa\n";return; }
+	if (fd != -1) { this->_stored[1] = true;return; }
 	close(fd);
 	fd = open(path.c_str(), O_CREAT | O_RDWR, 0644);
 	if (fd == -1)

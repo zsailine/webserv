@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 09:58:05 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/17 11:14:36 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/17 13:17:46 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,31 @@
 
 void	Tools::printLogs( string method, string path, string version )
 {
+	string	intro;
+
 	if (method == "GET")
-	{
-		std::cout << CYAN "LOGS GET : " << method << " " << path
-			<< " " << version << RESET << std::endl;
-	}
+		intro = string(CYAN "REQUEST GET\t:\t");
 	if (method == "POST")
-	{
-		std::cout << GREEN "LOGS POST : " << method << " " << path
-			<< " " << version << RESET << std::endl;
-	}
+		intro = string(GREEN "REQUEST POST\t:\t");
 	if (method == "DELETE")
-	{
-		std::cout << YELLOW "LOGS DELETE : " << method << " " << path
-			<< " " << version << RESET << std::endl;
-	}
+		intro = string(YELLOW "REQUEST DELETE\t:\t");
+	std::cout << intro + method + " " + path + " " + version << std::endl;
+	std::cout << RESET;
+}
+
+void	Tools::printAnswer( Response &ref )
+{
+	string	intro;
+
+	if (ref.getMethod() == "GET")
+		intro = string(CYAN "ANSWER GET\t:\t");
+	if (ref.getMethod() == "POST")
+		intro = string(GREEN "ANSWER POST\t:\t");
+	if (ref.getMethod() == "DELETE")
+		intro = string(YELLOW "ANSWER DELETE\t:\t");
+	std::cout << intro + ref.getVersion() + " " << ref.getStatus()
+		<< " " + ref.description(ref.getStatus()) + RESET << std::endl;
+	std::cout << RESET;
 }
 
 string	Tools::readFile( string path )
