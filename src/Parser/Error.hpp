@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:56:33 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/18 11:59:53 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/18 14:22:06 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ class Error
 				~Error(){}
 				std::string getError(int key);
 				std::map<int , std::string> getMap() const;
+				Error	&operator=(const Error &toCopy);
 };
 
 #endif

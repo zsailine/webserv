@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:01:59 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/18 14:06:49 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/18 14:28:13 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,6 +180,7 @@ const Server & Server::operator=(const Server & obj)
 		_map = obj._map;
 		_routes = obj._routes;
 		_socket = obj._socket;
+		errorPages = obj.errorPages;
 		index = obj.index;
 		client_fds = obj.client_fds;
 	}
