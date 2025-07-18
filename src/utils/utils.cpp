@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:55:45 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/17 13:00:40 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/18 14:00:42 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,4 +72,30 @@ int isDirectory(std::string str)
 	}
 	return (1);
 }
+
+int ft_isdigit(std::string &str)
+{
+	int i = 0;
+	if (str.size() == 0)
+		return (0);
+	while (str[i])
+	{
+		if (str[i] < '0' || str[i] > '9')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+int ft_exist(std::string path)
+{
+	int			fd;
+	
+	fd = open(path.c_str(), O_RDONLY);
+	if (fd == -1)
+		return (0);
+	close(fd);
+	return (1);
+}
+
 // std::string	getFileExtension( string const )

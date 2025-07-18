@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 09:53:26 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/07/17 14:17:02 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/18 11:34:52 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void Response::set_header(const std::string &req)
 	std::string method, path, version;
 
 	ss >> method >> path >> version;
-	this->_method = method;	
+	this->_method = method;
 	this->_version = version;
 	tools.printLogs(this->_method, path, this->_version);
 	this->_path = path;
@@ -59,6 +59,16 @@ void	Response::set_path(std::string index, std::string url, std::string path)
 		else
 			_path += index;
 	}
+}
+
+void        Response::set_path(std::string path)
+{
+	_path = path;
+}
+
+void	Response::set_status(int status)
+{
+	_status = status;
 }
 
 void Response::getExtension()

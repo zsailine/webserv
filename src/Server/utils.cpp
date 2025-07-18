@@ -6,25 +6,11 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 13:42:36 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/11 09:22:20 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/18 13:59:01 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
-
-int ft_isdigit(std::string &str)
-{
-	int i = 0;
-	if (str.size() == 0)
-		return (0);
-	while (str[i])
-	{
-		if (str[i] < '0' || str[i] > '9')
-			return (0);
-		i++;
-	}
-	return (1);
-}
 
 int	check_port(std::string &port)
 {

@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:01:59 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/14 15:58:16 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/18 14:06:49 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,6 +155,7 @@ Server::Server(const Server &toCopy)
 	_socket = toCopy._socket;
 	_map = toCopy._map;
 	_routes = toCopy._routes;
+	errorPages = toCopy.errorPages;
 	index = toCopy.index;
 }
 
@@ -275,4 +276,14 @@ int Server::check_url(std::string url)
 std::vector<int> Server::getClientFds()
 {
 	return (client_fds);
+}
+
+std::string			Server::getError(int key)
+{
+	return (this->errorPages.getError(key));
+}
+
+void				Server::setError(Error &error)
+{
+	errorPages = error;
 }

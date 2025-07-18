@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Run.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 09:51:36 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/17 14:04:29 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/18 13:39:17 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,21 @@
 
 int	flag = 1;
 
+int isSocket(int fd, std::vector<Server> server)
+{
+	for (size_t i = 0; i < server.size(); i++)
+	{
+		if (std::find(server[i].getSocket().begin(), server[i].getSocket().end(), fd) != server[i].getSocket().end())
+			return (server[i].getIndex());
+	}
+	return (-1);
+}
+
 void	signalHandler( int sigNum )
 {
 	flag = 0;
 	std::cout << std::endl;
-	std::cout << RED "Websev is quitting..." RESET << std::endl;
+	std::cout << RED "Webserv is quitting..." RESET << std::endl;
 	(void) sigNum;
 }
 
@@ -63,6 +73,15 @@ void	Run::run()
 	close(this->_epoll);
 }
 
+static void	closeFds( std::vector<Server> &server )
+{
+	for (size_t i = 0; i < server.size(); i++)
+	{
+		server[i].closeFds();
+	}
+	throw std::exception();
+}
+
 void	Run::runEpoll( std::vector<Server> &server )
 {
 	this->_epoll = epoll_create(true);
@@ -70,7 +89,14 @@ void	Run::runEpoll( std::vector<Server> &server )
 	{
 		std::vector<int> tmp = server[i].getSocket();
 		for (size_t u = 0; u < tmp.size(); u++)
+		{
 			addEpollEvent(this->_epoll, tmp[u]);
+			if (listen(tmp[u], 2) != 0)
+			{
+				std::cerr << "Error listening socket for Server " << server[i].getIndex() << std::endl; 
+				closeFds(server);
+			}
+		}
 	}
 }
 

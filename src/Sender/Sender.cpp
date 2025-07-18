@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Sender.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:23:21 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/17 14:16:28 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/18 14:12:55 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,15 @@
 
 void	Sender::handleGet(Server &server, Response &response)
 {
-	// int				status = 200;
 	int url = server.check_url(response.getPath());
 	if (url == -1)
-		return;
+	{
+		response.set_status(404);
+		response.set_path(server.getError(404));
+		return ;
+	}
 	std::string path = server.getValue(url, "root");
-
 	response.set_path(server.getValue(url, "index"), server.getValue(url, "url"),  path);
-	// response.get_file_content();
-	// response.get_mime_type();
-	// if (open(response.get_path().c_str(), O_RDONLY) < 0)
-	// 	status = 404;
-	// response.make_Http_response(status);
-	// send(fd, response.get_response().c_str(), response.get_response().size(), 0);
 }
 
 void	Sender::handleRequest( std::string message, int fd, Server &server )
