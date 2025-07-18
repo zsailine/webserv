@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Run.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 09:51:36 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/11 15:48:48 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/17 14:04:29 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	signalHandler( int sigNum )
 {
 	flag = 0;
 	std::cout << std::endl;
-	std::cout << GREEN "Websev is quitting..." RESET << std::endl;
+	std::cout << RED "Websev is quitting..." RESET << std::endl;
 	(void) sigNum;
 }
 
@@ -101,11 +101,6 @@ void	Run::handleClient( int fd , Server server)
 	size_t		count = read(fd, buffer, sizeof(buffer));
 	std::string	message(buffer, count);
 	
-	std::cout << std::endl;
-	std::cout << CYAN "****************************************" RESET << std::endl << std::endl;
-	std::cout << CYAN "Received: " RESET << message;
-	std::cout << CYAN "****************************************" RESET << std::endl;
-	
-	sender.sendMessage(message, fd, server);
+	sender.handleRequest(message, fd, server);
 	close(fd);
 }
