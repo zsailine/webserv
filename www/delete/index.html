@@ -7,6 +7,8 @@
   <form onsubmit="deleteResource(event)">
     <label for="name">Nom</label>
     <input type="text" name="name" id="name" />
+    <label for="name">Age</label>
+    <input type="text" name="age" id="age" />
     <button type="submit">Supprimer</button>
   </form>
 
@@ -14,7 +16,11 @@
     function deleteResource(event) {
       event.preventDefault();
       const name = document.getElementById('name').value;
-      fetch('/resource/' + encodeURIComponent(name), {
+      const age = document.getElementById('name').value;
+      fetch(encodeURIComponent(name), {
+        method: 'DELETE'
+      })
+      fetch(encodeURIComponent(age), {
         method: 'DELETE'
       })
     }

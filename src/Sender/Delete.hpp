@@ -1,38 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Sender.hpp                                         :+:      :+:    :+:   */
+/*   Delete.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/08 11:19:34 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/18 11:11:39 by mitandri         ###   ########.fr       */
+/*   Created: 2025/07/18 10:30:30 by mitandri          #+#    #+#             */
+/*   Updated: 2025/07/18 11:13:30 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SENDER_HPP
-#define SENDER_HPP
+#ifndef DELETE_HPP
+#define DELETE_HPP
 
 #include "lib.hpp"
-#include "class.hpp"
+#include "Post.hpp"
 
-class Response;
-
-class Sender
+class Delete : public Post
 {
-	private:
-
-		std::string	_response;
-
-		void	handleGet(Server &server, Response &response);
-		
 	public:
 
-		Sender() {}
-		void	handleRequest( std::string message, int fd, Server &server );
-		void	sendMessage( int fd, string message );
-		void	postResponse( string &message, Response &ref );
-		void	deleteResponse( string &message, Response &ref );
+		Delete( string message ) : Post(message) {}
+		~Delete() {}
+		void	deleteResource();
+		void	printMother();
 };
 
 

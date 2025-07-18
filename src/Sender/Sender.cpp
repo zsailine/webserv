@@ -6,11 +6,12 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:23:21 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/17 15:23:10 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/18 11:18:07 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Sender.hpp"
+#include "Delete.hpp"
 
 void	Sender::handleGet(Server &server, Response &response)
 {
@@ -38,7 +39,7 @@ void	Sender::handleRequest( std::string message, int fd, Server &server )
 	else if (response.getMethod() == "POST")
 		this->postResponse(message, response);
 	else if (response.getMethod() == "DELETE")
-		this->deleteResponse(response);
+		this->deleteResponse(message, response);
 	tools.printAnswer(response);
 	this->sendMessage(fd, response.getResponse());
 }
@@ -51,8 +52,11 @@ void	Sender::postResponse( string &message, Response &ref )
 	post.checkError(ref, ref.getStatus());
 }
 
-void	Sender::deleteResponse( Response &ref )
+void	Sender::deleteResponse( string &message, Response &ref )
 {
+	Delete	del(message);
+
+	del.deleteResource();
 	(void)ref;
 }
 

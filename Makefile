@@ -27,7 +27,8 @@ SRC_UTILS =		$(DIR_UTILS)utils.cpp	\
 
 SRC_SENDER	=	$(DIR_SENDER)Response.cpp	\
 				$(DIR_SENDER)Sender.cpp		\
-				$(DIR_SENDER)Post.cpp
+				$(DIR_SENDER)Post.cpp		\
+				$(DIR_SENDER)Delete.cpp
 
 SRC =	$(SRC_MAIN)		\
 		$(SRC_PARSER)	\

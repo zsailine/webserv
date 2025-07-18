@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 09:51:36 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/17 15:22:43 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/18 10:17:22 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ void	Run::handleSocket( int fd, std::vector<Server> &server, int &index )
 void	Run::handleClient( int fd , Server server)
 {
 	Sender		sender;
-	char		buffer[1024];
+	char		buffer[10000];
 	size_t		count = read(fd, buffer, sizeof(buffer));
 	std::string	message(buffer, count);
 	
