@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Sender.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:23:21 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/17 14:16:28 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/21 10:12:03 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,15 @@ void	Sender::handleRequest( std::string message, int fd, Server &server )
 	
 	response.defineStatus();
 	response.set_header(message);
+
+	std::cout << "******************\n"; 
+	std::cout << "path :" << response.getPath() << std::endl;
+	std::cout << "method : " << response.getMethod() << std::endl;
+
+	std::cout << "******************\n";
+
+	
+
 	if (response.getMethod() == "GET")
 	{
 		this->handleGet(server, response);
@@ -46,7 +55,7 @@ void	Sender::handleRequest( std::string message, int fd, Server &server )
 		this->postResponse(message, response);
 	if (response.getMethod() == "DELETE")
 		this->deleteResponse();
-	tools.printAnswer(response);
+	//tools.printAnswer(response);
 	this->sendMessage(fd, response.getResponse());
 }
 
