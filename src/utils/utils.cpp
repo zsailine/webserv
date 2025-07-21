@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:55:45 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/18 14:00:42 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/21 13:06:21 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,12 @@ bool ft_ends_with(const std::string& str, const std::string& suffix)
     return str.compare(str.length() - suffix.length(), suffix.length(), suffix) == 0;
 }
 
+bool ft_starts_with(const std::string& str, const std::string& prefix)
+{
+    if (str.length() < prefix.length())
+        return false;
+    return str.compare(0 , prefix.length(), prefix) == 0;
+}
 int ft_atoi(std::string number)
 {
 	std::stringstream iss(number);

@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:56:23 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/18 14:22:58 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/21 14:27:34 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,11 @@ Error::Error(std::vector<std::string> block)
 	check_value();
 }
 
+Error::Error()
+{
+	init_value();
+	check_value();
+}
 Error	&Error::operator=(const Error &toCopy)
 {
 	_map = toCopy._map;

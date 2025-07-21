@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:56:33 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/18 14:22:06 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/21 14:27:32 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ class Error
 				void	check_value();
 				
 		public:
-				Error(){}
+				Error();
 		 		Error(std::vector<std::string> blocks);
 				Error(const Error &toCopy);
 				~Error(){}
