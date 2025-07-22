@@ -37,26 +37,29 @@ void	Sender::handleRequest( std::string message, int fd, Server &server )
 	response.defineStatus();
 	response.set_header(message);
 
-	std::cout << "******************\n"; 
-	std::cout << "path :" << response.getPath() << std::endl;
-	std::cout << "method : " << response.getMethod() << std::endl;
-
-	std::cout << "******************\n";
-
+	if(response.getPath().find(".php") != std::string::npos)
+	{
+		CGI	cgi(response.getPath(), response.getMethod(), fd);
+		cgi.execute_cgi();
+		std::cout << cgi.getResponse();
+	}
+	else
+	{
+		if (response.getMethod() == "GET")
+		{
+			this->handleGet(server, response);
+			response.run();
+			response.http(response.getStatus(), "");
+		}
+		if (response.getMethod() == "POST")
+			this->postResponse(message, response);
+		if (response.getMethod() == "DELETE")
+			this->deleteResponse();
+		//tools.printAnswer(response);
+		this->sendMessage(fd, response.getResponse());
+	}
 	
 
-	if (response.getMethod() == "GET")
-	{
-		this->handleGet(server, response);
-		response.run();
-		response.http(response.getStatus(), "");
-	}
-	if (response.getMethod() == "POST")
-		this->postResponse(message, response);
-	if (response.getMethod() == "DELETE")
-		this->deleteResponse();
-	//tools.printAnswer(response);
-	this->sendMessage(fd, response.getResponse());
 }
 
 void	Sender::postResponse( string &message, Response &ref )

@@ -23,6 +23,7 @@ class CGI
         std::string _query_string;
         std::string _method;
         std::string _body;
+        std::string _response;
         int         _client_fd;
 
     public:
@@ -32,6 +33,7 @@ class CGI
         void handle_post();
         void execute_cgi();
         char **generate_envp();
+        std::string getResponse();
         ~CGI();
 };
 
