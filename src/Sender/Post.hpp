@@ -6,7 +6,7 @@
 /*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 10:44:50 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/21 09:53:40 by aranaivo         ###   ########.fr       */
+/*   Updated: 2025/07/23 14:50:49 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,13 @@ class Post
 		string											_message;
 		static std::vector< std::map<string, string> >	_simple;
 
-		string	getBody();
 		void	storeFile( string content, size_t head );
 		void	storeData( string content, size_t head );
 		void	parseContent( string content );
-
+		
 	public:
-
+		
+		string	getBody();
 		Post( string message );
 		void	parseRequest();
 		void	checkError( Response &ref, int stat );

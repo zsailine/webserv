@@ -6,7 +6,7 @@
 /*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:23:21 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/21 10:12:03 by aranaivo         ###   ########.fr       */
+/*   Updated: 2025/07/23 10:47:02 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,15 @@ void	Sender::handleRequest( std::string message, int fd, Server &server )
 	response.defineStatus();
 	response.set_header(message);
 
+	std::cout << "++++++++++++++++++\n";
+	std::cout << message << std::endl;
+	std::cout << "++++++++++++++++++\n";
+
+
 	if(response.getPath().find(".php") != std::string::npos)
 	{
-		CGI	cgi(response.getPath(), response.getMethod(), fd);
+		CGI	cgi(message, response.getPath(), response.getMethod(), fd);
 		cgi.execute_cgi();
-		std::cout << cgi.getResponse();
 	}
 	else
 	{

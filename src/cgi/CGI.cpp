@@ -6,17 +6,18 @@
 /*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 09:12:07 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/07/21 10:57:58 by aranaivo         ###   ########.fr       */
+/*   Updated: 2025/07/23 13:28:07 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./CGI.hpp"
 
-CGI::CGI(std::string path, std::string method, int client_fd)
+CGI::CGI(std::string message, std::string path, std::string method, int client_fd)
 {
     _path = path;
     _method = method;
     _client_fd = client_fd;
+    _message = message;
 }
 
 void CGI::execute_cgi()
@@ -96,7 +97,7 @@ void CGI::execute_cgi()
 
 void CGI::retrieve_body()
 {
-
+    Post post(_message);
 }
 
 void CGI::retrieve_query_string()

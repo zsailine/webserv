@@ -6,7 +6,7 @@
 /*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 09:08:49 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/07/21 10:51:40 by aranaivo         ###   ########.fr       */
+/*   Updated: 2025/07/23 10:46:14 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,11 @@ class CGI
         std::string _method;
         std::string _body;
         std::string _response;
+        std::string _message;
         int         _client_fd;
 
     public:
-        CGI(std::string path, std::string method, int client_fd);
+        CGI(std::string message, std::string path, std::string method, int client_fd);
         void retrieve_body();
         void retrieve_query_string();
         void handle_post();
