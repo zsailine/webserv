@@ -21,81 +21,78 @@ CGI::CGI(std::string path, std::string method, int client_fd)
 
 void CGI::execute_cgi()
 {
-    int pipefd[2];
-    pipe(pipefd);
+    int stdout_pipe[2];
+    pipe(stdout_pipe);
+
+    int stdin_pipe[2];
+    if (_method == "POST")
+        pipe(stdin_pipe);
 
     pid_t pid = fork();
     if (pid == 0)
     {
-        char **envp;
-        // Processus fils
-        close(pipefd[0]); // Ferme lecture
+        // === Processus fils ===
 
-        dup2(pipefd[1], STDOUT_FILENO); // Redirige stdout vers pipe
-        close(pipefd[1]);
+        // Redirection STDOUT → stdout_pipe[1]
+        close(stdout_pipe[0]);
+        dup2(stdout_pipe[1], STDOUT_FILENO);
+        close(stdout_pipe[1]);
 
-        // Recuperer le query string
+        // Redirection STDIN si POST
+        if (_method == "POST")
+        {
+            close(stdin_pipe[1]);
+            dup2(stdin_pipe[0], STDIN_FILENO);
+            close(stdin_pipe[0]);
+        }
+
+        // Récupérer les variables d'environnement
         this->retrieve_query_string();
-        
-        // Genrere le env de execve;
-        envp = this->generate_envp();
+        char** envp = this->generate_envp();
 
-        // // Variables d'environnement
-        // setenv("REDIRECT_STATUS", "200", 1);
-        // setenv("SCRIPT_FILENAME", _path.c_str(), 1);
-        // setenv("REQUEST_METHOD", _method.c_str(), 1);
-        // setenv("QUERY_STRING", _query_string.c_str(), 1);
+        const char* php_path = "/usr/bin/php-cgi";
+        char* argv[] = { (char*)"php-cgi", NULL };
 
-        // if (_method == "POST")
-        // {
-        //     char content_length[20];
-        //     sprintf(content_length, "%lu", _body.length());
-        //     setenv("CONTENT_LENGTH", content_length, 1);
-        //     setenv("CONTENT_TYPE", "application/x-www-form-urlencoded", 1);
+        execve(php_path, argv, envp);
 
-        //     // Redirige stdin pour envoyer le body à php-cgi
-        //     int post_pipe[2];
-        //     pipe(post_pipe);
-        //     pid_t post_pid = fork();
-        //     if (post_pid == 0)
-        //     {
-        //         // Petit-fils : écrit le body dans stdin du php-cgi
-        //         close(post_pipe[0]);
-        //         write(post_pipe[1], _body.c_str(), _body.length());
-        //         close(post_pipe[1]);
-        //         exit(0);
-        //     }
-        //     else
-        //     {
-        //         // Fils : lit depuis post_pipe[0] et l'assigne à stdin
-        //         close(post_pipe[1]);
-        //         dup2(post_pipe[0], STDIN_FILENO);
-        //         close(post_pipe[0]);
-        //     }
-        // }
-
-        execlp("php-cgi", "php-cgi", NULL);
-
-        // Si execlp échoue
-        perror("execlp failed");
+        // Si execve échoue :
+        perror("execve failed");
         exit(1);
     }
     else
     {
-        // Processus père : récupère la réponse et l'envoie au client
-        close(pipefd[1]); // Ferme écriture
+        // === Processus père ===
 
-        char buffer[4096];
-        ssize_t count;
-        while ((count = read(pipefd[0], buffer, sizeof(buffer))) > 0)
+        // Fermeture des extrémités inutiles
+        close(stdout_pipe[1]);
+        if (_method == "POST")
         {
-            write(_client_fd, buffer, count);
+            close(stdin_pipe[0]);
+            write(stdin_pipe[1], _body.c_str(), _body.size()); // Envoie du body POST
+            close(stdin_pipe[1]);
         }
 
-        close(pipefd[0]);
+        // Lecture de la sortie CGI
+        std::string response;
+        char buffer[4096];
+        ssize_t count;
+
+        while ((count = read(stdout_pipe[0], buffer, sizeof(buffer))) > 0)
+        {
+            response.append(buffer, count);
+        }
+
+        close(stdout_pipe[0]);
         waitpid(pid, NULL, 0);
+
+        // Envoie de la réponse au client (préfixée d'une ligne de statut HTTP)
+        write(_client_fd, "HTTP/1.1 200 OK\r\n", 17);
+        write(_client_fd, response.c_str(), response.size());
+
+        _response = response; // Pour log ou debug
     }
 }
+
 
 void CGI::retrieve_body()
 {
@@ -125,11 +122,36 @@ void CGI::handle_post()
 char ** CGI::generate_envp()
 {
     std::vector<std::string> env_strings;
+    char buf[1024];
+    std::string script_path;
+
+    if (getcwd(buf, sizeof(buf)) == NULL)
+    {
+        std::cout << "An error has occured on path " << std::endl;
+        return NULL;
+    }
+
+    script_path = std::string(buf) + "/www/website1/cgi" + _path;
+
+   if (access(script_path.c_str(), F_OK) != 0) 
+    {
+    std::cerr << "PHP script not found at: " << script_path << std::endl;
+    }
 
     env_strings.push_back("REDIRECT_STATUS=200");
     env_strings.push_back("REQUEST_METHOD=" + _method);
-    env_strings.push_back("SCRIPT_FILENAME=" + _path);
+    env_strings.push_back("SCRIPT_FILENAME=" + script_path);
     env_strings.push_back("QUERY_STRING=" + _query_string);
+    env_strings.push_back("GATEWAY_INTERFACE=CGI/1.1");
+    env_strings.push_back("SERVER_PROTOCOL=HTTP/1.1");
+    env_strings.push_back("SERVER_SOFTWARE=MiniCPPServer/1.0");
+    env_strings.push_back("REMOTE_ADDR=127.0.0.1");
+
+    // if (_method == "POST")
+    // {
+    //     env_strings.push_back("CONTENT_TYPE=" + _content_type);   // exemple : application/x-www-form-urlencoded
+    //     env_strings.push_back("CONTENT_LENGTH=" + std::to_string(_content_length));
+    // }
 
     char **envp = (char **)malloc(sizeof(char *) * (env_strings.size() + 1));
     if (!envp)
@@ -143,6 +165,12 @@ char ** CGI::generate_envp()
     envp[env_strings.size()] = NULL;
 
     return envp;
+}
+
+
+std::string CGI::getResponse()
+{
+    return (_response);
 }
 
 CGI::~CGI()
