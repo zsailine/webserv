@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 10:33:07 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/16 14:34:32 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/25 09:52:58 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ void	Router::init_value()
 	_map.insert(std::pair<std::string, std::string>("root", ""));
 	_map.insert(std::pair<std::string, std::string>("allowedMethods", ""));
 	_map.insert(std::pair<std::string, std::string>("index", ""));
+	_map.insert(std::pair<std::string, std::string>("cgi_root", ""));
+	_map.insert(std::pair<std::string, std::string>("upload_directory", ""));
 }
 
 static int oneValue(std::string const &name, std::string const &key, std::string &str, std::string &value)
@@ -90,6 +92,29 @@ static int valid(std::string index, std::string type ,std::string str)
 	return (1);
 }
 
+static void is_directory (std::string toCmp, std::string const &name, std::string type)
+{
+    DIR *dirptr;
+
+	if (toCmp.size() == 0)
+		return ;
+    if (access ( toCmp.c_str(), F_OK ) != -1 )
+	{
+        if ((dirptr = opendir (toCmp.c_str())) != NULL)
+            closedir (dirptr);
+        else
+		{
+			std::cerr << "[ Route " << name << " ]\n" << "Error: " << type << " is not valid\n";
+			throw std::exception();
+		}
+    }
+	else 
+	{
+        std::cerr << "[ Route " << name << " ]\n" << "Error: " << type << " is not valid\n";
+		throw std::exception();
+    }
+}
+
 void	Router::check_value(std::string const &name)
 {
 	if (_map["url"].size() == 0 || _map["url"][0] != '/')
@@ -109,8 +134,13 @@ void	Router::check_value(std::string const &name)
 	}
 	if (_map["index"].size() == 0)
 		_map["index"] = "index.html";
+	if (_map["upload_directory"].size() == 0)
+		_map["upload_directory"] = "./upload";
 	twice(name, "Route", _map["allowedMethods"]);
 	valid(name, "Route", _map["allowedMethods"]);
+	is_directory(_map["root"], name, "root");
+	is_directory(_map["cgi_root"], name, "cgi_root");
+	is_directory(_map["upload_directory"], name, "upload_directory");
 }
 
 Router::Router(const Router &toCopy)

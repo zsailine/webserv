@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:01:59 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/14 15:58:16 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/25 11:47:08 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,8 @@ void Server::closeFds()
 	}
 	for (size_t j = 0; j < client_fds.size(); j++)
 	{
-		close(client_fds[j]);
+		if (client_fds[j] != -1)
+			close(client_fds[j]);
 	}
 }
 
@@ -155,6 +156,7 @@ Server::Server(const Server &toCopy)
 	_socket = toCopy._socket;
 	_map = toCopy._map;
 	_routes = toCopy._routes;
+	errorPages = toCopy.errorPages;
 	index = toCopy.index;
 }
 
@@ -179,6 +181,7 @@ const Server & Server::operator=(const Server & obj)
 		_map = obj._map;
 		_routes = obj._routes;
 		_socket = obj._socket;
+		errorPages = obj.errorPages;
 		index = obj.index;
 		client_fds = obj.client_fds;
 	}
@@ -272,7 +275,24 @@ int Server::check_url(std::string url)
 	return (index);
 }
 
+void				Server::setfd(int target, int toChange)
+{
+	std::vector<int>::iterator it = std::find(client_fds.begin(), client_fds.end(), target);
+	if (it != client_fds.end())
+		*it = toChange;
+}
+
 std::vector<int> Server::getClientFds()
 {
 	return (client_fds);
+}
+
+std::string			Server::getError(int key)
+{
+	return (this->errorPages.getError(key));
+}
+
+void				Server::setError(Error &error)
+{
+	errorPages = error;
 }

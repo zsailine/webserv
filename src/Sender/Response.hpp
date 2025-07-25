@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 09:53:09 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/07/17 13:51:43 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/18 11:57:33 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,10 @@ class Response
         void        set_header(const std::string &req);
         void        defineStatus();
         void        getExtension();
-        void        set_path(std::string index, std::string url, std::string path);
         void        http( int status, string file );
         string      description ( int status );
         void        run();
-
+        
         string      getPath() const { return this->_path; }
         string      getContent() const { return this->_content; } 
         string      getMime() const { return this->_mime; }
@@ -51,7 +50,10 @@ class Response
         string      getVersion() const { return this->_version; } 
         string      getMethod() const { return this->_method; }
         int         getStatus() const { return this->_status; }
-
+        
+        void        set_path(std::string index, std::string url, std::string path);
+        void        set_path(std::string path);
+        void        set_status(int status);
         ~Response() {}
 };
 
