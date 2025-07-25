@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 14:53:57 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/25 11:21:21 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/25 14:00:45 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ class Server
 	int 				check_url(std::string url);
 	std::string 		getValue(int index, std::string key);
 	std::string			getError(int key);
+	std::string			get(std::string type);
 	void				setError(Error &error);
 	std::vector<int> 	getClientFds();
 	void				setfd(int target, int toChange);

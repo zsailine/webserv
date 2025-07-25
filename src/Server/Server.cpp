@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:01:59 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/25 11:47:08 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/25 14:04:11 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,13 @@ void	Server::init_value()
 	_map.insert(std::pair<std::string, std::string>("listen", ""));
 	_map.insert(std::pair<std::string, std::string>("server_name", ""));
 	_map.insert(std::pair<std::string, std::string>("routes", ""));
+	_map.insert(std::pair<std::string, std::string>("maxBodySize", ""));
 }
 
 static int oneValue(int number, std::string const &key, std::string &str, std::string &value)
 {
 	size_t pos = str.find('=');
-    if (key.compare("host") == 0)
+    if (key.compare("maxBodySize") == 0)
 	{
 		std::string value = str.substr(pos + 1);
 		if (nbr_of_words(value) > 1)
@@ -123,9 +124,21 @@ void	Server::check_value(int number)
 		std::cerr << "[ Server " << number << " ]\n" << "Error: routes are empty\n";
 		throw std::exception();
 	}
+	if (_map["maxBodySize"].size() == 0)
+		_map["maxBodySize"] = "10000";
+	if (!ft_isdigit(_map["maxBodySize"]))
+	{
+		std::cerr << "[ Server " << number << " ]\n" << "Error: maxBodySize is not a number\n";
+		throw std::exception();
+	}
 	ft_listen();
 	twice(index, "Server", _map["routes"]);
 	twice(index, "Server", _map["server_name"]);
+}
+
+std::string			Server::get(std::string type)
+{
+	return (_map[type]);
 }
 
 int Server::getIndex() const
