@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:01:59 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/18 14:28:13 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/25 11:22:29 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -272,6 +272,13 @@ int Server::check_url(std::string url)
 		i++;
 	}
 	return (index);
+}
+
+void				Server::setfd(int target, int toChange)
+{
+	std::vector<int>::iterator it = std::find(client_fds.begin(), client_fds.end(), target);
+	if (it != client_fds.end())
+		*it = toChange;
 }
 
 std::vector<int> Server::getClientFds()

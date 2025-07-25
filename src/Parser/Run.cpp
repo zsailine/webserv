@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 09:51:36 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/21 15:06:31 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/25 11:32:47 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,20 +51,25 @@ void	Run::run()
 				this->handleSocket(fd, server, index);
 			else
 			{
-				Server tmp;
-				for (size_t i = 0; i < server.size(); i++)
+				size_t i = 0; 
+				int flag = 1;
+				while (i < server.size() && flag)
 				{
 					std::vector<int> fds = server[i].getClientFds();
 					for (size_t j = 0; j < fds.size(); j++)
 					{
 						if (fd == fds[j])
 						{
-							tmp = server[i];
-							break;
+							flag = 0;
+							break ;
 						}
 					}
+					if (flag)
+						i++;
 				}
-				this->handleClient(fd, tmp);
+				this->handleClient(fd, server[i]);
+				server[i].setfd(fd, -1);
+				close(fd);
 			}
 		}
 	}
@@ -120,7 +125,7 @@ void	Run::handleSocket( int fd, std::vector<Server> &server, int &index )
 	addEpollEvent(this->_epoll, client_fd);
 }
 
-void	Run::handleClient( int fd , Server server)
+void	Run::handleClient( int fd , Server &server)
 {
 	static std::string before;
 	Sender		sender;
@@ -129,5 +134,4 @@ void	Run::handleClient( int fd , Server server)
 	std::string	message(buffer, count);
 	
 	before = sender.handleRequest(message, fd, server, before);
-	close(fd);
 }

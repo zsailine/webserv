@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 14:53:57 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/18 13:59:48 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/25 11:21:21 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ class Server
 	std::vector<int>					_socket;
 	Error								errorPages;
 	int 								index;
+	std::vector<int> 					client_fds;
 	
-	std::vector<int> client_fds;
 	void		init_value();
 	void		change_value(int number, std::string &key, std::string &value);
 	int			get_type(int number, std::string str, std::string &type, std::string &value);
@@ -70,6 +70,7 @@ class Server
 	std::string			getError(int key);
 	void				setError(Error &error);
 	std::vector<int> 	getClientFds();
+	void				setfd(int target, int toChange);
 };
 
 int valid_host(std::string &str);
