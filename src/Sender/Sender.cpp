@@ -13,27 +13,57 @@
 #include "Sender.hpp"
 #include "class.hpp"
 
-void	Sender::handleGet(Server &server, Response &response)
+static void	ft_Error(Server &server, Response &response)
 {
-	// int				status = 200;
-	int url = server.check_url(response.getPath());
-	if (url == -1)
-		return;
-	std::string path = server.getValue(url, "root");
-
-	response.set_path(server.getValue(url, "index"), server.getValue(url, "url"),  path);
-	// response.get_file_content();
-	// response.get_mime_type();
-	// if (open(response.get_path().c_str(), O_RDONLY) < 0)
-	// 	status = 404;
-	// response.make_Http_response(status);
-	// send(fd, response.get_response().c_str(), response.get_response().size(), 0);
+	if (access(response.getPath().c_str(), F_OK) != 0)
+	{
+		response.set_status(404);
+		response.set_path(server.getError(404));
+		return ;
+	}
+	if (response.getPath().find("..") != std::string::npos || access(response.getPath().c_str(), R_OK) != 0)
+	{
+		response.set_status(403);
+		response.set_path(server.getError(403));
+		return ;
+	}
 }
 
-void	Sender::handleRequest( std::string message, int fd, Server &server )
+static int ft_error_before(Server &server, Response &response)
+{
+	int url = server.check_url(response.getPath());
+	if (url == -1)
+	{
+		response.set_path(server.getError(404));
+		response.set_status(404);
+		return (url);
+	}
+	if (server.getValue(url, "allowedMethods").find("GET") == std::string::npos)
+	{
+		response.set_path(server.getError(403));
+		response.set_status(403);
+		return (-1);
+	}
+	return (url);
+}
+
+std::string	Sender::handleGet(Server &server, Response &response)
+{
+	int url = ft_error_before(server, response);
+	if (url == -1)
+		return "";
+	std::string path = server.getValue(url, "root");
+	response.set_path(server.getValue(url, "index"), server.getValue(url, "url"),  path);
+	ft_Error(server, response);
+	return (server.getValue(url, "allowedMethods"));
+}
+
+std::string	Sender::handleRequest( std::string message, int fd, Server &server, std::string before )
 {
 	Tools		tools;
 	Response	response(message);
+	std::string	before2;
+	(void)before;
 	
 	response.defineStatus();
 	response.set_header(message);
@@ -53,21 +83,17 @@ void	Sender::handleRequest( std::string message, int fd, Server &server )
 	}
 	else
 	{
-		if (response.getMethod() == "GET")
-		{
-			this->handleGet(server, response);
-			response.run();
-			response.http(response.getStatus(), "");
-		}
+		before2 = this->handleGet(server, response);
+		response.run();
+		response.http(response.getStatus(), "");
 		if (response.getMethod() == "POST")
-			this->postResponse(message, response);
+		this->postResponse(message, response);
 		if (response.getMethod() == "DELETE")
-			this->deleteResponse();
-		//tools.printAnswer(response);
+		this->deleteResponse();
+		tools.printAnswer(response);
 		this->sendMessage(fd, response.getResponse());
+		return (before2);
 	}
-	
-
 }
 
 void	Sender::postResponse( string &message, Response &ref )

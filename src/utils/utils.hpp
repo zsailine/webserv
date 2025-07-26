@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 10:50:05 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/17 13:00:40 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/21 11:28:43 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,18 @@
 
 #define UTILS_HPP
 
-#include "class.hpp"
+// #include "class.hpp"
 #include "lib.hpp"
 
 int		nbr_of_words(std::string const &str);
 int		isWord(std::string const &str);
 void	RemoveWhiteSpace(std::string& str);
-int		isSocket(int fd, std::vector<Server> server);
 bool	ft_ends_with(const std::string& str, const std::string& suffix);
+bool	ft_starts_with(const std::string& str, const std::string& prefix);
 int		isDirectory(std::string str);
+int 	ft_exist(std::string path);
+int		ft_atoi(std::string number);
+int		ft_isdigit(std::string &str);
+int		afterEquals(int pos, std::string str);
 
 #endif
