@@ -120,6 +120,12 @@ void CGI::handle_post()
 
 }
 
+std::string to_string(int value) {
+    std::ostringstream oss;
+    oss << value;
+    return oss.str();
+}
+
 char ** CGI::generate_envp()
 {
     std::vector<std::string> env_strings;
@@ -134,9 +140,9 @@ char ** CGI::generate_envp()
 
     script_path = std::string(buf) + "/www/website1/cgi" + _path;
 
-   if (access(script_path.c_str(), F_OK) != 0) 
+    if (access(script_path.c_str(), F_OK) != 0) 
     {
-    std::cerr << "PHP script not found at: " << script_path << std::endl;
+        std::cerr << "PHP script not found at: " << script_path << std::endl;
     }
 
     env_strings.push_back("REDIRECT_STATUS=200");
@@ -148,11 +154,11 @@ char ** CGI::generate_envp()
     env_strings.push_back("SERVER_SOFTWARE=MiniCPPServer/1.0");
     env_strings.push_back("REMOTE_ADDR=127.0.0.1");
 
-    // if (_method == "POST")
-    // {
-    //     env_strings.push_back("CONTENT_TYPE=" + _content_type);   // exemple : application/x-www-form-urlencoded
-    //     env_strings.push_back("CONTENT_LENGTH=" + std::to_string(_content_length));
-    // }
+    if (_method == "POST")
+    {
+        env_strings.push_back("CONTENT_TYPE=" + _content_type);   // exemple : application/x-www-form-urlencoded
+        env_strings.push_back("CONTENT_LENGTH=" + to_string(_content_length));
+    }
 
     char **envp = (char **)malloc(sizeof(char *) * (env_strings.size() + 1));
     if (!envp)
@@ -172,6 +178,21 @@ char ** CGI::generate_envp()
 std::string CGI::getResponse()
 {
     return (_response);
+}
+
+void CGI::setBody(std::string body)
+{
+    _body = body;
+}
+
+void CGI::setContentType(std::string content_type)
+{
+    _content_type = content_type;
+}
+
+void CGI::setContentLength(size_t content_length)
+{
+    _content_length = content_length;
 }
 
 CGI::~CGI()

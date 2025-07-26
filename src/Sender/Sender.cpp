@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "Sender.hpp"
+#include "class.hpp"
 
 void	Sender::handleGet(Server &server, Response &response)
 {
@@ -45,6 +46,9 @@ void	Sender::handleRequest( std::string message, int fd, Server &server )
 	if(response.getPath().find(".php") != std::string::npos)
 	{
 		CGI	cgi(message, response.getPath(), response.getMethod(), fd);
+
+		PostCgi post(message);
+		post.applyToCgi(cgi);
 		cgi.execute_cgi();
 	}
 	else
