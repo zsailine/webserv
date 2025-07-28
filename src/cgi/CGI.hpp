@@ -23,6 +23,8 @@ class CGI
         std::string _query_string;
         std::string _method;
         std::string _body;
+        std::string _content_type;
+        size_t      _content_length;
         std::string _response;
         std::string _message;
         int         _client_fd;
@@ -35,6 +37,9 @@ class CGI
         void execute_cgi();
         char **generate_envp();
         std::string getResponse();
+        void setBody(std::string body);
+        void setContentType(std::string content_type);
+        void setContentLength(size_t content_length);
         ~CGI();
 };
 

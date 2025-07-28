@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 09:50:39 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/11 15:21:43 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/25 11:25:29 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ class Run
 		void	run();
 		void	runEpoll( std::vector<Server> &server );
 		void	handleSocket( int fd, std::vector<Server> &server, int &index );
-		void	handleClient( int fd , Server server);
+		void	handleClient( int fd , Server &server);
 };
 
 #endif

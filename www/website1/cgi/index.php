@@ -12,6 +12,11 @@ header("Content-type: text/html; charset=UTF-8");
     <title>Webserv</title>
 </head>
 <body>
+    <?php
+        echo "<pre>";
+        print_r($_POST); // Affiche les données POST
+        echo "</pre>";
+    ?>
     <div id="main">
         <h1>Hello webserv !</h1>
         <form method="POST" action="/index.php" >

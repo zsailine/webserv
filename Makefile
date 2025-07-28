@@ -16,6 +16,7 @@ DIR_CGI =    src/cgi/
 SRC_MAIN =		$(DIR_MAIN)main.cpp
 
 SRC_PARSER =	$(DIR_PARSER)Parser.cpp	\
+				$(DIR_PARSER)Error.cpp  \
 				$(DIR_PARSER)Run.cpp
 				
 SRC_SERVER = 	$(DIR_SERVER)Server.cpp	\
@@ -24,7 +25,6 @@ SRC_SERVER = 	$(DIR_SERVER)Server.cpp	\
 				$(DIR_SERVER)socket.cpp	\
 
 SRC_UTILS =		$(DIR_UTILS)utils.cpp	\
-				$(DIR_UTILS)socket.cpp	\
 				$(DIR_UTILS)epoll.cpp	\
 				$(DIR_UTILS)Tools.cpp
 
@@ -32,7 +32,8 @@ SRC_SENDER	=	$(DIR_SENDER)Response.cpp	\
 				$(DIR_SENDER)Sender.cpp		\
 				$(DIR_SENDER)Post.cpp
 
-SRC_CGI    =    $(DIR_CGI)CGI.cpp 
+SRC_CGI    =    $(DIR_CGI)CGI.cpp \
+				$(DIR_CGI)PostCGI.cpp
 
 SRC =	$(SRC_MAIN)		\
 		$(SRC_PARSER)	\
