@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 14:12:25 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/30 09:54:14 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/30 11:14:43 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,10 @@ sockaddr_in init_adress(std::string str)
 	sockaddr_in adress;
 	std::string host = str.substr(0, str.find(':'));
 	std::string port = str.substr(str.find(':') + 1);
+	adress.sin_addr.s_addr = INADDR_NONE;
 	if (getaddrinfo(host.c_str(), port.c_str(), NULL, &result) != 0)
 	{
-		std::cerr << "Error Configuring socket for host " << host << " in port " << port <<  std::endl;
+		std::cerr << "Error configuring socket for host " << host << " in port " << port <<  std::endl;
 		return adress;
 	}
 	struct sockaddr_in *tmp = (struct sockaddr_in *)result->ai_addr;
@@ -31,34 +32,31 @@ sockaddr_in init_adress(std::string str)
 	return adress;
 }
 
+static int ft_print(int sock, std::string str, int index)
+{
+	if (str.size())
+		std::cout << str << " " << index << std::endl;
+	if (sock != -1)
+		close(sock);
+	return (0);
+}
 int Server::socketer(std::string tmp)
 {
 	int sock;
 	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == -1)
-	{
-		std::cerr << "Error Configuring socket for Server " << index << std::endl; 
-		return (0);
-	}
+		return (ft_print(-1, "Error Configuring socket for Server", index));
+	
 	int opt = 1;
 	if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) != 0)
-			{
-				std::cerr << "Error configuring socket for Server " << index << std::endl; 
-				return (0);
-			}
+		return (ft_print(sock,"Error configuring socket for Server ", index)); 
+
 	sockaddr_in adresse = init_adress(tmp);
+	if (adresse.sin_addr.s_addr == INADDR_NONE)
+		return (ft_print(sock, "", index)); 
+	
 	if (bind(sock, (sockaddr *)&adresse, sizeof(adresse)) != 0)
-	{
-		close (sock);
-		std::cerr << "Error binding socket for Server " << index << std::endl; 
-		fprintf(stderr, "Message d'erreur : %s\n", strerror(errno)); // Affiche le message d'erreur associé à errno
-		return (0);
-	}
-	if (listen(sock, 2) != 0)
-	{
-		close (sock);
-		std::cerr << "Error listening socket for Server " << index << std::endl; 
-		return (0);
-	}
+		return (ft_print(sock,"Error binding socket for Server ", index)); 
+	
 	return (sock);
 }
 

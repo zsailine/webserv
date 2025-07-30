@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 09:53:09 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/07/17 13:51:43 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/30 11:08:07 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,9 @@ class Response
         string      getVersion() const { return this->_version; } 
         string      getMethod() const { return this->_method; }
         int         getStatus() const { return this->_status; }
+
+        void        set_status( int status ) { this->_status = status; }
+        void        set_path( std::string path ) { this->_path = path; }
 
         ~Response() {}
 };

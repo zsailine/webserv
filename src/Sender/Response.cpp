@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 09:53:26 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/07/17 14:17:02 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/30 11:22:24 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 Response::Response( std::string const &message ) : _message(message)
 {
 	std::string		line;
-	std::ifstream	file("./files/mimes.conf");
+	std::ifstream	file("./files/conf/mimes.conf");
 
 	if (not file.is_open())
 		return ;

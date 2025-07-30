@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 10:47:32 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/30 10:50:26 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/30 11:17:34 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,27 +145,27 @@ void	Post::checkError( Response &ref, int stat )
 {
 	if (isEmpty())
 	{
-		ref.http(stat, "./files/empty.html");
+		ref.http(stat, "./files/message/empty.html");
 		return ;
 	}
 	if (not getFile() && not getData())
 	{
-		ref.http(stat, "./files/newData.html");
+		ref.http(stat, "./files/message/newData.html");
 		return ;
 	}
 	if (getFile() && getData())
 	{
-		ref.http(stat, "./files/presentData.html");
+		ref.http(stat, "./files/message/presentData.html");
 		return ;
 	}
 	if (getFile() && not getData())
 	{
-		ref.http(stat, "./files/presentFile.html");
+		ref.http(stat, "./files/message/presentFile.html");
 		return ;
 	}
 	if (getData() && not getFile())
 	{
-		ref.http(stat, "./files/presentData.html");
+		ref.http(stat, "./files/message/presentData.html");
 		return ;
 	}
 }
