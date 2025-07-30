@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 09:51:36 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/30 15:00:19 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/30 15:45:05 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,5 @@ void	Run::handleClient( int fd , Server &server)
 	static string	before;
 
 	message = tools.readChunk(fd);
-	// std::cout << message << std::endl;
 	before = sender.handleRequest(message, fd, server);
 }

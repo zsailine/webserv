@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 09:58:05 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/30 15:15:55 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/30 15:44:52 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,20 +97,17 @@ string	Tools::getType( string message, string toFind, string end )
 
 string	Tools::readChunk( int fd )
 {
-	int	i = 0;
 	string	result = "";
 
 	while (true)
 	{
 		char	buffer[SIZE];
 		size_t	byte = read(fd, buffer, SIZE);
-		if (i == 2)
+		if (byte == 0)
 			break;
-		std::cout << RED << byte << "           " << i << RESET << std::endl;
 		result.append(buffer, byte);
 		if (result.find("\r\n\r\n") && result.find("Content-Length:") == string::npos)
 			break;
-		i++;
 	}
 	return result;
 }
