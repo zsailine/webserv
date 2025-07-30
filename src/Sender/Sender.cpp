@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:23:21 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/30 11:19:00 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/30 15:00:02 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,10 @@ string	Sender::handleRequest( std::string message, int fd, Server &server )
 		response.run();
 		response.http(response.getStatus(), "");
 	}
-	else if (response.getMethod() == "POST")
+	else if (response.getMethod() == "POST") {
+		return "";
 		this->postResponse(message, response, server);
+	}
 	else if (response.getMethod() == "DELETE")
 		this->deleteResponse(message, response, server);
 	tools.printAnswer(response);

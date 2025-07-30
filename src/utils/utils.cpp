@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:55:45 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/25 09:40:18 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/30 13:46:57 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,11 @@ bool ft_starts_with(const std::string& str, const std::string& prefix)
         return false;
     return str.compare(0 , prefix.length(), prefix) == 0;
 }
-int ft_atoi(std::string number)
+
+long long ft_atoi(std::string number)
 {
 	std::stringstream iss(number);
-	int tmp;
+	long long tmp;
 	iss >> tmp;
 	return (tmp);
 }

@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 09:52:58 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/17 13:13:34 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/30 13:45:06 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,11 @@ class Tools
 
 		Tools() {}
 		~Tools() {}
+		string	readChunk( int fd );
 		string	readFile( string path );
 		string	getType( string message, string toFind, string end );
-		void	printLogs( string method, string path, string version );
 		void	printAnswer( Response &ref );
+		void	printLogs( string method, string path, string version );
 		void	writeDir( string file, std::vector< std::map<string, string> > c );
 		
 		template<typename T>
