@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 14:53:57 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/17 13:59:46 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/25 16:17:21 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ class Server
 		std::vector<int> 	&getSocket();
 		int 				getIndex() const;
 		void				closeFds();
+		std::string				get( std::string type );
 		void				addClient(int fd);
 		std::vector<Router> &getRoutes();
 		int 				check_url(std::string url);

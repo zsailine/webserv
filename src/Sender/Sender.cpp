@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:23:21 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/18 11:18:07 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/30 10:50:35 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,27 +37,27 @@ void	Sender::handleRequest( std::string message, int fd, Server &server )
 		response.http(response.getStatus(), "");
 	}
 	else if (response.getMethod() == "POST")
-		this->postResponse(message, response);
+		this->postResponse(message, response, server);
 	else if (response.getMethod() == "DELETE")
-		this->deleteResponse(message, response);
+		this->deleteResponse(message, response, server);
 	tools.printAnswer(response);
 	this->sendMessage(fd, response.getResponse());
 }
 
-void	Sender::postResponse( string &message, Response &ref )
+void	Sender::postResponse( string &message, Response &ref, Server &server )
 {
 	Post	post(message);
 
-	post.parseRequest();
+	post.parseRequest(server);
 	post.checkError(ref, ref.getStatus());
 }
 
-void	Sender::deleteResponse( string &message, Response &ref )
+void	Sender::deleteResponse( string &message, Response &ref, Server &server )
 {
 	Delete	del(message);
 
-	del.deleteResource();
-	(void)ref;
+	del.deleteResource(server);
+	ref.http(ref.getStatus(), "./files/delete.html");
 }
 
 void	Sender::sendMessage( int fd, string message )

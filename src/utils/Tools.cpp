@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 09:58:05 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/17 14:18:41 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/30 10:33:28 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,10 @@ void	Tools::writeDir( string file, std::vector< std::map<string, string> > c )
 	for (size_t i = 0; i < c.size(); i++)
 	{
 		for (it = c[i].begin(); it != c[i].end(); ++it)
-			oss << it->first << "=" << it->second << " ";
+		{
+			if (it->first != "host")
+				oss << it->first << "=" << it->second << " ";
+		}
 		oss << std::endl;
 	}
 	write(fd, oss.str().c_str(), oss.str().size());

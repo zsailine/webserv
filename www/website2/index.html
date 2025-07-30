@@ -32,7 +32,7 @@
             function deleteResource(event) {
               event.preventDefault();
               const name = document.getElementById('name').value;
-              fetch('/resource/' + encodeURIComponent(name), {
+              fetch('/name/' + encodeURIComponent(name), {
                 method: 'DELETE'
               })
             }

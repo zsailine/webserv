@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 10:44:50 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/18 10:45:17 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/25 16:22:53 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,17 +27,17 @@ class Post
 
 		string	getBody();
 		void	storeFile( string content, size_t head );
-		void	storeData( string content, size_t head );
-		void	parseContent( string content );
+		void	storeData( string content, size_t head, Server &server );
+		void	parseContent( string content, Server &server );
 
 	public:
 
 		Post() {}
 		Post( string message );
-		void	parseRequest();
+		void	parseRequest( Server &server );
 		void	checkError( Response &ref, int stat );
-		void	parseSimple( string &body );
-		void	parseComplex( string &body );
+		void	parseSimple( string &body, Server &server );
+		void	parseComplex( string &body, Server &server );
 		virtual ~Post() {}
 
 		bool	getData() const { return this->_stored[0]; }

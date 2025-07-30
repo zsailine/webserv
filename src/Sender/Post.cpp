@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 10:47:32 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/18 10:17:54 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/30 10:50:26 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 std::vector< std::map<string, string> >	Post::_simple;
 
-void	Post::parseRequest()
+void	Post::parseRequest( Server &server)
 {
 	Tools	tools;
 	string	type = tools.getType(this->_message,
@@ -22,14 +22,13 @@ void	Post::parseRequest()
 	string	body = getBody();
 
 	if (type == "application/x-www-form-urlencoded")
-		this->parseSimple(body);
+		this->parseSimple(body, server);
 	else
-		this->parseComplex(body);
+		this->parseComplex(body, server);
 }
 
-void	Post::parseSimple( string &body )
+void	Post::parseSimple( string &body, Server &server )
 {
-	Tools						tools;
 	string						token, key, value;
 	std::map<string, string>	tmp;
 	std::istringstream			iss(body);
@@ -38,11 +37,12 @@ void	Post::parseSimple( string &body )
 	{
 		int	index = token.find('=') + 1;
 		value = token.c_str() + index;
-		key = token.substr(0, index);
+		key = token.substr(0, index - 1);
 		tmp.insert(std::pair<string, string>(key, value));
 		if (value == "")
 			this->_empty = true;
 	}
+	tmp.insert(std::pair<string, string>("host", server.get("listen")));
 	if ((this->_simple.size() == 0 && not this->_empty) ||
 		(find(_simple.begin(), _simple.end(), tmp) == _simple.end()
 		&& not this->_empty))
@@ -50,11 +50,11 @@ void	Post::parseSimple( string &body )
 	else
 		this->_stored[0] = true;
 	tmp.clear();
-	tools.writeDir("upload/data.txt", this->_simple);
 }
 
-void	Post::parseComplex( string &body )
+void	Post::parseComplex( string &body, Server &server )
 {
+	(void)server;
 	Tools	tools;
 	string	boundary = tools.getType(this->_message, "boundary", "\r\n");
 	string	multi = tools.getType(this->_message, "Content-Type:", ";");
@@ -74,25 +74,24 @@ void	Post::parseComplex( string &body )
 		if (second == std::string::npos)
 			break;
 		toParse = body.substr(first, second - first);
-		this->parseContent(toParse);
+		this->parseContent(toParse, server);
 		i = second;
 	}
 }
 
-void	Post::parseContent( string content )
+void	Post::parseContent( string content, Server &server )
 {
 	Tools	tools;
 	size_t	head = content.find("\r\n\r\n");
 	string	header = content.substr(0, head);
-	string	name = tools.getType(header, "name", ";");
 	
-	if (name != "\"myFile\"")
-		this->storeData(content, head);
+	if (header.find("filename=") != string::npos)
+		this->storeData(content, head, server);
 	else
 		this->storeFile(content, head);
 }
 
-void	Post::storeData( string content, size_t head )
+void	Post::storeData( string content, size_t head, Server &server )
 {
 	Tools	tools;
 	string	name = tools.getType(content, "name=", "\"\r\n");
@@ -108,7 +107,10 @@ void	Post::storeData( string content, size_t head )
 	if ((this->_simple.size() == 0 && not this->_empty) ||
 		(find(_simple.begin(), _simple.end(), tmp) == _simple.end()
 		&& not this->_empty))
+	{
+		tmp.insert(std::pair<string, string>("host", server.get("listen")));
 		this->_simple.push_back(tmp);
+	}
 	else
 		this->_stored[0] = true;
 	tmp.clear();
