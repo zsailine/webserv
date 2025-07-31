@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 09:52:58 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/30 13:45:06 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/31 14:21:34 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "lib.hpp"
 
 class Response;
+class Body;
 
 class Tools
 {
@@ -26,10 +27,9 @@ class Tools
 
 		Tools() {}
 		~Tools() {}
-		string	readChunk( int fd );
 		string	readFile( string path );
 		string	getType( string message, string toFind, string end );
-		void	printAnswer( Response &ref );
+		void	printAnswer( Body &body, Response &ref );
 		void	printLogs( string method, string path, string version );
 		void	writeDir( string file, std::vector< std::map<string, string> > c );
 		

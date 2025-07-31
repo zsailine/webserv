@@ -6,13 +6,11 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 09:58:05 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/30 15:44:52 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/31 14:20:26 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Tools.hpp"
-
-#define SIZE 4096
 
 void	Tools::printLogs( string method, string path, string version )
 {
@@ -30,19 +28,19 @@ void	Tools::printLogs( string method, string path, string version )
 	std::cout << RESET;
 }
 
-void	Tools::printAnswer( Response &ref )
+void	Tools::printAnswer( Body &body, Response &ref )
 {
 	string	intro;
 
-	if (ref.getMethod() != "GET" && ref.getMethod() != "POST" && ref.getMethod() != "DELETE")
+	if (body.getMethod() != "GET" && body.getMethod() != "POST" && body.getMethod() != "DELETE")
 		return ;
-	if (ref.getMethod() == "GET")
+	if (body.getMethod() == "GET")
 		intro = string(CYAN "ANSWER GET\t:\t");
-	if (ref.getMethod() == "POST")
+	if (body.getMethod() == "POST")
 		intro = string(GREEN "ANSWER POST\t:\t");
-	if (ref.getMethod() == "DELETE")
+	if (body.getMethod() == "DELETE")
 		intro = string(YELLOW "ANSWER DELETE\t:\t");
-	std::cout << intro + ref.getVersion() + " " << ref.getStatus()
+	std::cout << intro + body.getVersion() + " " << ref.getStatus()
 		<< " " + ref.description(ref.getStatus()) + RESET << std::endl;
 	std::cout << RESET;
 }
@@ -93,21 +91,4 @@ string	Tools::getType( string message, string toFind, string end )
 	ending = temp.find(end);
 	temp = temp.substr(0, ending);
 	return temp.c_str() + toFind.size() + 1;
-}
-
-string	Tools::readChunk( int fd )
-{
-	string	result = "";
-
-	while (true)
-	{
-		char	buffer[SIZE];
-		size_t	byte = read(fd, buffer, SIZE);
-		if (byte == 0)
-			break;
-		result.append(buffer, byte);
-		if (result.find("\r\n\r\n") && result.find("Content-Length:") == string::npos)
-			break;
-	}
-	return result;
 }

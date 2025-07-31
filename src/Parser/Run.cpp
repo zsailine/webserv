@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 09:51:36 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/30 15:45:05 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/31 13:52:45 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "class.hpp"
 
 int	flag = 1;
+int	Run::_epoll;
 
 int isSocket(int fd, std::vector<Server> server)
 {
@@ -35,6 +36,7 @@ void	signalHandler( int sigNum )
 
 void	Run::run()
 {
+	Request				req;
 	Parser				parse(this->_parameter);
 	std::vector<Server>	server = parse.getServer();
 
@@ -69,7 +71,7 @@ void	Run::run()
 					if (flag)
 						i++;
 				}
-				this->handleClient(fd, server[i]);
+				req.readChunks(fd, server[i]);
 				server[i].setfd(fd, -1);
 				close(fd);
 			}
@@ -108,7 +110,7 @@ void	Run::runEpoll( std::vector<Server> &server )
 }
 
 Run::Run( std::string const &parameter )
-	: _client(0), _epoll(-1), _parameter(parameter) {}
+	: _client(0), _parameter(parameter) {}
 
 void	Run::handleSocket( int fd, std::vector<Server> &server, int &index )
 {
@@ -125,15 +127,4 @@ void	Run::handleSocket( int fd, std::vector<Server> &server, int &index )
 	setsockopt(client_fd, SOL_SOCKET, SO_KEEPALIVE, &opt, sizeof(int));
 	server[index].addClient(client_fd);
 	addEpollEvent(this->_epoll, client_fd);
-}
-
-void	Run::handleClient( int fd , Server &server)
-{
-	Sender			sender;
-	Tools			tools;
-	string			message;
-	static string	before;
-
-	message = tools.readChunk(fd);
-	before = sender.handleRequest(message, fd, server);
 }

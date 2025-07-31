@@ -1,27 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   class.hpp                                          :+:      :+:    :+:   */
+/*   Body.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/08 09:57:36 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/31 13:10:58 by mitandri         ###   ########.fr       */
+/*   Created: 2025/07/31 13:56:12 by mitandri          #+#    #+#             */
+/*   Updated: 2025/07/31 14:19:05 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CLASS_HPP
-#define CLASS_HPP
+#include "Body.hpp"
 
-#include "../src/Server/Router.hpp"
-#include "../src/Server/Server.hpp"
-#include "../src/Parser/Run.hpp"
-#include "../src/Parser/Parser.hpp"
-#include "../src/Parser/Request.hpp"
-#include "../src/utils/Tools.hpp"
-#include "../src/Parser/Body.hpp"
-#include "../src/Sender/Response.hpp"
-#include "../src/Sender/Sender.hpp"
-#include "../src/Sender/Post.hpp"
-
-#endif
+string	Body::readFile( string path )
+{
+	Run		poll;
+	char	buffer[BUFFER_SIZE];
+	int		fd = open(path.c_str(), O_RDONLY);
+	
+	if (fd == -1)
+		return "";
+	addEpollEvent(poll.getEpoll(), fd);
+	size_t	byte = read(fd, buffer, sizeof(buffer));
+	if (byte > 0)
+		this->_content.append(buffer, byte);
+	else if (byte == 0)
+		close(fd);
+	else
+		close(fd);
+	return this->_content;
+}

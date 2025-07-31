@@ -6,13 +6,13 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 09:53:26 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/07/30 11:22:24 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/31 14:12:59 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Response.hpp"
 
-Response::Response( std::string const &message ) : _message(message)
+Response::Response()
 {
 	std::string		line;
 	std::ifstream	file("./files/conf/mimes.conf");
@@ -28,19 +28,6 @@ Response::Response( std::string const &message ) : _message(message)
 		if (mime.size() && extension.size())
 			this->_mimetype.insert(std::pair<string, string>(extension, mime));
 	}
-}
-
-void Response::set_header(const std::string &req)
-{
-	Tools				tools;
-	std::istringstream ss(req);
-	std::string method, path, version;
-
-	ss >> method >> path >> version;
-	this->_method = method;	
-	this->_version = version;
-	tools.printLogs(this->_method, path, this->_version);
-	this->_path = path;
 }
 
 void	Response::set_path(std::string index, std::string url, std::string path)
@@ -74,34 +61,25 @@ void Response::getExtension()
 		this->_mime = this->_mimetype[extension];
 }
 
-void	Response::run()
+void	Response::http( Body bod, string file )
 {
 	Tools	tools;
+	string description = this->description(this->_status);
 
-	if (this->_method != "POST")
-		this->_content = tools.readFile(this->_path);
-	this->getExtension();
-}
-
-void	Response::http( int status, string file )
-{
-	Tools	tools;
-	string description = this->description(status);
-
-	this->_response.append(this->_version + " ");
-	this->_response.append(tools.toString(status) + " ");
+	this->_response.append(bod.getVersion() + " ");
+	this->_response.append(tools.toString(this->_status) + " ");
 	this->_response.append(description + "\r\n");
 	if (file == "")
 	{
 		this->_response.append("Content-Type: " + this->_mime + "\r\n");
 		this->_response.append("Content-Length: ");
-		this->_response.append(tools.toString(this->_content.size()) + "\r\n");
+		this->_response.append(tools.toString(bod.getContent().size()) + "\r\n");
 		this->_response.append("Connection: keep-alive\r\n\r\n");
-		this->_response.append(this->_content);
+		this->_response.append(bod.getContent());
 	}
 	else
 	{
-		string	content = tools.readFile(file);
+		string	content = bod.readFile(file);
 		this->_response.append("Content-Type: text/html\r\n");
 		this->_response.append("Content-Length: ");
 		this->_response.append(tools.toString(content.size()) + "\r\n");

@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 10:47:32 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/30 11:17:34 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/31 14:18:10 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,31 +143,33 @@ void	Post::storeFile( string content, size_t head )
 }
 void	Post::checkError( Response &ref, int stat )
 {
-	if (isEmpty())
-	{
-		ref.http(stat, "./files/message/empty.html");
-		return ;
-	}
-	if (not getFile() && not getData())
-	{
-		ref.http(stat, "./files/message/newData.html");
-		return ;
-	}
-	if (getFile() && getData())
-	{
-		ref.http(stat, "./files/message/presentData.html");
-		return ;
-	}
-	if (getFile() && not getData())
-	{
-		ref.http(stat, "./files/message/presentFile.html");
-		return ;
-	}
-	if (getData() && not getFile())
-	{
-		ref.http(stat, "./files/message/presentData.html");
-		return ;
-	}
+	// if (isEmpty())
+	// {
+	// 	ref.http(stat, "./files/message/empty.html");
+	// 	return ;
+	// }
+	// if (not getFile() && not getData())
+	// {
+	// 	ref.http(stat, "./files/message/newData.html");
+	// 	return ;
+	// }
+	// if (getFile() && getData())
+	// {
+	// 	ref.http(stat, "./files/message/presentData.html");
+	// 	return ;
+	// }
+	// if (getFile() && not getData())
+	// {
+	// 	ref.http(stat, "./files/message/presentFile.html");
+	// 	return ;
+	// }
+	// if (getData() && not getFile())
+	// {
+	// 	ref.http(stat, "./files/message/presentData.html");
+	// 	return ;
+	// }
+	(void) ref;
+	(void)stat;
 }
 
 string	Post::getBody()

@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 10:02:47 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/17 15:10:21 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/31 14:05:48 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@
 
 #define MAX_EVENTS 4
 #define MAX_SIZE 5000
+#define BUFFER_SIZE 8192
 
 typedef std::string	string;
 

@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:23:21 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/30 15:00:02 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/31 14:32:12 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,9 @@ static int ft_error_before(Server &server, Response &response)
 	return (url);
 }
 
-string	Sender::handleGet(Server &server, Response &response)
+string	Sender::handleGet( Server &server, Response &response, Body &body )
 {
+	response.set_path(body.getPath());
 	int url = ft_error_before(server, response);
 	if (url == -1)
 		return "";
@@ -58,46 +59,46 @@ string	Sender::handleGet(Server &server, Response &response)
 	return (server.getValue(url, "allowedMethods"));
 }
 
-string	Sender::handleRequest( std::string message, int fd, Server &server )
+string	Sender::handleRequest( int fd, Server &server )
 {
-	Tools		tools;
-	Response	response(message);
+	// Tools		tools;
+	Response	response;
 	std::string	before2;
+	(void)server;
 	
-	response.defineStatus();
-	response.set_header(message);
-	if (response.getMethod() == "GET")
-	{
-		before2 = this->handleGet(server, response);
-		response.run();
-		response.http(response.getStatus(), "");
-	}
-	else if (response.getMethod() == "POST") {
-		return "";
-		this->postResponse(message, response, server);
-	}
-	else if (response.getMethod() == "DELETE")
-		this->deleteResponse(message, response, server);
-	tools.printAnswer(response);
+	// response.defineStatus();
+	// if (response.getMethod() == "GET")
+	// {
+	// 	before2 = this->handleGet(server, response);
+	// 	response.run();
+	// 	response.http(response.getStatus(), "");
+	// }
+	// else if (response.getMethod() == "POST") {
+	// 	return "";
+	// 	this->postResponse(message, response, server);
+	// }
+	// else if (response.getMethod() == "DELETE")
+	// 	this->deleteResponse(message, response, server);
+	// tools.printAnswer(response);
 	this->sendMessage(fd, response.getResponse());
 	return (before2);
 }
 
-void	Sender::postResponse( string &message, Response &ref, Server &server )
-{
-	Post	post(message);
+// void	Sender::postResponse( string &message, Response &ref, Server &server )
+// {
+// 	Post	post(message);
 
-	post.parseRequest(server);
-	post.checkError(ref, ref.getStatus());
-}
+// 	post.parseRequest(server);
+// 	post.checkError(ref, ref.getStatus());
+// }
 
-void	Sender::deleteResponse( string &message, Response &ref, Server &server )
-{
-	Delete	del(message);
+// void	Sender::deleteResponse( string &message, Response &ref, Server &server )
+// {
+// 	Delete	del(message);
 
-	del.deleteResource(server);
-	ref.http(ref.getStatus(), "./files/message/delete.html");
-}
+// 	del.deleteResource(server);
+// 	ref.http(ref.getStatus(), "./files/message/delete.html");
+// }
 
 void	Sender::sendMessage( int fd, string message )
 {
