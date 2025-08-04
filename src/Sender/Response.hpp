@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 09:53:09 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/07/31 14:10:15 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/04 14:19:05 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,8 @@
 #define SERVER_RESPONSE_HPP
 
 #include "lib.hpp"
-#include "class.hpp"
-
-class Tools;
+#include "../Parser/Body.hpp"
+#include "../utils/utils.hpp"
 
 class Response
 {

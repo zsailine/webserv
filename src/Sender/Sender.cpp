@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:23:21 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/31 14:32:12 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/04 14:03:07 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ string	Sender::handleGet( Server &server, Response &response, Body &body )
 
 string	Sender::handleRequest( int fd, Server &server )
 {
-	// Tools		tools;
 	Response	response;
 	std::string	before2;
 	(void)server;

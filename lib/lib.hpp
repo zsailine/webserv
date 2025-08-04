@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 10:02:47 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/31 14:05:48 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/01 11:39:59 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,14 @@
 
 #define MAX_EVENTS 4
 #define MAX_SIZE 5000
-#define BUFFER_SIZE 8192
+#define BUFFER_SIZE 100
 
 typedef std::string	string;
 
 /*		EPOLL		*/
-void addEpollEvent(int epfd, int socket);
-void delEpollEvent(int epfd, int ocket);
+void	addEpollEvent(int epfd, int socket);
+void	delEpollEvent(int epfd, int ocket);
+void	modifyEpollEvent( int epfd, int fd, uint32_t ev );
 
 #endif
 

@@ -6,11 +6,12 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:56:23 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/30 11:16:48 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/04 14:15:04 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Error.hpp"
+#include "../utils/utils.hpp"
 
 void	Error::init_value()
 {

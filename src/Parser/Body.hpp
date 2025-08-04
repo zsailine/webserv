@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 13:05:06 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/31 14:16:04 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/04 14:16:09 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #define BODY_HPP
 
 #include "lib.hpp"
-#include "class.hpp"
 
 class Body
 {
@@ -30,7 +29,6 @@ class Body
 	public:
 		Body() {}
 		int		getLength() { return this->_bodylength; }
-		string	readFile( string path );
 		string	getMethod() { return this->_method; }
 		string	getPath() { return this->_path; }
 		string	getVersion() { return this->_version; }

@@ -6,16 +6,16 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 12:02:47 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/31 14:35:08 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/04 14:23:18 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Request.hpp"
 
-void	Request::readChunks( int fd, Server &server )
+bool	Request::readChunks( int fd, Server &server )
 {
-	Tools	tools;
-	char	buffer[8192];
+	bool	flag = false;
+	char	buffer[BUFFER_SIZE];
 	size_t	byte;
 
 	byte = read(fd, buffer, sizeof(buffer));
@@ -28,43 +28,43 @@ void	Request::readChunks( int fd, Server &server )
 			int		bLength, total;
 			string	&body = this->_req[fd];
 			(body.find("Content-Length:") != string::npos) ?
-				bLength = ft_atoi(tools.getType(body, "Content-Length:", "\r\n"))
+				bLength = ft_atoi(getType(body, "Content-Length:", "\r\n"))
 				: bLength = 0;
 			total = body.find("\r\n\r\n") + 4 + bLength;
 			if ((int)body.size() >= total)
 			{
-				parseRequest(fd, body, bLength, server);
+				flag = parseRequest(fd, body, bLength, server);
 				body.clear();
 			}
 		}
 	}
+	return flag;
 }
 
-void	Request::parseRequest( int fd, string &body, int bLength, Server &server )
+bool	Request::parseRequest( int fd, string &body, int bLength, Server &server )
 {
 	Body	bod;
-	Tools	tools;
 	string	&header = this->_header[fd];
 	size_t	size = body.find("\r\n\r\n");
 	
 	if (size == string::npos)
-		return;
+		return false;
 	header = body.substr(0, size);
 	if (header.find("Content-Length:") != string::npos)
 	{
 		string	&corpse = this->_body[fd];
 		corpse = body.substr(size + 1, bLength);
-		string	boundary = tools.getType(header, "boundary=", "\r\n");
+		string	boundary = getType(header, "boundary=", "\r\n");
 		bod.setLength(bLength);
 		bod.setBoundary(boundary);
 	}
 	std::istringstream iss(header);
 	bod.setFirst(iss);
-	tools.printLogs(bod.getMethod(), bod.getPath(), bod.getVersion());
-	this->handleRequest(fd, bod, server);
+	printLogs(bod.getMethod(), bod.getPath(), bod.getVersion());
+	return this->handleRequest(bod, server);
 }
 
-void	Request::handleRequest( int fd, Body &bod, Server &server )
+bool	Request::handleRequest( Body &bod, Server &server )
 {
 	Sender			sender;
 	Response		response;
@@ -76,13 +76,18 @@ void	Request::handleRequest( int fd, Body &bod, Server &server )
 	{
 		beforebefore = sender.handleGet(server, response, bod);
 		response.getExtension();
-		std::cout << RED << response.getPath() << RESET << std::endl;
-		bod.readFile(response.getPath());
+		bod.setContent(readFile(response.getPath()));
 		response.http(bod, "");
 	}
-	std::cout << RED << bod.getContent() << RESET << std::endl;
-	sender.sendMessage(fd, response.getResponse());
+	this->_response = response.getResponse();
 	before = beforebefore;
+	return true;
+}
+
+bool	Request::sendChunks( int fd )
+{
+	send(fd,  this->_response.c_str(), this->_response.size(), 0);
+	return true;
 }
 
 Request::Request()

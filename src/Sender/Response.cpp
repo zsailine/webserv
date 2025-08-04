@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 09:53:26 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/07/31 14:12:59 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/04 14:02:55 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,26 +63,25 @@ void Response::getExtension()
 
 void	Response::http( Body bod, string file )
 {
-	Tools	tools;
 	string description = this->description(this->_status);
 
 	this->_response.append(bod.getVersion() + " ");
-	this->_response.append(tools.toString(this->_status) + " ");
+	this->_response.append(toString(this->_status) + " ");
 	this->_response.append(description + "\r\n");
 	if (file == "")
 	{
 		this->_response.append("Content-Type: " + this->_mime + "\r\n");
 		this->_response.append("Content-Length: ");
-		this->_response.append(tools.toString(bod.getContent().size()) + "\r\n");
+		this->_response.append(toString(bod.getContent().size()) + "\r\n");
 		this->_response.append("Connection: keep-alive\r\n\r\n");
 		this->_response.append(bod.getContent());
 	}
 	else
 	{
-		string	content = bod.readFile(file);
+		string	content = bod.getContent();
 		this->_response.append("Content-Type: text/html\r\n");
 		this->_response.append("Content-Length: ");
-		this->_response.append(tools.toString(content.size()) + "\r\n");
+		this->_response.append(toString(content.size()) + "\r\n");
 		this->_response.append("Connection: keep-alive\r\n\r\n");
 		this->_response.append(content);
 	}

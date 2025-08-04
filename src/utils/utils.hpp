@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 10:50:05 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/30 13:47:15 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/04 14:19:55 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,11 @@
 
 #define UTILS_HPP
 
-// #include "class.hpp"
 #include "lib.hpp"
+#include "../Sender/Response.hpp"
+#include "../Parser/Body.hpp"
+
+class Response;
 
 int			nbr_of_words(std::string const &str);
 int			isWord(std::string const &str);
@@ -27,5 +30,18 @@ int 		ft_exist(std::string path);
 long long	ft_atoi(std::string number);
 int			ft_isdigit(std::string &str);
 int			afterEquals(int pos, std::string str);
+string		readFile( string path );
+string		getType( string message, string toFind, string end );
+void		printAnswer( Body &body, Response &ref );
+void		printLogs( string method, string path, string version );
+void		writeDir( string file, std::vector< std::map<string, string> > c );
+
+template<typename T>
+string	toString( T number )
+{
+	std::stringstream	ss;
+	ss << number;
+	return ss.str();
+}
 
 #endif

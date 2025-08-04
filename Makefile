@@ -15,8 +15,7 @@ SRC_MAIN =		$(DIR_MAIN)main.cpp
 SRC_PARSER =	$(DIR_PARSER)Parser.cpp		\
 				$(DIR_PARSER)Error.cpp		\
 				$(DIR_PARSER)Run.cpp		\
-				$(DIR_PARSER)Request.cpp	\
-				$(DIR_PARSER)Body.cpp
+				$(DIR_PARSER)Request.cpp
 				
 SRC_SERVER = 	$(DIR_SERVER)Server.cpp		\
 				$(DIR_SERVER)Router.cpp		\
@@ -25,7 +24,7 @@ SRC_SERVER = 	$(DIR_SERVER)Server.cpp		\
 
 SRC_UTILS =		$(DIR_UTILS)utils.cpp		\
 				$(DIR_UTILS)epoll.cpp		\
-				$(DIR_UTILS)Tools.cpp
+				$(DIR_UTILS)tools.cpp
 
 SRC_SENDER	=	$(DIR_SENDER)Response.cpp	\
 				$(DIR_SENDER)Sender.cpp		\

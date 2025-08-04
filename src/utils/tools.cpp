@@ -1,18 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Tools.cpp                                          :+:      :+:    :+:   */
+/*   tools.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 09:58:05 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/31 14:20:26 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/04 14:20:30 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Tools.hpp"
+#include "../Parser/Body.hpp"
+#include "../Sender/Response.hpp"
 
-void	Tools::printLogs( string method, string path, string version )
+void	printLogs( string method, string path, string version )
 {
 	string	intro;
 
@@ -28,7 +29,7 @@ void	Tools::printLogs( string method, string path, string version )
 	std::cout << RESET;
 }
 
-void	Tools::printAnswer( Body &body, Response &ref )
+void	printAnswer( Body &body, Response &ref )
 {
 	string	intro;
 
@@ -45,23 +46,21 @@ void	Tools::printAnswer( Body &body, Response &ref )
 	std::cout << RESET;
 }
 
-string	Tools::readFile( string path )
+string	readFile( string path )
 {
-	int			fd;
-	char		buffer[4096];
-	ssize_t		bytes_read;
-	std::string	content;
-	
-	fd = open(path.c_str(), O_RDONLY);
-	if (fd == -1)
-		return "";
-	while ((bytes_read = read(fd, buffer, sizeof(buffer))) > 0)
-		content.append(buffer, bytes_read);
-	close(fd);
-	return (content);
+	std::ifstream		file(path.c_str());
+	std::stringstream	ss;
+
+	if (file.is_open())
+	{
+		ss << file.rdbuf();
+		file.close();
+		return ss.str();
+	}
+	return "";
 }
 
-void	Tools::writeDir( string file, std::vector< std::map<string, string> > c )
+void	writeDir( string file, std::vector< std::map<string, string> > c )
 {
 	std::ostringstream	oss;
 	
@@ -82,7 +81,7 @@ void	Tools::writeDir( string file, std::vector< std::map<string, string> > c )
 	close(fd);
 }
 
-string	Tools::getType( string message, string toFind, string end )
+string	getType( string message, string toFind, string end )
 {
 	string	temp = message;
 	int		start = temp.find(toFind), ending;

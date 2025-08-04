@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 10:47:32 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/31 14:18:10 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/04 14:02:33 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,7 @@ std::vector< std::map<string, string> >	Post::_simple;
 
 void	Post::parseRequest( Server &server)
 {
-	Tools	tools;
-	string	type = tools.getType(this->_message,
+	string	type = getType(this->_message,
 			"Content-Type:", "\r\n");
 	string	body = getBody();
 
@@ -54,10 +53,8 @@ void	Post::parseSimple( string &body, Server &server )
 
 void	Post::parseComplex( string &body, Server &server )
 {
-	(void)server;
-	Tools	tools;
-	string	boundary = tools.getType(this->_message, "boundary", "\r\n");
-	string	multi = tools.getType(this->_message, "Content-Type:", ";");
+	string	boundary = getType(this->_message, "boundary", "\r\n");
+	string	multi = getType(this->_message, "Content-Type:", ";");
 	
 	if (multi != "multipart/form-data")
 		return ;
@@ -81,7 +78,6 @@ void	Post::parseComplex( string &body, Server &server )
 
 void	Post::parseContent( string content, Server &server )
 {
-	Tools	tools;
 	size_t	head = content.find("\r\n\r\n");
 	string	header = content.substr(0, head);
 	
@@ -93,8 +89,7 @@ void	Post::parseContent( string content, Server &server )
 
 void	Post::storeData( string content, size_t head, Server &server )
 {
-	Tools	tools;
-	string	name = tools.getType(content, "name=", "\"\r\n");
+	string	name = getType(content, "name=", "\"\r\n");
 	std::map<string, string>	tmp;
 
 	if (content.substr(head, 4) == "\r\n\r\n")
@@ -114,13 +109,12 @@ void	Post::storeData( string content, size_t head, Server &server )
 	else
 		this->_stored[0] = true;
 	tmp.clear();
-	tools.writeDir("upload/data.txt", this->_simple);
+	writeDir("upload/data.txt", this->_simple);
 }
 
 void	Post::storeFile( string content, size_t head )
 {
-	Tools	tools;
-	string	file = tools.getType(content, "filename=", "\"\r\n"), path;
+	string	file = getType(content, "filename=", "\"\r\n"), path;
 	
 	if (file == "")
 	{
