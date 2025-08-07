@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 10:44:50 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/25 16:22:53 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/07 18:23:48 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ class Post
 
 		bool											_stored[2];
 		bool											_empty;
-		string											_message;
 		static std::vector< std::map<string, string> >	_simple;
 
 		string	getBody();
@@ -33,7 +32,6 @@ class Post
 	public:
 
 		Post() {}
-		Post( string message );
 		void	parseRequest( Server &server );
 		void	checkError( Response &ref, int stat );
 		void	parseSimple( string &body, Server &server );

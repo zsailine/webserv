@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:23:21 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/04 14:03:07 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/07 18:24:58 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,13 +83,21 @@ string	Sender::handleRequest( int fd, Server &server )
 	return (before2);
 }
 
-// void	Sender::postResponse( string &message, Response &ref, Server &server )
-// {
-// 	Post	post(message);
+void	Sender::postResponse( Body &body )
+{
+	Post	post;
 
-// 	post.parseRequest(server);
-// 	post.checkError(ref, ref.getStatus());
-// }
+	// post.parseRequest(server);
+	// post.checkError(ref, ref.getStatus());
+	std::cout << PURPLE;
+	std::cout << body.getContent() << std::endl;
+	std::cout << body.getHost() << std::endl;
+	std::cout << body.getBoundary() << std::endl;
+	std::cout << body.getPath() << std::endl;
+	std::cout << body.getBody() << std::endl;
+	std::cout << body.getHeader() << std::endl;
+	std::cout << RESET;
+}
 
 // void	Sender::deleteResponse( string &message, Response &ref, Server &server )
 // {

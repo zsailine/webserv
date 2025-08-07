@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 09:51:36 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/04 14:23:24 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/07 17:00:05 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	Run::run()
 				this->handleSocket(fd, server, index);
 			else
 			{
-				if (this->_events[i].events & EPOLLIN)
+				try { if (this->_events[i].events & EPOLLIN)
 				{
 					done = this->handleClient(req, server, fd);
 					if (done)
@@ -71,7 +71,7 @@ void	Run::run()
 						server[i].setfd(fd, -1);
 						close(fd);
 					}
-				}
+				} } catch ( const std::exception &e ) { std::cout << e.what() << std::endl; }
 			}
 		}
 	}

@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 10:47:32 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/04 14:02:33 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/07 18:24:32 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,17 +166,8 @@ void	Post::checkError( Response &ref, int stat )
 	(void)stat;
 }
 
-string	Post::getBody()
+Post::Post()
 {
-	string	temp = this->_message;
-	int		start = temp.find("\r\n\r\n") + 4;
-
-	return temp.substr(start);
-}
-
-Post::Post( string message )
-{
-	this->_message = message;
 	this->_empty = false;
 	this->_stored[0] = false;
 	this->_stored[1] = false;

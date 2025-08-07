@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:19:34 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/31 14:30:34 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/07 17:24:38 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,16 +24,14 @@ class Sender
 
 		std::string	_response;
 
-		
 	public:
 
 		Sender() {}
 		string	handleGet( Server &server, Response &response, Body &body );
 		string	handleRequest( int fd, Server &server );
 		void	sendMessage( int fd, string message );
-		// void	postResponse( string &message, Response &ref, Server &server );
+		void	postResponse( Body &body );
 		// void	deleteResponse( string &message, Response &ref, Server &server );
 };
-
 
 #endif
