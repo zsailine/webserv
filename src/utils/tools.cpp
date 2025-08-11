@@ -1,18 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Tools.cpp                                          :+:      :+:    :+:   */
+/*   tools.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 09:58:05 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/18 11:34:35 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/08 15:01:30 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Tools.hpp"
+#include "../Parser/Body.hpp"
+#include "../Sender/Response.hpp"
 
-void	Tools::printLogs( string method, string path, string version )
+void	printLogs( string method, string path, string version )
 {
 	string	intro;
 
@@ -28,40 +29,49 @@ void	Tools::printLogs( string method, string path, string version )
 	std::cout << RESET;
 }
 
-void	Tools::printAnswer( Response &ref )
+void	printAnswer( Body &body, Response &ref )
 {
 	string	intro;
 
-	if (ref.getMethod() != "GET" && ref.getMethod() != "POST" && ref.getMethod() != "DELETE")
+	if (body.getMethod() != "GET" && body.getMethod() != "POST" && body.getMethod() != "DELETE")
 		return ;
-	if (ref.getMethod() == "GET")
+	if (body.getMethod() == "GET")
 		intro = string(CYAN "ANSWER GET\t:\t");
-	if (ref.getMethod() == "POST")
+	if (body.getMethod() == "POST")
 		intro = string(GREEN "ANSWER POST\t:\t");
-	if (ref.getMethod() == "DELETE")
+	if (body.getMethod() == "DELETE")
 		intro = string(YELLOW "ANSWER DELETE\t:\t");
-	std::cout << intro + ref.getVersion() + " " << ref.getStatus()
+	std::cout << intro + body.getVersion() + " " << ref.getStatus()
 		<< " " + ref.description(ref.getStatus()) + RESET << std::endl;
 	std::cout << RESET;
 }
 
-string	Tools::readFile( string path )
+string	readFile( string path )
 {
-	int			fd;
-	char		buffer[4096];
-	ssize_t		bytes_read;
-	std::string	content;
-	
-	fd = open(path.c_str(), O_RDONLY);
-	if (fd == -1)
-		return "";
-	while ((bytes_read = read(fd, buffer, sizeof(buffer))) > 0)
-		content.append(buffer, bytes_read);
-	close(fd);
-	return (content);
+	std::ifstream		file(path.c_str());
+	std::stringstream	ss;
+
+	if (file.is_open())
+	{
+		ss << file.rdbuf();
+		file.close();
+		return ss.str();
+	}
+	return "";
 }
 
-void	Tools::writeDir( string file, std::vector< std::map<string, string> > c )
+void	writeFile( string path, string content )
+{
+	std::ofstream		file(path.c_str());
+
+	if (file.is_open())
+	{
+		file << content;
+		file.close();
+	}
+}
+
+void	writeDir( string file, std::vector< std::map<string, string> > c )
 {
 	std::ostringstream	oss;
 	
@@ -72,20 +82,41 @@ void	Tools::writeDir( string file, std::vector< std::map<string, string> > c )
 	for (size_t i = 0; i < c.size(); i++)
 	{
 		for (it = c[i].begin(); it != c[i].end(); ++it)
-			oss << it->first << "=" << it->second << " ";
+		{
+			if (it->first != "host")
+				oss << it->first << "=" << it->second << " ";
+		}
 		oss << std::endl;
 	}
 	write(fd, oss.str().c_str(), oss.str().size());
 	close(fd);
 }
 
-string	Tools::getType( string message, string toFind, string end )
+string	getType( string message, string toFind, string end )
 {
 	string	temp = message;
-	int		start = temp.find(toFind), ending;
+	size_t	start = temp.find(toFind), ending;
 
+	if (start == string::npos)
+		return "";
 	temp = temp.c_str() + start;
 	ending = temp.find(end);
 	temp = temp.substr(0, ending);
 	return temp.c_str() + toFind.size() + 1;
+}
+
+string	generateHTML( int status, string description )
+{
+	string	html;
+
+	if (status == 204)
+		return "";
+	html.append("<!DOCTYPE html>");
+	html.append("<style>.center{text-align: center;}</style>");
+	html.append("<html><body>");
+	html.append("<h1 style=\"text-align: center;\" >" + toString(status)
+		+ " " + description + "</h1>");
+	html.append("<div class=\"center\"><a href=\"../index.html\"><- Go back to home page</a></div>");
+	html.append("<html><body>");
+	return html;
 }
