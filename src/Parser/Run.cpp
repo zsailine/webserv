@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 09:51:36 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/11 15:48:48 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/25 11:47:29 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,21 @@
 
 int	flag = 1;
 
+int isSocket(int fd, std::vector<Server> server)
+{
+	for (size_t i = 0; i < server.size(); i++)
+	{
+		if (std::find(server[i].getSocket().begin(), server[i].getSocket().end(), fd) != server[i].getSocket().end())
+			return (server[i].getIndex());
+	}
+	return (-1);
+}
+
 void	signalHandler( int sigNum )
 {
 	flag = 0;
 	std::cout << std::endl;
-	std::cout << GREEN "Websev is quitting..." RESET << std::endl;
+	std::cout << RED "Webserv is quitting..." RESET << std::endl;
 	(void) sigNum;
 }
 
@@ -41,25 +51,40 @@ void	Run::run()
 				this->handleSocket(fd, server, index);
 			else
 			{
-				Server tmp;
-				for (size_t i = 0; i < server.size(); i++)
+				size_t i = 0; 
+				int flag = 1;
+				while (i < server.size() && flag)
 				{
 					std::vector<int> fds = server[i].getClientFds();
 					for (size_t j = 0; j < fds.size(); j++)
 					{
 						if (fd == fds[j])
 						{
-							tmp = server[i];
-							break;
+							flag = 0;
+							break ;
 						}
 					}
+					if (flag)
+						i++;
 				}
-				this->handleClient(fd, tmp);
+				this->handleClient(fd, server[i]);
+				server[i].setfd(fd, -1);
+				close(fd);
 			}
 		}
 	}
-	parse.closeFds();
+	for (size_t i = 0; i < server.size(); i++)
+		server[i].closeFds();
 	close(this->_epoll);
+}
+
+static void	closeFds( std::vector<Server> &server )
+{
+	for (size_t i = 0; i < server.size(); i++)
+	{
+		server[i].closeFds();
+	}
+	throw std::exception();
 }
 
 void	Run::runEpoll( std::vector<Server> &server )
@@ -69,7 +94,14 @@ void	Run::runEpoll( std::vector<Server> &server )
 	{
 		std::vector<int> tmp = server[i].getSocket();
 		for (size_t u = 0; u < tmp.size(); u++)
+		{
 			addEpollEvent(this->_epoll, tmp[u]);
+			if (listen(tmp[u], 2) != 0)
+			{
+				std::cerr << "Error listening socket for Server " << server[i].getIndex() << std::endl; 
+				closeFds(server);
+			}
+		}
 	}
 }
 
@@ -93,18 +125,13 @@ void	Run::handleSocket( int fd, std::vector<Server> &server, int &index )
 	addEpollEvent(this->_epoll, client_fd);
 }
 
-void	Run::handleClient( int fd , Server server)
+void	Run::handleClient( int fd , Server &server)
 {
+	static std::string before;
 	Sender		sender;
 	char		buffer[1024];
 	size_t		count = read(fd, buffer, sizeof(buffer));
 	std::string	message(buffer, count);
 	
-	std::cout << std::endl;
-	std::cout << CYAN "****************************************" RESET << std::endl << std::endl;
-	std::cout << CYAN "Received: " RESET << message;
-	std::cout << CYAN "****************************************" RESET << std::endl;
-	
-	sender.sendMessage(message, fd, server);
-	close(fd);
+	before = sender.handleRequest(message, fd, server, before);
 }

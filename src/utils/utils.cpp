@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:55:45 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/11 15:46:30 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/25 09:40:18 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,12 +53,55 @@ bool ft_ends_with(const std::string& str, const std::string& suffix)
     return str.compare(str.length() - suffix.length(), suffix.length(), suffix) == 0;
 }
 
+bool ft_starts_with(const std::string& str, const std::string& prefix)
+{
+    if (str.length() < prefix.length())
+        return false;
+    return str.compare(0 , prefix.length(), prefix) == 0;
+}
 int ft_atoi(std::string number)
 {
 	std::stringstream iss(number);
 	int tmp;
 	iss >> tmp;
 	return (tmp);
+}
+
+int isDirectory(std::string str)
+{
+	int i = str.size() - 1;
+	while (str[i] != '/')
+	{
+		if (str[i] == '.')
+			return (0);
+		i--;
+	}
+	return (1);
+}
+
+int ft_isdigit(std::string &str)
+{
+	int i = 0;
+	if (str.size() == 0)
+		return (0);
+	while (str[i])
+	{
+		if (str[i] < '0' || str[i] > '9')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+int ft_exist(std::string path)
+{
+	int			fd;
+	
+	fd = open(path.c_str(), O_RDONLY);
+	if (fd == -1)
+		return (0);
+	close(fd);
+	return (1);
 }
 
 // std::string	getFileExtension( string const )

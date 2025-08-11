@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lib.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 10:02:47 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/08 13:39:52 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/07/18 11:58:15 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,16 @@
 
 // ========== INCLUDE ==========
 
-#include <iostream>
 #include <stdio.h>
+#include <dirent.h>
+#include <iostream>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <sys/socket.h>
 #include <fcntl.h>
 #include <sys/epoll.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <iostream>
 #include <fstream>
 #include <iomanip>
 #include <sstream>
@@ -50,6 +49,7 @@
 #define UNDERLINE "\033[4m"
 
 #define MAX_EVENTS 4
+#define MAX_SIZE 5000
 
 typedef std::string	string;
 

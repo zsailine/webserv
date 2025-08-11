@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 15:41:42 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/11 15:07:41 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/21 14:25:52 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ static int isDollar(std::string &str)
 	{
 		return (1);
 	}
+	if (!str.compare("$errorPages"))
+		return (3);
 	std::string part = str.substr(0, 6);
 	if (!part.compare("$route"))
 		return (2);
@@ -86,6 +88,32 @@ int Parser::insert_server(size_t i, std::vector<std::string> &block)
 	return (i);
 }
 
+int Parser::insert_error(size_t i, std::vector<std::string> &block)
+{
+	i++;
+	static int number = 0;
+	std::vector<std::string> blocks;
+	if (number != 0)
+	{
+		std::cerr  << "[ Error ]\n" << "errorPages has already been initialized\n";
+		throw std::exception();
+	}
+	while (i < block.size())
+	{
+		if (!ft_continue(block[i]))
+		{
+			number++;
+			errorPages = Error(blocks);
+			return (i);
+		}
+		blocks.push_back(block[i]);
+		i++;
+	}
+	number++;
+	errorPages = Error(blocks);
+	return (i);
+}
+
 int Parser::insert_route(size_t i, std::string name, std::vector<std::string> &block)
 {
 	i++;
@@ -114,14 +142,22 @@ void	Parser::init_socket()
 {
 	size_t i = 0;
 	while (i < server.size())
-		server[i++].init_socket();
+	{
+		if (!server[i++].init_socket())
+		{
+			closeFds();
+			throw std::exception();
+		}
+	}
 }
 
 void	Parser::closeFds()
 {
 	size_t i = 0;
 	while (i < server.size())
+	{
 		server[i++].closeFds();
+	}
 }
 void	Parser::get_blocks( std::vector<std::string> &block)
 {
@@ -139,6 +175,8 @@ void	Parser::get_blocks( std::vector<std::string> &block)
 			{
 				i = insert_route(i, block[i].substr(1), block);
 			}
+			else if (type == 3)
+				i = insert_error(i, block);
 		}
 		else if (!isWord(block[i]))
 		{
@@ -151,9 +189,23 @@ void	Parser::addRoute()
 {
 	size_t i = 0;
 	while (i < server.size())
-		server[i++].addRoute(routes);
+	{
+		if (!server[i++].addRoute(routes))
+		{
+			closeFds();
+			throw std::exception();
+		}
+	}
 }
 
+void	Parser::addError()
+{
+	size_t i = 0;
+	while (i < server.size())
+	{
+		server[i++].setError(errorPages);
+	}
+}
 std::vector<Server> &Parser::getServer()
 {
 	return (server);
@@ -166,4 +218,5 @@ Parser::Parser(std::string data)
 	get_blocks(block);
 	init_socket();
 	addRoute();
+	addError();
 }

@@ -4,16 +4,16 @@ FLAGS = -Wall -Werror -Wextra -std=c++98
 
 OBJ_DIR = .obj/
 
+DIR_MAIN = src/main/
 DIR_PARSER = src/Parser/
 DIR_SERVER = src/Server/
 DIR_UTILS = src/utils/
 DIR_SENDER = src/Sender/
-DIR_MAIN = src/main/
 
-SRC_MAIN = $(DIR_MAIN)main.cpp
-
+SRC_MAIN =		$(DIR_MAIN)main.cpp
 
 SRC_PARSER =	$(DIR_PARSER)Parser.cpp	\
+				$(DIR_PARSER)Error.cpp  \
 				$(DIR_PARSER)Run.cpp
 				
 SRC_SERVER = 	$(DIR_SERVER)Server.cpp	\
@@ -22,11 +22,12 @@ SRC_SERVER = 	$(DIR_SERVER)Server.cpp	\
 				$(DIR_SERVER)socket.cpp	\
 
 SRC_UTILS =		$(DIR_UTILS)utils.cpp	\
-				$(DIR_UTILS)socket.cpp	\
-				$(DIR_UTILS)epoll.cpp
+				$(DIR_UTILS)epoll.cpp	\
+				$(DIR_UTILS)Tools.cpp
 
-SRC_SENDER	=	$(DIR_SENDER)ServerResponse.cpp	\
-				$(DIR_SENDER)Sender.cpp
+SRC_SENDER	=	$(DIR_SENDER)Response.cpp	\
+				$(DIR_SENDER)Sender.cpp		\
+				$(DIR_SENDER)Post.cpp
 
 SRC =	$(SRC_MAIN)		\
 		$(SRC_PARSER)	\
@@ -49,7 +50,7 @@ clean :
 	rm -rf $(OBJ_DIR)
 
 fclean : clean
-	rm -f $(NAME)
+	rm -f $(NAME) upload/*
 
 re : fclean all
 
