@@ -6,7 +6,7 @@
 /*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 10:02:47 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/21 09:28:41 by aranaivo         ###   ########.fr       */
+/*   Updated: 2025/08/11 13:11:18 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@
 #define RED "\033[1;31m"
 #define GREEN "\033[1;32m"
 #define PIPGREEN "\033[1;5;32m"
-#define BLUE "\033[1;35m"
+#define BLUE "\e[1;34m"
+#define PURPLE "\033[1;95m"
 #define YELLOW "\033[1;33m"
 #define CYAN "\033[1;36m"
 #define RESET "\033[0m"
@@ -51,12 +52,15 @@
 
 #define MAX_EVENTS 4
 #define MAX_SIZE 5000
+#define BUFFER_SIZE 100
+#define CRLF "\r\n\r\n"
 
 typedef std::string	string;
 
 /*		EPOLL		*/
-void addEpollEvent(int epfd, int socket);
-void delEpollEvent(int epfd, int ocket);
+void	addEpollEvent(int epfd, int socket);
+void	delEpollEvent(int epfd, int ocket);
+void	modifyEpollEvent( int epfd, int fd, uint32_t ev );
 
 #endif
 

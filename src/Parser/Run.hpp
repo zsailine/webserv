@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Run.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 09:50:39 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/25 11:25:29 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/04 14:07:45 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,25 +16,30 @@
 #include "lib.hpp"
 #include "class.hpp"
 
+class	Request;
+class	Server;
+
 class Run
 {
 	private:
 
 		int					_client;
-		int					_epoll;
+		static int			_epoll;
 		std::string			_parameter;
 		struct epoll_event	_events[MAX_EVENTS];
 
-		Run() {}
+		void	closeAll( std::vector<Server> &server );
 
 	public:
 
+		Run() {}
 		Run( std::string const &parameter );
 		~Run() {}
 		void	run();
 		void	runEpoll( std::vector<Server> &server );
 		void	handleSocket( int fd, std::vector<Server> &server, int &index );
-		void	handleClient( int fd , Server &server);
+		bool	handleClient( Request &req, std::vector<Server> &server, int &fd );
+		int		getEpoll() { return this->_epoll; }
 };
 
 #endif

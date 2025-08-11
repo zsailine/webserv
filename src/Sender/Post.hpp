@@ -6,7 +6,7 @@
 /*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 10:44:50 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/23 14:50:49 by aranaivo         ###   ########.fr       */
+/*   Updated: 2025/08/11 13:11:41 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,30 +18,42 @@
 
 class Post
 {
-	private:
+	protected:
 
 		bool											_stored[2];
 		bool											_empty;
-		string											_message;
-		static std::vector< std::map<string, string> >	_simple;
+		static std::vector< std::map<string, string> >	_url;
+		static std::vector< std::map<string, string> >	_multipart;
+		static std::vector< std::map<string, string> >	_plain;
 
 		void	storeFile( string content, size_t head );
-		void	storeData( string content, size_t head );
-		void	parseContent( string content );
-		
+		void	storeData( string content, size_t head, string host );
+
 	public:
-		
-		string	getBody();
-		Post( string message );
-		void	parseRequest();
-		void	checkError( Response &ref, int stat );
-		void	parseSimple( string &body );
-		void	parseComplex( string &body );
-		~Post() {}
+
+		Post();
+		void	urlEncoded( string body, string host );
+		void	multipartForm( string body, string boundary, string header, string host );
+		void	textPlain( string body,  string host );
+		void	checkException( string path );
+		virtual ~Post() {}
 
 		bool	getData() const { return this->_stored[0]; }
 		bool	getFile() const { return this->_stored[1]; }
 		bool	isEmpty() const { return this->_empty; }
+
+		class	E200 : public std::exception
+		{ virtual const char*	what() const throw() { return ""; } };
+		class	E201 : public std::exception
+		{ virtual const char*	what() const throw() { return ""; } };
+		class	E204 : public std::exception
+		{ virtual const char*	what() const throw() { return ""; } };
+		class	E400 : public std::exception
+		{ virtual const char*	what() const throw() { return ""; } };
+		class	E403 : public std::exception
+		{ virtual const char*	what() const throw() { return ""; } };
+		class	E404 : public std::exception
+		{ virtual const char*	what() const throw() { return ""; } };
 };
 
 #endif

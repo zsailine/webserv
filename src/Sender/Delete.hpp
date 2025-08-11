@@ -1,31 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   Delete.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/08 08:22:27 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/08 14:41:04 by mitandri         ###   ########.fr       */
+/*   Created: 2025/07/18 10:30:30 by mitandri          #+#    #+#             */
+/*   Updated: 2025/08/08 13:51:58 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "lib.hpp"
-#include "class.hpp"
+#ifndef DELETE_HPP
+#define DELETE_HPP
 
-int	main( int ac, char **av )
+#include "lib.hpp"
+#include "Post.hpp"
+#include "../Server/Server.hpp"
+
+class Delete : public Post
 {
-	try
-	{
-		std::string	parameter;
-		
-		if (ac > 2)
-			throw(std::invalid_argument(RED "Need two arguments at most" RESET));
-		(ac == 1) ? parameter = "config/test.conf" : parameter = av[1];
-		Run	start(parameter);
-		start.run();
-	}
-	catch( const std::exception& e )
-	{}
-	return 0;
-}
+	private:
+	
+		void	findResource( string host, string &key, string &value );
+	
+	public:
+
+		Delete() : Post() {}
+		~Delete() {}
+		void	deleteResource( string host, string header );
+};
+
+
+#endif

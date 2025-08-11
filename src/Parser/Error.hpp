@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Error.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:56:33 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/21 14:27:32 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/04 14:22:51 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #define ERROR_HPP
 
 #include "lib.hpp"
-#include "../utils/utils.hpp"
 
 class Error
 {
