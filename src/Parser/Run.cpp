@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Run.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 09:51:36 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/25 11:47:29 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/11 09:03:01 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,15 @@
 #include "class.hpp"
 
 int	flag = 1;
+int	sig = 1;
+int	Run::_epoll;
 
 int isSocket(int fd, std::vector<Server> server)
 {
 	for (size_t i = 0; i < server.size(); i++)
 	{
-		if (std::find(server[i].getSocket().begin(), server[i].getSocket().end(), fd) != server[i].getSocket().end())
+		if (std::find(server[i].getSocket().begin(),
+			server[i].getSocket().end(), fd) != server[i].getSocket().end())
 			return (server[i].getIndex());
 	}
 	return (-1);
@@ -27,19 +30,22 @@ int isSocket(int fd, std::vector<Server> server)
 
 void	signalHandler( int sigNum )
 {
-	flag = 0;
+	sig = 0;
 	std::cout << std::endl;
-	std::cout << RED "Webserv is quitting..." RESET << std::endl;
+	std::cout << PURPLE "... Websev is quitting..." RESET << std::endl;
 	(void) sigNum;
 }
 
 void	Run::run()
 {
+	Request				req;
 	Parser				parse(this->_parameter);
+	bool				done = false, sent = false;
 	std::vector<Server>	server = parse.getServer();
-
+	
+	std::cout << PURPLE "... WELCOME TO OUR WEBSERVER ...\n" RESET;
 	this->runEpoll(server);
-	while(flag)
+	while(sig)
 	{
 		signal(SIGINT, signalHandler);
 		this->_client = epoll_wait(this->_epoll, this->_events, MAX_EVENTS, -1);
@@ -51,31 +57,26 @@ void	Run::run()
 				this->handleSocket(fd, server, index);
 			else
 			{
-				size_t i = 0; 
-				int flag = 1;
-				while (i < server.size() && flag)
+				try { if (this->_events[i].events & EPOLLIN)
 				{
-					std::vector<int> fds = server[i].getClientFds();
-					for (size_t j = 0; j < fds.size(); j++)
-					{
-						if (fd == fds[j])
-						{
-							flag = 0;
-							break ;
-						}
-					}
-					if (flag)
-						i++;
+					done = this->handleClient(req, server, fd);
+					if (done)
+						modifyEpollEvent(this->_epoll, fd, EPOLLOUT);
 				}
-				this->handleClient(fd, server[i]);
-				server[i].setfd(fd, -1);
-				close(fd);
+				else if (done && this->_events[i].events & EPOLLOUT)
+				{
+					sent = req.sendChunks(fd);
+					if (sent)
+					{
+						sent = false; done = false;
+						server[i].setfd(fd, -1);
+						close(fd);
+					}
+				} } catch ( const std::exception &e ) { std::cout << e.what() << std::endl; }
 			}
 		}
 	}
-	for (size_t i = 0; i < server.size(); i++)
-		server[i].closeFds();
-	close(this->_epoll);
+	this->closeAll(server);
 }
 
 static void	closeFds( std::vector<Server> &server )
@@ -98,7 +99,8 @@ void	Run::runEpoll( std::vector<Server> &server )
 			addEpollEvent(this->_epoll, tmp[u]);
 			if (listen(tmp[u], 2) != 0)
 			{
-				std::cerr << "Error listening socket for Server " << server[i].getIndex() << std::endl; 
+				std::cerr << "Error listening socket for Server "
+					<< server[i].getIndex() << std::endl; 
 				closeFds(server);
 			}
 		}
@@ -106,7 +108,7 @@ void	Run::runEpoll( std::vector<Server> &server )
 }
 
 Run::Run( std::string const &parameter )
-	: _client(0), _epoll(-1), _parameter(parameter) {}
+	: _client(0), _parameter(parameter) {}
 
 void	Run::handleSocket( int fd, std::vector<Server> &server, int &index )
 {
@@ -125,13 +127,31 @@ void	Run::handleSocket( int fd, std::vector<Server> &server, int &index )
 	addEpollEvent(this->_epoll, client_fd);
 }
 
-void	Run::handleClient( int fd , Server &server)
+bool	Run::handleClient( Request &req, std::vector<Server> &server, int &fd )
 {
-	static std::string before;
-	Sender		sender;
-	char		buffer[1024];
-	size_t		count = read(fd, buffer, sizeof(buffer));
-	std::string	message(buffer, count);
+	size_t		i = 0;
+	int			flag = 1;
 	
-	before = sender.handleRequest(message, fd, server, before);
+	while (i < server.size() && flag)
+	{
+		std::vector<int> fds = server[i].getClientFds();
+		for (size_t j = 0; j < fds.size(); j++)
+		{
+			if (fd == fds[j])
+			{
+				flag = 0;
+				break ;
+			}
+		}
+		if (flag)
+			i++;
+	}
+	return req.readChunks(fd, server[i]);
+}
+
+void	Run::closeAll( std::vector<Server> &server )
+{
+	for (size_t i = 0; i < server.size(); i++)
+		server[i].closeFds();
+	close(this->_epoll);
 }

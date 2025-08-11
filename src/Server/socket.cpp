@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 14:12:25 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/18 12:09:10 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/11 09:08:58 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,6 @@ sockaddr_in init_adress(std::string str)
 	sockaddr_in adress;
 	std::string host = str.substr(0, str.find(':'));
 	std::string port = str.substr(str.find(':') + 1);
-	addrinfo hints;
-    hints.ai_family   = AF_INET;
-    hints.ai_socktype = SOCK_STREAM;
 	adress.sin_addr.s_addr = INADDR_NONE;
 	if (getaddrinfo(host.c_str(), port.c_str(), NULL, &result) != 0)
 	{

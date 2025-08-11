@@ -3,7 +3,6 @@ NAME = webserv
 # FLAGS = -Wall -Werror -Wextra -std=c++98
 FLAGS = -std=c++98
 
-
 OBJ_DIR = .obj/
 
 DIR_MAIN = src/main/
@@ -11,29 +10,27 @@ DIR_PARSER = src/Parser/
 DIR_SERVER = src/Server/
 DIR_UTILS = src/utils/
 DIR_SENDER = src/Sender/
-DIR_CGI =    src/cgi/
 
 SRC_MAIN =		$(DIR_MAIN)main.cpp
 
-SRC_PARSER =	$(DIR_PARSER)Parser.cpp	\
-				$(DIR_PARSER)Error.cpp  \
-				$(DIR_PARSER)Run.cpp
+SRC_PARSER =	$(DIR_PARSER)Parser.cpp		\
+				$(DIR_PARSER)Error.cpp		\
+				$(DIR_PARSER)Run.cpp		\
+				$(DIR_PARSER)Request.cpp
 				
-SRC_SERVER = 	$(DIR_SERVER)Server.cpp	\
-				$(DIR_SERVER)Router.cpp	\
-				$(DIR_SERVER)utils.cpp	\
-				$(DIR_SERVER)socket.cpp	\
+SRC_SERVER = 	$(DIR_SERVER)Server.cpp		\
+				$(DIR_SERVER)Router.cpp		\
+				$(DIR_SERVER)utils.cpp		\
+				$(DIR_SERVER)socket.cpp
 
-SRC_UTILS =		$(DIR_UTILS)utils.cpp	\
-				$(DIR_UTILS)epoll.cpp	\
-				$(DIR_UTILS)Tools.cpp
+SRC_UTILS =		$(DIR_UTILS)utils.cpp		\
+				$(DIR_UTILS)epoll.cpp		\
+				$(DIR_UTILS)tools.cpp
 
 SRC_SENDER	=	$(DIR_SENDER)Response.cpp	\
 				$(DIR_SENDER)Sender.cpp		\
-				$(DIR_SENDER)Post.cpp
-
-SRC_CGI    =    $(DIR_CGI)CGI.cpp \
-				$(DIR_CGI)PostCGI.cpp
+				$(DIR_SENDER)Post.cpp		\
+				$(DIR_SENDER)Delete.cpp
 
 SRC =	$(SRC_MAIN)		\
 		$(SRC_PARSER)	\

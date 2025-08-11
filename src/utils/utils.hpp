@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 10:50:05 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/21 11:28:43 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/11 09:08:55 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,34 @@
 
 #define UTILS_HPP
 
-// #include "class.hpp"
 #include "lib.hpp"
+#include "../Sender/Response.hpp"
+#include "../Parser/Body.hpp"
 
-int		nbr_of_words(std::string const &str);
-int		isWord(std::string const &str);
-void	RemoveWhiteSpace(std::string& str);
-bool	ft_ends_with(const std::string& str, const std::string& suffix);
-bool	ft_starts_with(const std::string& str, const std::string& prefix);
-int		isDirectory(std::string str);
-int 	ft_exist(std::string path);
-int		ft_atoi(std::string number);
-int		ft_isdigit(std::string &str);
-int		afterEquals(int pos, std::string str);
+class Response;
+
+int			nbr_of_words(std::string const &str);
+int			isWord(std::string const &str);
+void		RemoveWhiteSpace(std::string& str);
+bool		ft_ends_with(const std::string& str, const std::string& suffix);
+bool		ft_starts_with(const std::string& str, const std::string& prefix);
+int			isDirectory(std::string str);
+int 		ft_exist(std::string path);
+long long	ft_atoi(std::string number);
+int			ft_isdigit(std::string &str);
+int			afterEquals(int pos, std::string str);
+string		readFile( string path );
+string		getType( string message, string toFind, string end );
+void		printAnswer( Body &body, Response &ref );
+void		printLogs( string method, string path, string version );
+void		writeDir( string file, std::vector< std::map<string, string> > c );
+
+template<typename T>
+string	toString( T number )
+{
+	std::stringstream	ss;
+	ss << number;
+	return ss.str();
+}
 
 #endif

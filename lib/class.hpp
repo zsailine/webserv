@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   class.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 09:57:36 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/16 10:45:43 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/11 09:00:54 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,5 +23,10 @@
 #include "../src/Sender/Post.hpp"
 #include "../src/cgi/CGI.hpp"
 #include "../src/cgi/PostCGI.hpp"
+#include "../src/Parser/Request.hpp"
+#include "../src/Parser/Body.hpp"
+#include "../src/Sender/Response.hpp"
+#include "../src/Sender/Sender.hpp"
+#include "../src/Sender/Post.hpp"
 
 #endif

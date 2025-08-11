@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   Error.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:56:33 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/21 14:27:32 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/11 09:01:59 by aranaivo         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+/*   Updated: 2025/08/04 14:22:51 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,5 +39,4 @@ class Error
 				std::map<int , std::string> getMap() const;
 				Error	&operator=(const Error &toCopy);
 };
-
 #endif

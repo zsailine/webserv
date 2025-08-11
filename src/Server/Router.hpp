@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Router.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 10:22:07 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/08 10:15:42 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/11 09:08:01 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #define ROUTER_HPP
 
 #include "Server.hpp"
+#include "../utils/utils.hpp"
 
 class Router
 {

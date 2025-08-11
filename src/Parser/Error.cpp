@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   Error.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:56:23 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/21 14:27:34 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/11 09:01:40 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Error.hpp"
+#include "../utils/utils.hpp"
 
 void	Error::init_value()
 {
@@ -78,7 +79,7 @@ static std::string ft_add(int key)
 	std::stringstream is;
 
 	is << key;
-	std::string result = "www/errorPages/" + is.str() + ".html";
+	std::string result = "files/errorPages/" + is.str() + ".html";
 	return (result);
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Post.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 10:47:32 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/17 13:20:02 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/11 09:05:26 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,20 @@
 
 std::vector< std::map<string, string> >	Post::_simple;
 
-void	Post::parseRequest()
+void	Post::parseRequest( Server &server)
 {
-	Tools	tools;
-	string	type = tools.getType(this->_message,
+	string	type = getType(this->_message,
 			"Content-Type:", "\r\n");
 	string	body = getBody();
 
 	if (type == "application/x-www-form-urlencoded")
-		this->parseSimple(body);
+		this->parseSimple(body, server);
 	else
-		this->parseComplex(body);
+		this->parseComplex(body, server);
 }
 
-void	Post::parseSimple( string &body )
+void	Post::parseSimple( string &body, Server &server )
 {
-	Tools						tools;
 	string						token, key, value;
 	std::map<string, string>	tmp;
 	std::istringstream			iss(body);
@@ -38,11 +36,12 @@ void	Post::parseSimple( string &body )
 	{
 		int	index = token.find('=') + 1;
 		value = token.c_str() + index;
-		key = token.substr(0, index);
+		key = token.substr(0, index - 1);
 		tmp.insert(std::pair<string, string>(key, value));
 		if (value == "")
 			this->_empty = true;
 	}
+	tmp.insert(std::pair<string, string>("host", server.get("listen")));
 	if ((this->_simple.size() == 0 && not this->_empty) ||
 		(find(_simple.begin(), _simple.end(), tmp) == _simple.end()
 		&& not this->_empty))
@@ -50,14 +49,12 @@ void	Post::parseSimple( string &body )
 	else
 		this->_stored[0] = true;
 	tmp.clear();
-	tools.writeDir("upload/data.txt", this->_simple);
 }
 
-void	Post::parseComplex( string &body )
+void	Post::parseComplex( string &body, Server &server )
 {
-	Tools	tools;
-	string	boundary = tools.getType(this->_message, "boundary", "\r\n");
-	string	multi = tools.getType(this->_message, "Content-Type:", ";");
+	string	boundary = getType(this->_message, "boundary", "\r\n");
+	string	multi = getType(this->_message, "Content-Type:", ";");
 	
 	if (multi != "multipart/form-data")
 		return ;
@@ -74,28 +71,25 @@ void	Post::parseComplex( string &body )
 		if (second == std::string::npos)
 			break;
 		toParse = body.substr(first, second - first);
-		this->parseContent(toParse);
+		this->parseContent(toParse, server);
 		i = second;
 	}
 }
 
-void	Post::parseContent( string content )
+void	Post::parseContent( string content, Server &server )
 {
-	Tools	tools;
 	size_t	head = content.find("\r\n\r\n");
 	string	header = content.substr(0, head);
-	string	name = tools.getType(header, "name", ";");
 	
-	if (name != "\"myFile\"")
-		this->storeData(content, head);
+	if (header.find("filename=") != string::npos)
+		this->storeData(content, head, server);
 	else
 		this->storeFile(content, head);
 }
 
-void	Post::storeData( string content, size_t head )
+void	Post::storeData( string content, size_t head, Server &server )
 {
-	Tools	tools;
-	string	name = tools.getType(content, "name=", "\"\r\n");
+	string	name = getType(content, "name=", "\"\r\n");
 	std::map<string, string>	tmp;
 
 	if (content.substr(head, 4) == "\r\n\r\n")
@@ -108,17 +102,19 @@ void	Post::storeData( string content, size_t head )
 	if ((this->_simple.size() == 0 && not this->_empty) ||
 		(find(_simple.begin(), _simple.end(), tmp) == _simple.end()
 		&& not this->_empty))
+	{
+		tmp.insert(std::pair<string, string>("host", server.get("listen")));
 		this->_simple.push_back(tmp);
+	}
 	else
 		this->_stored[0] = true;
 	tmp.clear();
-	tools.writeDir("upload/data.txt", this->_simple);
+	writeDir("upload/data.txt", this->_simple);
 }
 
 void	Post::storeFile( string content, size_t head )
 {
-	Tools	tools;
-	string	file = tools.getType(content, "filename=", "\"\r\n"), path;
+	string	file = getType(content, "filename=", "\"\r\n"), path;
 	
 	if (file == "")
 	{
@@ -127,7 +123,7 @@ void	Post::storeFile( string content, size_t head )
 	}
 	path = "upload/" + file;
 	int	fd = open(path.c_str(), O_RDONLY, 0644);
-	if (fd != -1) { this->_stored[1] = true;return; }
+	if (fd != -1) { this->_stored[1] = true; return; }
 	close(fd);
 	fd = open(path.c_str(), O_CREAT | O_RDWR, 0644);
 	if (fd == -1)
@@ -141,44 +137,37 @@ void	Post::storeFile( string content, size_t head )
 }
 void	Post::checkError( Response &ref, int stat )
 {
-	if (isEmpty())
-	{
-		ref.http(stat, "./files/empty.html");
-		return ;
-	}
-	if (not getFile() && not getData())
-	{
-		ref.http(stat, "./files/newData.html");
-		return ;
-	}
-	if (getFile() && getData())
-	{
-		ref.http(stat, "./files/presentData.html");
-		return ;
-	}
-	if (getFile() && not getData())
-	{
-		ref.http(stat, "./files/presentFile.html");
-		return ;
-	}
-	if (getData() && not getFile())
-	{
-		ref.http(stat, "./files/presentData.html");
-		return ;
-	}
+	// if (isEmpty())
+	// {
+	// 	ref.http(stat, "./files/message/empty.html");
+	// 	return ;
+	// }
+	// if (not getFile() && not getData())
+	// {
+	// 	ref.http(stat, "./files/message/newData.html");
+	// 	return ;
+	// }
+	// if (getFile() && getData())
+	// {
+	// 	ref.http(stat, "./files/message/presentData.html");
+	// 	return ;
+	// }
+	// if (getFile() && not getData())
+	// {
+	// 	ref.http(stat, "./files/message/presentFile.html");
+	// 	return ;
+	// }
+	// if (getData() && not getFile())
+	// {
+	// 	ref.http(stat, "./files/message/presentData.html");
+	// 	return ;
+	// }
+	(void) ref;
+	(void)stat;
 }
 
-string	Post::getBody()
+Post::Post()
 {
-	string	temp = this->_message;
-	int		start = temp.find("\r\n\r\n") + 4;
-
-	return temp.substr(start);
-}
-
-Post::Post( string message )
-{
-	this->_message = message;
 	this->_empty = false;
 	this->_stored[0] = false;
 	this->_stored[1] = false;
