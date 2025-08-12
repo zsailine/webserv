@@ -6,7 +6,7 @@
 /*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 09:12:07 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/07/23 13:28:07 by aranaivo         ###   ########.fr       */
+/*   Updated: 2025/08/11 13:20:27 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,11 +94,6 @@ void CGI::execute_cgi()
     }
 }
 
-
-void CGI::retrieve_body()
-{
-    Post post(_message);
-}
 
 void CGI::retrieve_query_string()
 {

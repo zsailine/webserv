@@ -18,8 +18,7 @@ void PostCgi::parseBody()
 
 void PostCgi::extractContentType()
 {
-    Tools tools;
-    _contentType = tools.getType(_message, "Content-Type:", "\r\n");
+    _contentType = getType(_message, "Content-Type:", "\r\n");
     if (_contentType.empty())
         _contentType = "application/x-www-form-urlencoded"; // valeur par défaut
 }
