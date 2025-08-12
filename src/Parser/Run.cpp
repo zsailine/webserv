@@ -6,11 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 09:51:36 by mitandri          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2025/08/07 17:00:05 by mitandri         ###   ########.fr       */
-=======
 /*   Updated: 2025/08/11 15:11:28 by mitandri         ###   ########.fr       */
->>>>>>> mitandri
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +37,7 @@ void	signalHandler( int sigNum )
 
 void	Run::run()
 {
-<<<<<<< HEAD
-=======
 	int					indie;
->>>>>>> mitandri
 	Request				req;
 	Parser				parse(this->_parameter);
 	bool				done = false, sent = false;
@@ -66,13 +59,6 @@ void	Run::run()
 			{
 				try { if (this->_events[i].events & EPOLLIN)
 				{
-<<<<<<< HEAD
-					done = this->handleClient(req, server, fd);
-					if (done)
-						modifyEpollEvent(this->_epoll, fd, EPOLLOUT);
-				}
-				else if (done && this->_events[i].events & EPOLLOUT)
-=======
 					done = this->handleClient(req, server, fd, indie);
 					if (done)
 					{
@@ -81,18 +67,12 @@ void	Run::run()
 					}
 				}
 				else if (	this->_events[i].events & EPOLLOUT)
->>>>>>> mitandri
 				{
 					sent = req.sendChunks(fd);
 					if (sent)
 					{
-<<<<<<< HEAD
-						sent = false; done = false;
-						server[i].setfd(fd, -1);
-=======
 						sent = false;
 						server[indie].setfd(fd, -1);
->>>>>>> mitandri
 						close(fd);
 					}
 				} } catch ( const std::exception &e ) { std::cout << e.what() << std::endl; }
@@ -150,11 +130,7 @@ void	Run::handleSocket( int fd, std::vector<Server> &server, int &index )
 	addEpollEvent(this->_epoll, client_fd);
 }
 
-<<<<<<< HEAD
-bool	Run::handleClient( Request &req, std::vector<Server> &server, int &fd )
-=======
 bool	Run::handleClient( Request &req, std::vector<Server> &server, int &fd, int &index )
->>>>>>> mitandri
 {
 	size_t		i = 0;
 	int			flag = 1;
@@ -173,10 +149,7 @@ bool	Run::handleClient( Request &req, std::vector<Server> &server, int &fd, int 
 		if (flag)
 			i++;
 	}
-<<<<<<< HEAD
-=======
 	index = i;
->>>>>>> mitandri
 	return req.readChunks(fd, server[i]);
 }
 

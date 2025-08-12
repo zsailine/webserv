@@ -6,11 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:01:59 by zsailine          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2025/08/08 14:54:28 by mitandri         ###   ########.fr       */
-=======
 /*   Updated: 2025/08/04 14:17:34 by mitandri         ###   ########.fr       */
->>>>>>> mitandri
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -292,11 +288,7 @@ int Server::check_url(std::string url)
 	return (index);
 }
 
-<<<<<<< HEAD
-void	Server::setfd(int target, int toChange)
-=======
 void				Server::setfd(int target, int toChange)
->>>>>>> mitandri
 {
 	std::vector<int>::iterator it = std::find(client_fds.begin(), client_fds.end(), target);
 	if (it != client_fds.end())

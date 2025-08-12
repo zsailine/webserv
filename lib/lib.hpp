@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 10:02:47 by zsailine          #+#    #+#             */
-/*   Updated: 2025/08/12 11:38:08 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/12 11:31:00 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@
 #include <sys/types.h>
 #include <netdb.h>
 #include <signal.h>
-#include <sys/wait.h>
 
 // ========== COLOR ==========
 
