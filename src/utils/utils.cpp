@@ -6,7 +6,11 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:55:45 by zsailine          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2025/08/08 14:56:47 by mitandri         ###   ########.fr       */
+=======
+/*   Updated: 2025/08/11 14:22:49 by mitandri         ###   ########.fr       */
+>>>>>>> mitandri
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,4 +107,8 @@ int ft_exist(std::string path)
 		return (0);
 	close(fd);
 	return (1);
+<<<<<<< HEAD
 }
+=======
+}	
+>>>>>>> mitandri

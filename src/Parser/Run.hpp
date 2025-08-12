@@ -6,7 +6,11 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 09:50:39 by mitandri          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2025/08/04 14:07:45 by mitandri         ###   ########.fr       */
+=======
+/*   Updated: 2025/08/11 14:36:46 by mitandri         ###   ########.fr       */
+>>>>>>> mitandri
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +42,11 @@ class Run
 		void	run();
 		void	runEpoll( std::vector<Server> &server );
 		void	handleSocket( int fd, std::vector<Server> &server, int &index );
+<<<<<<< HEAD
 		bool	handleClient( Request &req, std::vector<Server> &server, int &fd );
+=======
+		bool	handleClient( Request &req, std::vector<Server> &server, int &fd, int &index );
+>>>>>>> mitandri
 		int		getEpoll() { return this->_epoll; }
 };
 

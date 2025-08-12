@@ -6,7 +6,11 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 12:02:47 by mitandri          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2025/08/08 15:03:35 by mitandri         ###   ########.fr       */
+=======
+/*   Updated: 2025/08/12 11:24:16 by mitandri         ###   ########.fr       */
+>>>>>>> mitandri
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,15 +67,26 @@ bool	Request::parseRequest( int fd, string &body, int bLength, Server &server )
 	bod.setHost(getType(header, "Host:", "\r\n"));
 	std::istringstream iss(header);
 	bod.setFirst(iss);
+<<<<<<< HEAD
 	return this->handleRequest(bod, server);
 }
 
 bool	Request::handleRequest( Body &bod, Server &server )
+=======
+	return this->handleRequest(fd, bod, server);
+}
+
+bool	Request::handleRequest( int fd, Body &bod, Server &server )
+>>>>>>> mitandri
 {
 	Sender			sender;
 	Response		response;
 	string			beforebefore;
+<<<<<<< HEAD
 	static string	before;
+=======
+	static string	before = "";
+>>>>>>> mitandri
 
 	response.defineStatus();
 	if (bod.getMethod() == "GET")
@@ -88,13 +103,18 @@ bool	Request::handleRequest( Body &bod, Server &server )
 	else
 		throw(std::invalid_argument(RED "METHOD ERROR\t:\t" + bod.getMethod() + " NOT SUPPORTED" RESET));
 	printLogs(bod.getMethod(), bod.getPath(), bod.getVersion());
+<<<<<<< HEAD
 	this->_response = response.getResponse();
+=======
+	this->_response[fd] = response.getResponse();
+>>>>>>> mitandri
 	before = beforebefore;
 	return true;
 }
 
 bool	Request::sendChunks( int fd )
 {
+<<<<<<< HEAD
 	static size_t	sent = 0;
 	size_t	rest, chunk, write;
 
@@ -114,4 +134,17 @@ bool	Request::sendChunks( int fd )
 
 Request::Request()
 	: _header(), _body(), _req() {}
+=======
+	size_t sent = send(fd, this->_response[fd].c_str(), this->_response[fd].size(), 0);
+	if (sent != this->_response[fd].size())
+		return false;
+	this->_req[fd].clear();
+	this->_body[fd].clear();
+	this->_header[fd].clear();
+	this->_response[fd].clear();
+	return true;
+}
+
+Request::Request() {}
+>>>>>>> mitandri
 Request::~Request() {}
