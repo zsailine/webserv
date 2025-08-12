@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Octet-Stream</title>
+</head>
+<body>
+    <input type="file" id="fileInput">
+    <button onclick="uploadFile()">Upload File</button>
+
+    <script>
+        async function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Please select a file to upload.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/your-upload-endpoint', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/octet-stream'
+                    },
+                    body: file // The file object itself will be sent as the body
+                });
+
+                if (response.ok) {
+                    console.log('File uploaded successfully!');
+                    // Handle successful response
+                } else {
+                    console.error('File upload failed:', response.statusText);
+                    // Handle error
+                }
+            } catch (error) {
+                console.error('Error during file upload:', error);
+            }
+        }
+    </script>
+</body>
+</html>

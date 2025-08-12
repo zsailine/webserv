@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 10:50:05 by zsailine          #+#    #+#             */
-/*   Updated: 2025/08/04 14:19:55 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/08 13:23:40 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,10 @@ int			ft_isdigit(std::string &str);
 int			afterEquals(int pos, std::string str);
 string		readFile( string path );
 string		getType( string message, string toFind, string end );
+void		writeFile( string path, string content );
 void		printAnswer( Body &body, Response &ref );
 void		printLogs( string method, string path, string version );
+string		generateHTML( int status, string description );
 void		writeDir( string file, std::vector< std::map<string, string> > c );
 
 template<typename T>

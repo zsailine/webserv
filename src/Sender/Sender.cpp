@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:23:21 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/07 18:24:58 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/08 13:52:13 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,58 +59,46 @@ string	Sender::handleGet( Server &server, Response &response, Body &body )
 	return (server.getValue(url, "allowedMethods"));
 }
 
-string	Sender::handleRequest( int fd, Server &server )
-{
-	Response	response;
-	std::string	before2;
-	(void)server;
-	
-	// response.defineStatus();
-	// if (response.getMethod() == "GET")
-	// {
-	// 	before2 = this->handleGet(server, response);
-	// 	response.run();
-	// 	response.http(response.getStatus(), "");
-	// }
-	// else if (response.getMethod() == "POST") {
-	// 	return "";
-	// 	this->postResponse(message, response, server);
-	// }
-	// else if (response.getMethod() == "DELETE")
-	// 	this->deleteResponse(message, response, server);
-	// tools.printAnswer(response);
-	this->sendMessage(fd, response.getResponse());
-	return (before2);
-}
-
-void	Sender::postResponse( Body &body )
+void	Sender::postResponse( Response &response, Body &body, Server &server )
 {
 	Post	post;
+	string	type = getType(body.getHeader(), "Content-Type:", "\r\n");
 
-	// post.parseRequest(server);
-	// post.checkError(ref, ref.getStatus());
-	std::cout << PURPLE;
-	std::cout << body.getContent() << std::endl;
-	std::cout << body.getHost() << std::endl;
-	std::cout << body.getBoundary() << std::endl;
-	std::cout << body.getPath() << std::endl;
-	std::cout << body.getBody() << std::endl;
-	std::cout << body.getHeader() << std::endl;
-	std::cout << RESET;
+	try {
+	if (type == "application/x-www-form-urlencoded")
+		post.urlEncoded(body.getBody(), server.get("listen"));
+	else if (type == "multipart/form-data")
+		post.multipartForm(body.getBody(), body.getBoundary(), body.getHeader(), body.getHost());
+	else if (type == "text/plain")
+		post.textPlain(body.getBody(), body.getHost());
+	else if (type == "application/octet-stream")
+		writeFile("./upload", body.getBody());
+	else
+		throw(std::invalid_argument(RED "POST ERROR\t:\t" + type + " not supported" RESET));
+	post.checkException(server.get("upload_directory"));
+	}
+	catch ( const std::exception &e ) {
+		if (dynamic_cast<const Post::E200 *>(&e))
+			response.set_status(200);
+		else if (dynamic_cast<const Post::E201 *>(&e))
+			response.set_status(201);
+		else if (dynamic_cast<const Post::E204 *>(&e))
+			response.set_status(204);
+		else if (dynamic_cast<const Post::E400 *>(&e))
+			response.set_status(400);
+		else if (dynamic_cast<const Post::E403 *>(&e))
+			response.set_status(403);
+		else if (dynamic_cast<const Post::E404 *>(&e))
+			response.set_status(404);
+		response.http(body, generateHTML(response.getStatus(), response.description(response.getStatus())));
+	}
 }
 
-// void	Sender::deleteResponse( string &message, Response &ref, Server &server )
-// {
-// 	Delete	del(message);
-
-// 	del.deleteResource(server);
-// 	ref.http(ref.getStatus(), "./files/message/delete.html");
-// }
-
-void	Sender::sendMessage( int fd, string message )
+void	Sender::deleteResponse( string host, Response &response, Body &body )
 {
-	size_t	size;
+	Delete	del;
 
-	size = message.size();
-	send(fd, message.c_str(), size, 0);
+	del.deleteResource(host, body.getHeader());
+	response.http(body, generateHTML(200, response.description(200)));
 }
+

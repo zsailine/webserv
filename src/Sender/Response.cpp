@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 09:53:26 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/08/04 14:02:55 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/08 13:27:45 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,12 +78,11 @@ void	Response::http( Body bod, string file )
 	}
 	else
 	{
-		string	content = bod.getContent();
 		this->_response.append("Content-Type: text/html\r\n");
 		this->_response.append("Content-Length: ");
-		this->_response.append(toString(content.size()) + "\r\n");
+		this->_response.append(toString(file.size()) + "\r\n");
 		this->_response.append("Connection: keep-alive\r\n\r\n");
-		this->_response.append(content);
+		this->_response.append(file);
 	}
 }
 

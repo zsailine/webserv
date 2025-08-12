@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 12:02:47 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/07 18:14:24 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/12 11:24:16 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ bool	Request::parseRequest( int fd, string &body, int bLength, Server &server )
 	if (header.find("Content-Length:") != string::npos)
 	{
 		string	&corpse = this->_body[fd];
-		corpse = body.substr(size + 5, bLength);
+		corpse = body.substr(size + 4, bLength);
 		string	boundary = getType(header, "boundary=", "\r\n");
 		bod.setLength(bLength);
 		bod.setBoundary("--" + boundary);
@@ -63,15 +63,15 @@ bool	Request::parseRequest( int fd, string &body, int bLength, Server &server )
 	bod.setHost(getType(header, "Host:", "\r\n"));
 	std::istringstream iss(header);
 	bod.setFirst(iss);
-	return this->handleRequest(bod, server);
+	return this->handleRequest(fd, bod, server);
 }
 
-bool	Request::handleRequest( Body &bod, Server &server )
+bool	Request::handleRequest( int fd, Body &bod, Server &server )
 {
 	Sender			sender;
 	Response		response;
 	string			beforebefore;
-	static string	before;
+	static string	before = "";
 
 	response.defineStatus();
 	if (bod.getMethod() == "GET")
@@ -82,35 +82,28 @@ bool	Request::handleRequest( Body &bod, Server &server )
 		response.http(bod, "");
 	}
 	else if (bod.getMethod() == "POST")
-	{
-		sender.postResponse(bod);
-	}
+		sender.postResponse(response, bod, server);
+	else if (bod.getMethod() == "DELETE")
+		sender.deleteResponse(server.get("listen"), response, bod);
 	else
 		throw(std::invalid_argument(RED "METHOD ERROR\t:\t" + bod.getMethod() + " NOT SUPPORTED" RESET));
 	printLogs(bod.getMethod(), bod.getPath(), bod.getVersion());
-	this->_response = response.getResponse();
+	this->_response[fd] = response.getResponse();
 	before = beforebefore;
 	return true;
 }
 
 bool	Request::sendChunks( int fd )
 {
-	static size_t	sent = 0;
-	size_t	rest, chunk, write;
-
-	rest = this->_response.size() - sent;
-	(rest > BUFFER_SIZE) ? chunk = BUFFER_SIZE : chunk = rest;
-	write = send(fd,  this->_response.c_str() + sent, chunk, 0);
-	if (write > 0)
-		sent += write;
-	if (sent == this->_response.size())
-	{
-		sent = 0;
-		return true;
-	}
-	return false;
+	size_t sent = send(fd, this->_response[fd].c_str(), this->_response[fd].size(), 0);
+	if (sent != this->_response[fd].size())
+		return false;
+	this->_req[fd].clear();
+	this->_body[fd].clear();
+	this->_header[fd].clear();
+	this->_response[fd].clear();
+	return true;
 }
 
-Request::Request()
-	: _header(), _body(), _req() {}
+Request::Request() {}
 Request::~Request() {}

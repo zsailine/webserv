@@ -6,27 +6,19 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 10:47:32 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/07 18:24:32 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/08 13:36:09 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Post.hpp"
+#define INPUT "plainTextInput"
+#define CONTENT "plainTextContent"
 
-std::vector< std::map<string, string> >	Post::_simple;
+std::vector< std::map<string, string> >	Post::_url;
+std::vector< std::map<string, string> >	Post::_multipart;
+std::vector< std::map<string, string> >	Post::_plain;
 
-void	Post::parseRequest( Server &server)
-{
-	string	type = getType(this->_message,
-			"Content-Type:", "\r\n");
-	string	body = getBody();
-
-	if (type == "application/x-www-form-urlencoded")
-		this->parseSimple(body, server);
-	else
-		this->parseComplex(body, server);
-}
-
-void	Post::parseSimple( string &body, Server &server )
+void	Post::urlEncoded( string body, string host )
 {
 	string						token, key, value;
 	std::map<string, string>	tmp;
@@ -41,25 +33,19 @@ void	Post::parseSimple( string &body, Server &server )
 		if (value == "")
 			this->_empty = true;
 	}
-	tmp.insert(std::pair<string, string>("host", server.get("listen")));
-	if ((this->_simple.size() == 0 && not this->_empty) ||
-		(find(_simple.begin(), _simple.end(), tmp) == _simple.end()
+	tmp.insert(std::pair<string, string>("host", host));
+	if ((this->_url.size() == 0 && not this->_empty) ||
+		(find(_url.begin(), _url.end(), tmp) == _url.end()
 		&& not this->_empty))
-		this->_simple.push_back(tmp);
+		this->_url.push_back(tmp);
 	else
 		this->_stored[0] = true;
-	tmp.clear();
 }
 
-void	Post::parseComplex( string &body, Server &server )
-{
-	string	boundary = getType(this->_message, "boundary", "\r\n");
-	string	multi = getType(this->_message, "Content-Type:", ";");
-	
-	if (multi != "multipart/form-data")
-		return ;
-	boundary.insert(0, "--");
+void	Post::multipartForm( string body, string boundary, string header, string host )
+{	
 	size_t	i = 0;
+	
 	while (true)
 	{
 		string	toParse;
@@ -71,23 +57,15 @@ void	Post::parseComplex( string &body, Server &server )
 		if (second == std::string::npos)
 			break;
 		toParse = body.substr(first, second - first);
-		this->parseContent(toParse, server);
+		if (header.find("filename=") != string::npos)
+			this->storeFile(toParse, toParse.find(CRLF));
+		else
+			this->storeData(toParse, toParse.find(CRLF), host);
 		i = second;
 	}
 }
 
-void	Post::parseContent( string content, Server &server )
-{
-	size_t	head = content.find("\r\n\r\n");
-	string	header = content.substr(0, head);
-	
-	if (header.find("filename=") != string::npos)
-		this->storeData(content, head, server);
-	else
-		this->storeFile(content, head);
-}
-
-void	Post::storeData( string content, size_t head, Server &server )
+void	Post::storeData( string content, size_t head, string host )
 {
 	string	name = getType(content, "name=", "\"\r\n");
 	std::map<string, string>	tmp;
@@ -99,17 +77,16 @@ void	Post::storeData( string content, size_t head, Server &server )
 	if (value == "")
 		this->_empty = true;
 	tmp.insert(std::pair<string, string>(name, value));
-	if ((this->_simple.size() == 0 && not this->_empty) ||
-		(find(_simple.begin(), _simple.end(), tmp) == _simple.end()
+	if ((this->_multipart.size() == 0 && not this->_empty) ||
+		(find(_multipart.begin(), _multipart.end(), tmp) == _multipart.end()
 		&& not this->_empty))
 	{
-		tmp.insert(std::pair<string, string>("host", server.get("listen")));
-		this->_simple.push_back(tmp);
+		tmp.insert(std::pair<string, string>("host", host));
+		this->_multipart.push_back(tmp);
 	}
 	else
 		this->_stored[0] = true;
 	tmp.clear();
-	writeDir("upload/data.txt", this->_simple);
 }
 
 void	Post::storeFile( string content, size_t head )
@@ -126,44 +103,13 @@ void	Post::storeFile( string content, size_t head )
 	if (fd != -1) { this->_stored[1] = true; return; }
 	close(fd);
 	fd = open(path.c_str(), O_CREAT | O_RDWR, 0644);
-	if (fd == -1)
-		return;
+	if (fd == -1) { return; }
 	if (content.substr(head, 4) == "\r\n\r\n")
 		head += 4;
 	size_t	end = content.find("\r\n", head);
 	string	inside = content.substr(head, end - head);
-	write(fd, inside.c_str(), inside.size());
+	writeFile(path, inside);
 	close(fd);
-}
-void	Post::checkError( Response &ref, int stat )
-{
-	// if (isEmpty())
-	// {
-	// 	ref.http(stat, "./files/message/empty.html");
-	// 	return ;
-	// }
-	// if (not getFile() && not getData())
-	// {
-	// 	ref.http(stat, "./files/message/newData.html");
-	// 	return ;
-	// }
-	// if (getFile() && getData())
-	// {
-	// 	ref.http(stat, "./files/message/presentData.html");
-	// 	return ;
-	// }
-	// if (getFile() && not getData())
-	// {
-	// 	ref.http(stat, "./files/message/presentFile.html");
-	// 	return ;
-	// }
-	// if (getData() && not getFile())
-	// {
-	// 	ref.http(stat, "./files/message/presentData.html");
-	// 	return ;
-	// }
-	(void) ref;
-	(void)stat;
 }
 
 Post::Post()
@@ -171,4 +117,42 @@ Post::Post()
 	this->_empty = false;
 	this->_stored[0] = false;
 	this->_stored[1] = false;
+}
+
+void	Post::textPlain( string body,  string host )
+{
+	std::map<string, string>	tmp;
+
+	while (body.size() > 0)
+	{
+		if (body == "\r\n")
+			break;
+		size_t	index = body.find("\r\n"), equal;
+		string	key, value, line;
+		line = body.substr(0, index);
+		equal = line.find("=");
+		key = line.substr(0, equal);
+		value = line.substr(equal + 1, index - equal);
+		tmp.insert(std::pair<string, string>(key, value));
+		body = body.c_str() + index + 2;
+	}
+	tmp.insert(std::pair<string, string>("host", host));
+}
+
+void	Post::checkException( string path )
+{
+	std::ifstream	file(path.c_str());
+
+	if (not file.is_open() && path != "")
+		throw Post::E403();
+	if (isEmpty())
+		throw Post::E200();
+	if (not getFile() && not getData())
+		throw Post::E201();
+	if (getFile() && getData())
+		throw Post::E200();
+	if (getFile() && not getData())
+		throw Post::E200();
+	if (getData() && not getFile())
+		throw Post::E200();
 }

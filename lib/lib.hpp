@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 10:02:47 by zsailine          #+#    #+#             */
-/*   Updated: 2025/08/01 11:39:59 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/12 11:31:00 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@
 #define MAX_EVENTS 4
 #define MAX_SIZE 5000
 #define BUFFER_SIZE 100
+#define CRLF "\r\n\r\n"
 
 typedef std::string	string;
 

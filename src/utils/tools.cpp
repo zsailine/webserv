@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 09:58:05 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/04 14:20:30 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/08 15:01:30 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,17 @@ string	readFile( string path )
 	return "";
 }
 
+void	writeFile( string path, string content )
+{
+	std::ofstream		file(path.c_str());
+
+	if (file.is_open())
+	{
+		file << content;
+		file.close();
+	}
+}
+
 void	writeDir( string file, std::vector< std::map<string, string> > c )
 {
 	std::ostringstream	oss;
@@ -84,10 +95,28 @@ void	writeDir( string file, std::vector< std::map<string, string> > c )
 string	getType( string message, string toFind, string end )
 {
 	string	temp = message;
-	int		start = temp.find(toFind), ending;
+	size_t	start = temp.find(toFind), ending;
 
+	if (start == string::npos)
+		return "";
 	temp = temp.c_str() + start;
 	ending = temp.find(end);
 	temp = temp.substr(0, ending);
 	return temp.c_str() + toFind.size() + 1;
+}
+
+string	generateHTML( int status, string description )
+{
+	string	html;
+
+	if (status == 204)
+		return "";
+	html.append("<!DOCTYPE html>");
+	html.append("<style>.center{text-align: center;}</style>");
+	html.append("<html><body>");
+	html.append("<h1 style=\"text-align: center;\" >" + toString(status)
+		+ " " + description + "</h1>");
+	html.append("<div class=\"center\"><a href=\"../index.html\"><- Go back to home page</a></div>");
+	html.append("<html><body>");
+	return html;
 }

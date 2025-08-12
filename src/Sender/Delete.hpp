@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 10:30:30 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/30 10:49:48 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/08 13:51:58 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,13 @@ class Delete : public Post
 {
 	private:
 	
-		void	findResource( Server &server, string &key, string &value );
+		void	findResource( string host, string &key, string &value );
 	
 	public:
 
-		Delete( string message ) : Post(message) {}
+		Delete() : Post() {}
 		~Delete() {}
-		void	deleteResource( Server &server );
-		// void	printMother();
+		void	deleteResource( string host, string header );
 };
 
 
