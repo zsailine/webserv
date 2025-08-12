@@ -1,6 +1,6 @@
 NAME = webserv
 
-FLAGS = -Wall -Werror -Wextra -std=c++98 -g
+FLAGS = -Wall -Werror -Wextra -std=c++98
 
 OBJ_DIR = .obj/
 
@@ -9,7 +9,6 @@ DIR_PARSER = src/Parser/
 DIR_SERVER = src/Server/
 DIR_UTILS = src/utils/
 DIR_SENDER = src/Sender/
-DIR_CGI =    src/cgi/
 
 SRC_MAIN =		$(DIR_MAIN)main.cpp
 
@@ -32,15 +31,11 @@ SRC_SENDER	=	$(DIR_SENDER)Response.cpp	\
 				$(DIR_SENDER)Post.cpp		\
 				$(DIR_SENDER)Delete.cpp
 
-SRC_CGI    =    $(DIR_CGI)CGI.cpp \
-				$(DIR_CGI)PostCGI.cpp
-
 SRC =	$(SRC_MAIN)		\
 		$(SRC_PARSER)	\
 		$(SRC_UTILS)	\
 		$(SRC_SERVER)	\
-		$(SRC_SENDER)   \
-		$(SRC_CGI)
+		$(SRC_SENDER)
 
 OBJ = $(SRC:%.cpp=$(OBJ_DIR)%.o)
 

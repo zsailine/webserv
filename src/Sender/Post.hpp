@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Post.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 10:44:50 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/11 13:11:41 by aranaivo         ###   ########.fr       */
+/*   Updated: 2025/08/08 13:33:07 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ class Post
 		static std::vector< std::map<string, string> >	_multipart;
 		static std::vector< std::map<string, string> >	_plain;
 
+		string	getBody();
 		void	storeFile( string content, size_t head );
 		void	storeData( string content, size_t head, string host );
 
