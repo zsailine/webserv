@@ -36,6 +36,7 @@
 #include <sys/types.h>
 #include <netdb.h>
 #include <signal.h>
+#include <sys/wait.h>
 
 // ========== COLOR ==========
 
