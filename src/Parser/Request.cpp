@@ -74,23 +74,39 @@ bool	Request::handleRequest( int fd, Body &bod, Server &server )
 	static string	before = "";
 
 	response.defineStatus();
-	if (bod.getMethod() == "GET")
+
+	if(bod.getPath().find(".php") != std::string::npos)
 	{
-		beforebefore = sender.handleGet(server, response, bod);
-		response.getExtension();
-		bod.setContent(readFile(response.getPath()));
-		response.http(bod, "");
+		CGI	cgi(bod.getBody(), response.getPath(), bod.getMethod(), fd);
+		std::cout << PURPLE << bod.getBody() << std::endl;
+		std::cout << PURPLE << bod.getPath() << std::endl;
+		std::cout << PURPLE << bod.getMethod() << std::endl;
+
+		//PostCgi post(bod.getBody());
+		//post.applyToCgi(cgi);
+		cgi.execute_cgi();
+		return true;
 	}
-	else if (bod.getMethod() == "POST")
-		sender.postResponse(response, bod, server);
-	else if (bod.getMethod() == "DELETE")
-		sender.deleteResponse(server.get("listen"), response, bod);
-	else
-		throw(std::invalid_argument(RED "METHOD ERROR\t:\t" + bod.getMethod() + " NOT SUPPORTED" RESET));
-	printLogs(bod.getMethod(), bod.getPath(), bod.getVersion());
-	this->_response[fd] = response.getResponse();
-	before = beforebefore;
-	return true;
+	else 
+	{
+		if (bod.getMethod() == "GET")
+		{
+			beforebefore = sender.handleGet(server, response, bod);
+			response.getExtension();
+			bod.setContent(readFile(response.getPath()));
+			response.http(bod, "");
+		}
+		else if (bod.getMethod() == "POST")
+			sender.postResponse(response, bod, server);
+		else if (bod.getMethod() == "DELETE")
+			sender.deleteResponse(server.get("listen"), response, bod);
+		else
+			throw(std::invalid_argument(RED "METHOD ERROR\t:\t" + bod.getMethod() + " NOT SUPPORTED" RESET));
+		printLogs(bod.getMethod(), bod.getPath(), bod.getVersion());
+		this->_response[fd] = response.getResponse();
+		before = beforebefore;
+		return true;
+	}
 }
 
 bool	Request::sendChunks( int fd )

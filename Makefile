@@ -39,7 +39,8 @@ SRC =	$(SRC_MAIN)		\
 		$(SRC_PARSER)	\
 		$(SRC_UTILS)	\
 		$(SRC_SERVER)	\
-		$(SRC_SENDER)
+		$(SRC_SENDER)   \
+		$(SRC_CGI)
 
 OBJ = $(SRC:%.cpp=$(OBJ_DIR)%.o)
 

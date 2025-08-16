@@ -33,12 +33,13 @@ void CGI::execute_cgi()
     if (pid == 0)
     {
         // === Processus fils ===
-
+        
         // Redirection STDOUT → stdout_pipe[1]
         close(stdout_pipe[0]);
         dup2(stdout_pipe[1], STDOUT_FILENO);
         close(stdout_pipe[1]);
-
+        std::cout << "here***********************\n";
+        
         // Redirection STDIN si POST
         if (_method == "POST")
         {
@@ -48,7 +49,7 @@ void CGI::execute_cgi()
         }
 
         // Récupérer les variables d'environnement
-        this->retrieve_query_string();
+        //this->retrieve_query_string();
         char** envp = this->generate_envp();
 
         const char* php_path = "/usr/bin/php-cgi";
@@ -127,6 +128,7 @@ char ** CGI::generate_envp()
     char buf[1024];
     std::string script_path;
 
+
     if (getcwd(buf, sizeof(buf)) == NULL)
     {
         std::cout << "An error has occured on path " << std::endl;
@@ -134,6 +136,7 @@ char ** CGI::generate_envp()
     }
 
     script_path = std::string(buf) + "/www/website1/cgi" + _path;
+    std::cout << "==>" << script_path << std::endl;
 
     if (access(script_path.c_str(), F_OK) != 0) 
     {
