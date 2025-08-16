@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 10:47:32 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/08 13:36:09 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/14 16:36:06 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ std::vector< std::map<string, string> >	Post::_url;
 std::vector< std::map<string, string> >	Post::_multipart;
 std::vector< std::map<string, string> >	Post::_plain;
 
-void	Post::urlEncoded( string body, string host )
+int	Post::urlEncoded( string body, string host )
 {
 	string						token, key, value;
 	std::map<string, string>	tmp;
@@ -30,20 +30,19 @@ void	Post::urlEncoded( string body, string host )
 		value = token.c_str() + index;
 		key = token.substr(0, index - 1);
 		tmp.insert(std::pair<string, string>(key, value));
-		if (value == "")
-			this->_empty = true;
 	}
 	tmp.insert(std::pair<string, string>("host", host));
-	if ((this->_url.size() == 0 && not this->_empty) ||
-		(find(_url.begin(), _url.end(), tmp) == _url.end()
-		&& not this->_empty))
+	if (this->_url.size() == 0 ||
+		(find(_url.begin(), _url.end(), tmp) == _url.end()))
 		this->_url.push_back(tmp);
 	else
-		this->_stored[0] = true;
+		return 200;
+	return 201;
 }
 
-void	Post::multipartForm( string body, string boundary, string header, string host )
-{	
+int	Post::multipartForm( string body, string boundary, string path, string host )
+{
+	int		status;
 	size_t	i = 0;
 	
 	while (true)
@@ -57,15 +56,18 @@ void	Post::multipartForm( string body, string boundary, string header, string ho
 		if (second == std::string::npos)
 			break;
 		toParse = body.substr(first, second - first);
-		if (header.find("filename=") != string::npos)
-			this->storeFile(toParse, toParse.find(CRLF));
+		if (toParse.substr(0, toParse.find("\r\n")).find("filename=") != string::npos)
+			status = this->storeFile(toParse, toParse.find(CRLF), path);
 		else
-			this->storeData(toParse, toParse.find(CRLF), host);
+			status = this->storeData(toParse, toParse.find(CRLF), host);
+		if (status != 200 && status != 201)
+			break;
 		i = second;
 	}
+	return status;
 }
 
-void	Post::storeData( string content, size_t head, string host )
+int	Post::storeData( string content, size_t head, string host )
 {
 	string	name = getType(content, "name=", "\"\r\n");
 	std::map<string, string>	tmp;
@@ -74,52 +76,38 @@ void	Post::storeData( string content, size_t head, string host )
 		head += 4;
 	size_t	end = content.find("\r\n", head);
 	string	value = content.substr(head, end - head);
-	if (value == "")
-		this->_empty = true;
 	tmp.insert(std::pair<string, string>(name, value));
-	if ((this->_multipart.size() == 0 && not this->_empty) ||
-		(find(_multipart.begin(), _multipart.end(), tmp) == _multipart.end()
-		&& not this->_empty))
-	{
-		tmp.insert(std::pair<string, string>("host", host));
+	tmp.insert(std::pair<string, string>("host", host));
+	if (this->_multipart.size() == 0 ||
+		(find(_multipart.begin(), _multipart.end(), tmp) == _multipart.end()))
 		this->_multipart.push_back(tmp);
-	}
 	else
-		this->_stored[0] = true;
-	tmp.clear();
+		return 200;
+	return 201;
 }
 
-void	Post::storeFile( string content, size_t head )
+int	Post::storeFile( string content, size_t head, string url )
 {
 	string	file = getType(content, "filename=", "\"\r\n"), path;
 	
 	if (file == "")
-	{
-		this->_empty = true;
-		return ;
-	}
-	path = "upload/" + file;
+		return 400;
+	path = url + file;
 	int	fd = open(path.c_str(), O_RDONLY, 0644);
-	if (fd != -1) { this->_stored[1] = true; return; }
+	if (fd != -1) return close(fd), 200; 
 	close(fd);
 	fd = open(path.c_str(), O_CREAT | O_RDWR, 0644);
-	if (fd == -1) { return; }
+	if (fd == -1) return 500;
 	if (content.substr(head, 4) == "\r\n\r\n")
 		head += 4;
 	size_t	end = content.find("\r\n", head);
 	string	inside = content.substr(head, end - head);
 	writeFile(path, inside);
 	close(fd);
+	return 201;
 }
 
-Post::Post()
-{
-	this->_empty = false;
-	this->_stored[0] = false;
-	this->_stored[1] = false;
-}
-
-void	Post::textPlain( string body,  string host )
+int	Post::textPlain( string body,  string host )
 {
 	std::map<string, string>	tmp;
 
@@ -137,22 +125,24 @@ void	Post::textPlain( string body,  string host )
 		body = body.c_str() + index + 2;
 	}
 	tmp.insert(std::pair<string, string>("host", host));
+	return 201;
 }
 
-void	Post::checkException( string path )
+int	Post::octetStream( string body, string path, string url )
 {
-	std::ifstream	file(path.c_str());
+	size_t	index = path.rfind('/');
+	string	file = path.substr(index + 1, string::npos);
 
-	if (not file.is_open() && path != "")
-		throw Post::E403();
-	if (isEmpty())
-		throw Post::E200();
-	if (not getFile() && not getData())
-		throw Post::E201();
-	if (getFile() && getData())
-		throw Post::E200();
-	if (getFile() && not getData())
-		throw Post::E200();
-	if (getData() && not getFile())
-		throw Post::E200();
+	if (file == "")
+		return 400;
+	path = url + file;
+	int	fd = open(path.c_str(), O_RDONLY, 0644);
+	if (fd != -1) return close(fd), 200; 
+	close(fd);
+	fd = open(path.c_str(), O_CREAT | O_RDWR, 0644);
+	if (fd == -1) return 500;
+	writeFile(path, body);
+	close(fd);
+	return 201;
 }
+

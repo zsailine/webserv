@@ -6,44 +6,59 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 09:58:05 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/08 15:01:30 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/16 08:47:29 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../Parser/Body.hpp"
+#include "../Parser/Run.hpp"
 #include "../Sender/Response.hpp"
 
 void	printLogs( string method, string path, string version )
 {
+	Run		run;
 	string	intro;
 
-	if (method != "GET" && method != "POST" && method != "DELETE")
-		return ;
 	if (method == "GET")
 		intro = string(CYAN "REQUEST GET\t:\t");
-	if (method == "POST")
+	else if (method == "POST")
 		intro = string(GREEN "REQUEST POST\t:\t");
-	if (method == "DELETE")
+	else if (method == "DELETE")
 		intro = string(YELLOW "REQUEST DELETE\t:\t");
+	else
+		intro = string(RED"REQUEST " + method + "\t:\t");
+	addEpollEvent(run.getEpoll(), STDOUT_FILENO);
 	std::cout << intro + method + " " + path + " " + version << std::endl;
 	std::cout << RESET;
+	delEpollEvent(run.getEpoll(), STDOUT_FILENO);
 }
 
 void	printAnswer( Body &body, Response &ref )
 {
+	Run		run;
 	string	intro;
+	string	color = "";
 
-	if (body.getMethod() != "GET" && body.getMethod() != "POST" && body.getMethod() != "DELETE")
-		return ;
+	if (ref.getStatus() >= 400)
+		color = RED;
+	else
+	{
+		if (body.getMethod() == "GET") color = CYAN;
+		else if (body.getMethod() == "POST") color = GREEN;
+		else if (body.getMethod() == "DELETE") color = YELLOW;
+		else { color = RED; }
+	}
 	if (body.getMethod() == "GET")
-		intro = string(CYAN "ANSWER GET\t:\t");
+		intro = color + string("ANSWER GET\t:\t");
 	if (body.getMethod() == "POST")
-		intro = string(GREEN "ANSWER POST\t:\t");
+		intro = color + string("ANSWER POST\t:\t");
 	if (body.getMethod() == "DELETE")
-		intro = string(YELLOW "ANSWER DELETE\t:\t");
+		intro = color + string("ANSWER DELETE\t:\t");
+	addEpollEvent(run.getEpoll(), STDOUT_FILENO);
 	std::cout << intro + body.getVersion() + " " << ref.getStatus()
 		<< " " + ref.description(ref.getStatus()) + RESET << std::endl;
 	std::cout << RESET;
+	delEpollEvent(run.getEpoll(), STDOUT_FILENO);
 }
 
 string	readFile( string path )
@@ -62,7 +77,7 @@ string	readFile( string path )
 
 void	writeFile( string path, string content )
 {
-	std::ofstream		file(path.c_str());
+	std::ofstream	file(path.c_str());
 
 	if (file.is_open())
 	{
@@ -119,4 +134,20 @@ string	generateHTML( int status, string description )
 	html.append("<div class=\"center\"><a href=\"../index.html\"><- Go back to home page</a></div>");
 	html.append("<html><body>");
 	return html;
+}
+
+bool	fileExist( string path )
+{
+	struct stat	st;
+	
+	if (stat(path.c_str(), &st) != 0)
+		return false;
+	return true;
+}
+
+bool	hasPermission( string path, int	mode )
+{
+	if (access(path.c_str(), mode) != 0)
+		return false;
+	return true;
 }

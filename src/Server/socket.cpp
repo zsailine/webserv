@@ -6,11 +6,12 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 14:12:25 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/30 11:14:43 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/12 11:58:54 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+#include "../Parser/Run.hpp"
 
 sockaddr_in init_adress(std::string str)
 {
@@ -34,8 +35,14 @@ sockaddr_in init_adress(std::string str)
 
 static int ft_print(int sock, std::string str, int index)
 {
+	Run	run;
+	
 	if (str.size())
+	{
+		addEpollEvent(run.getEpoll(), STDOUT_FILENO);
 		std::cout << str << " " << index << std::endl;
+		delEpollEvent(run.getEpoll(), STDOUT_FILENO);
+	}
 	if (sock != -1)
 		close(sock);
 	return (0);

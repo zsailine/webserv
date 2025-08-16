@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 11:57:31 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/11 15:05:13 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/15 20:33:50 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,14 @@ class	Request
 		std::map<int, string>	_header;
 		std::map<int, string>	_body;
 		std::map<int, string>	_req;
+		std::map<int, size_t>	_sent;
 
 	public:
 		Request();
-		bool	readChunks( int fd, Server &server );
+		bool	readChunks( int &fd, Server &server);
 		bool	handleRequest( int fd, Body &bod, Server &server );
 		bool	parseRequest( int fd, string &body, int bLength, Server &server );
-		bool	sendChunks( int fd );
+		bool	sendChunks( int &fd, Server &server );
 		string	getReq( int fd ) { return this->_req[fd]; }
 		string	getHeader( int fd ) { return this->_header[fd]; }
 		string	getBody( int fd ) { return this->_body[fd]; }
