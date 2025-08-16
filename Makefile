@@ -29,8 +29,7 @@ SRC_UTILS =		$(DIR_UTILS)utils.cpp		\
 
 SRC_SENDER	=	$(DIR_SENDER)Response.cpp	\
 				$(DIR_SENDER)Sender.cpp		\
-				$(DIR_SENDER)Post.cpp		\
-				$(DIR_SENDER)Delete.cpp
+				$(DIR_SENDER)Post.cpp
 
 SRC_CGI  =      $(DIR_CGI)CGI.cpp           \
 				$(DIR_CGI)PostCGI.cpp

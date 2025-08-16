@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 10:50:05 by zsailine          #+#    #+#             */
-/*   Updated: 2025/08/08 13:23:40 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/15 18:58:50 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 
 class Response;
 
+bool		hasPermission( string path, int	mode );
+bool		fileExist( string path );
 int			nbr_of_words(std::string const &str);
 int			isWord(std::string const &str);
 void		RemoveWhiteSpace(std::string& str);
