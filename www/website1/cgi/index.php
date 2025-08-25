@@ -1,9 +1,10 @@
 <?php
 header("Content-type: text/html; charset=UTF-8");
+echo "Hello";
 ?>
 
 
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,7 +15,7 @@ header("Content-type: text/html; charset=UTF-8");
 <body>
     <?php
         echo "<pre>";
-        print_r($_POST); // Affiche les données POST
+        //print_r($_POST); // Affiche les données POST
         echo "</pre>";
     ?>
     <div id="main">
@@ -26,4 +27,4 @@ header("Content-type: text/html; charset=UTF-8");
         </form>
     </div>
 </body>
-</html>
+</html> -->

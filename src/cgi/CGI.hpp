@@ -1,49 +1,42 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   CGI.hpp                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/21 09:08:49 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/07/23 10:46:14 by aranaivo         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#ifndef CGI_HPP
-#define CGI_HPP
-
-#include "class.hpp"
+#pragma once
 #include "lib.hpp"
+#include "class.hpp"
 
-class CGI
-{
-    private:
-        std::string _path;
-        std::string _query_string;
-        std::string _method;
-        std::string _body;
-        std::string _content_type;
-        size_t      _content_length;
-        std::string _response;
-        std::string _message;
-        int         _client_fd;
+class CGI {
+public:
+    void setMethod(const std::string& m) { _method = m; }
+    void setBody(const std::string& b)   { _body = b; }
 
-    public:
-        CGI(std::string message, std::string path, std::string method, int client_fd);
-        void retrieve_body();
-        void retrieve_query_string();
-        void handle_post();
-        void execute_cgi();
-        char **generate_envp();
-        std::string getResponse();
-        void setBody(std::string body);
-        void setContentType(std::string content_type);
-        void setContentLength(size_t content_length);
-        ~CGI();
+    void setRequestURI(const std::string& s)   { _request_uri = s; }
+    void setScriptFilename(const std::string& s){ _script_path = s; }
+    void setScriptName(const std::string& s)   { _script_name = s; }
+    void setServerName(const std::string& s)   { _server_name = s; }
+    void setServerPort(const std::string& s)   { _server_port = s; }
+    void setRemoteAddr(const std::string& s)   { _remote_addr = s; }
+    void setRemotePort(const std::string& s)   { _remote_port = s; }
+    void setDocumentRoot(const std::string& s) { _document_root = s; }
+    void setHeader(const std::string& k, const std::string& v) { _headers[k] = v; }
+
+    bool start_cgi(int epfd, int client_fd);
+
+    void   retrieve_query_string();
+    char** generate_envp();
+
+private:
+    // Requête / Contexte
+    std::string _method;
+    std::string _body;
+
+    std::string _request_uri;   // "/path/script.php?x=1"
+    std::string _script_path;   // "/var/www/.../script.php"
+    std::string _script_name;   // "/path/script.php" (sans query)
+    std::string _query_string;
+
+    std::string _server_name;   // "example.com"
+    std::string _server_port;   // "80"
+    std::string _remote_addr;   // "1.2.3.4"
+    std::string _remote_port;   // "54321"
+    std::string _document_root; // "/var/www/html"
+
+    std::map<std::string, std::string> _headers;
 };
-
-
-
-
-#endif

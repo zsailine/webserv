@@ -104,3 +104,4 @@ int ft_exist(std::string path)
 	close(fd);
 	return (1);
 }	
+

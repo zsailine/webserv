@@ -22,5 +22,8 @@
 #include "../src/Sender/Response.hpp"
 #include "../src/Sender/Sender.hpp"
 #include "../src/Sender/Post.hpp"
+#include "../src/cgi/CGI.hpp"
+#include "../src/cgi/CgiJob.hpp"
+#include "../src/cgi/CgiReactor.hpp"
 
 #endif

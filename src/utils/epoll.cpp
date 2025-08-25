@@ -21,6 +21,14 @@ void addEpollEvent(int epfd, int socket)
 	epoll_ctl(epfd, EPOLL_CTL_ADD, socket, &event);
 }
 
+void addEpollEventEx(int epfd, int fd, uint32_t ev) {
+    struct epoll_event event;
+    event.data.fd = fd;
+    event.events  = ev;
+    epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &event);
+}
+
+
 void	modifyEpollEvent( int epfd, int fd, uint32_t ev )
 {
 	struct epoll_event event;

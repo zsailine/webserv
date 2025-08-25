@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 09:51:36 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/11 15:11:28 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/15 21:06:50 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,29 @@ int isSocket(int fd, std::vector<Server> server)
 
 void	signalHandler( int sigNum )
 {
+	Run	run;
+	
 	sig = 0;
+	addEpollEvent(run.getEpoll(), STDOUT_FILENO);
 	std::cout << std::endl;
-	std::cout << PURPLE "... Websev is quitting..." RESET << std::endl;
+	std::cout << PURPLE "... Webserv is quitting..." RESET << std::endl;
+	delEpollEvent(run.getEpoll(), STDOUT_FILENO);
 	(void) sigNum;
+}
+
+static void	printInstruction( std::vector<Server> &server )
+{
+	std::cout << PURPLE "... WELCOME TO OUR WEBSERVER ...\n" RESET << std::endl;
+	std::cout << "Press (Ctrl + C) to stop the server" << std::endl << std::endl;
+	for (size_t i = 0; i < server.size(); i++)
+	{
+		string	port = server[i].get("listen");
+		int		index = port.find(":");
+		port = port.substr(index + 1, string::npos);
+		std::cout << "Server " << i + 1 << " [" UNDERLINE << server[i].get("server_name")
+			<< RESET "] listening on port " UNDERLINE << port << RESET << std::endl; 
+	}
+	std::cout << std::endl;
 }
 
 void	Run::run()
@@ -43,7 +62,7 @@ void	Run::run()
 	bool				done = false, sent = false;
 	std::vector<Server>	server = parse.getServer();
 	
-	std::cout << PURPLE "... WELCOME TO OUR WEBSERVER ...\n" RESET;
+	printInstruction(server);
 	this->runEpoll(server);
 	while(sig)
 	{
@@ -52,6 +71,21 @@ void	Run::run()
 		for (int i = 0; i < this->_client; i++)
 		{
 			int fd = this->_events[i].data.fd;
+			std::cerr << "[EPOLL] fd=" << fd 
+			  << " events=" << this->_events[i].events << std::endl;
+			
+			CgiReactor::instance().debugPrintJobs();
+			if (CgiReactor::instance().isCgiFd(fd)) 
+			{
+				std::cout << "[isCgiFd] fd=" << fd << " found = 1" << std::endl;
+            	std::cout << "+++++++handleIoEvent CGI fd=" << fd << std::endl;
+                CgiReactor::instance().handleIoEvent(this->_epoll, fd, this->_events[i].events, req);
+                continue; // on a géré cet event
+            }
+			else
+			{
+				std::cout << "[isCgiFd] fd=" << fd << " found = 0" << std::endl;
+			}
 			int index = isSocket(fd, server);
 			if (index >= 0)
 				this->handleSocket(fd, server, index);
@@ -59,7 +93,11 @@ void	Run::run()
 			{
 				try { if (this->_events[i].events & EPOLLIN)
 				{
-					done = this->handleClient(req, server, fd, indie);
+					try 
+					{ 
+						done = this->handleClient(req, server, fd, indie); 
+					}
+					catch ( const std::exception &e ) { done = true; }
 					if (done)
 					{
 						done = false;
@@ -68,14 +106,18 @@ void	Run::run()
 				}
 				else if (	this->_events[i].events & EPOLLOUT)
 				{
-					sent = req.sendChunks(fd);
+					sent = req.sendChunks(fd, server[indie]);
+					std::cerr << RED "in sent" RESET << std::endl; 
 					if (sent)
 					{
 						sent = false;
 						server[indie].setfd(fd, -1);
 						close(fd);
 					}
-				} } catch ( const std::exception &e ) { std::cout << e.what() << std::endl; }
+				} } catch ( const std::exception &e ) {
+					addEpollEvent(this->_epoll, STDOUT_FILENO);
+					std::cout << e.what() << std::endl;
+					delEpollEvent(this->_epoll, STDOUT_FILENO); }
 			}
 		}
 	}
@@ -108,6 +150,9 @@ void	Run::runEpoll( std::vector<Server> &server )
 			}
 		}
 	}
+	addEpollEvent(this->_epoll, STDIN_FILENO);
+	addEpollEvent(this->_epoll, STDERR_FILENO);
+	addEpollEvent(this->_epoll, STDOUT_FILENO);
 }
 
 Run::Run( std::string const &parameter )

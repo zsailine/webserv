@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:19:34 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/08 13:47:21 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/15 18:40:55 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ class Sender
 		Sender() {}
 		string	handleGet( Server &server, Response &response, Body &body );
 		void	postResponse( Response &response, Body &body, Server &server );
-		void	deleteResponse( string host, Response &response, Body &body );
+		void	deleteResponse( Response &response, Body &body, Server &server );
 };
 
 #endif

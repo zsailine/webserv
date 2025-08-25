@@ -6,9 +6,11 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 10:50:05 by zsailine          #+#    #+#             */
-/*   Updated: 2025/08/08 13:23:40 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/15 18:58:50 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#pragma once
 
 #ifndef UTILS_HPP
 
@@ -19,7 +21,10 @@
 #include "../Parser/Body.hpp"
 
 class Response;
+class Server;
 
+bool		hasPermission( string path, int	mode );
+bool		fileExist( string path );
 int			nbr_of_words(std::string const &str);
 int			isWord(std::string const &str);
 void		RemoveWhiteSpace(std::string& str);
@@ -37,6 +42,11 @@ void		printAnswer( Body &body, Response &ref );
 void		printLogs( string method, string path, string version );
 string		generateHTML( int status, string description );
 void		writeDir( string file, std::vector< std::map<string, string> > c );
+bool		isPhpUri(const std::string &uri);
+std::string extractRequestURI(const std::string &header);
+void 		parseHeadersToMap(const std::string &header, std::map<std::string,std::string> &out);
+std::string resolveScriptFilename(Server &server, const std::string &uri);
+
 
 template<typename T>
 string	toString( T number )

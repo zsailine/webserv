@@ -1,194 +1,173 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   CGI.cpp                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/21 09:12:07 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/08/11 13:20:27 by aranaivo         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#include "CGI.hpp"
+#include "CgiReactor.hpp"
+#include "CgiJob.hpp"
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/epoll.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
+#include <vector>
+#include <sstream>
+#include <cctype>
 
-#include "./CGI.hpp"
+static int make_pipe_nonblock(int p[2]) {
+    if (pipe(p) == -1) return -1;
+    int fl;
 
-CGI::CGI(std::string message, std::string path, std::string method, int client_fd)
-{
-    _path = path;
-    _method = method;
-    _client_fd = client_fd;
-    _message = message;
+    fl = fcntl(p[0], F_GETFL, 0);
+    if (fl != -1) fcntl(p[0], F_SETFL, fl | O_NONBLOCK);
+    fl = fcntl(p[1], F_GETFL, 0);
+    if (fl != -1) fcntl(p[1], F_SETFL, fl | O_NONBLOCK);
+
+    fl = fcntl(p[0], F_GETFD);
+    if (fl != -1) fcntl(p[0], F_SETFD, fl | FD_CLOEXEC);
+    fl = fcntl(p[1], F_GETFD);
+    if (fl != -1) fcntl(p[1], F_SETFD, fl | FD_CLOEXEC);
+
+    return 0;
 }
 
-void CGI::execute_cgi()
-{
-    int stdout_pipe[2];
-    pipe(stdout_pipe);
+static void free_envp_(char** envp) {
+    if (!envp) return;
+    size_t i = 0;
+    while (envp[i]) { delete [] envp[i]; ++i; }
+    delete [] envp;
+}
 
-    int stdin_pipe[2];
-    if (_method == "POST")
-        pipe(stdin_pipe);
+void CGI::retrieve_query_string() {
+    _query_string.clear();
+    std::string::size_type q = _request_uri.find('?');
+    if (q != std::string::npos && q + 1 < _request_uri.size()) {
+        _query_string = _request_uri.substr(q + 1);
+    }
+}
 
-    pid_t pid = fork();
-    if (pid == 0)
-    {
-        // === Processus fils ===
+static std::string toUpperUnderscore(const std::string& in) {
+    std::string out;
+    for (std::string::size_type i = 0; i < in.size(); ++i) {
+        char c = in[i];
+        if (c == '-') out += '_';
+        else out += (char)std::toupper((unsigned char)c);
+    }
+    return out;
+}
 
-        // Redirection STDOUT → stdout_pipe[1]
-        close(stdout_pipe[0]);
-        dup2(stdout_pipe[1], STDOUT_FILENO);
-        close(stdout_pipe[1]);
+char** CGI::generate_envp() {
+    std::vector<std::string> env;
 
-        // Redirection STDIN si POST
-        if (_method == "POST")
-        {
-            close(stdin_pipe[1]);
-            dup2(stdin_pipe[0], STDIN_FILENO);
-            close(stdin_pipe[0]);
+    env.push_back("GATEWAY_INTERFACE=CGI/1.1");
+    env.push_back("SERVER_PROTOCOL=HTTP/1.1");
+    env.push_back("SERVER_SOFTWARE=MyWebServer/0.1");
+    env.push_back("REQUEST_METHOD=" + _method);
+
+    if (!_script_name.empty()) env.push_back("SCRIPT_NAME=" + _script_name);
+    if (!_script_path.empty()) env.push_back("SCRIPT_FILENAME=" + _script_path);
+    if (!_request_uri.empty()) env.push_back("REQUEST_URI=" + _request_uri);
+
+    env.push_back("QUERY_STRING=" + _query_string);
+
+    if (!_document_root.empty()) env.push_back("DOCUMENT_ROOT=" + _document_root);
+    if (!_server_name.empty())   env.push_back("SERVER_NAME=" + _server_name);
+    if (!_server_port.empty())   env.push_back("SERVER_PORT=" + _server_port);
+    if (!_remote_addr.empty())   env.push_back("REMOTE_ADDR=" + _remote_addr);
+    if (!_remote_port.empty())   env.push_back("REMOTE_PORT=" + _remote_port);
+
+    
+    if (_method == "POST") {
+        std::ostringstream oss; 
+        
+        oss << _body.size();
+        env.push_back("CONTENT_LENGTH=" + oss.str());
+        std::map<std::string,std::string>::const_iterator itCT = _headers.find("Content-Type");
+        if (itCT != _headers.end() && !itCT->second.empty()) {
+            env.push_back("CONTENT_TYPE=" + itCT->second);
+        } else {
+            env.push_back("CONTENT_TYPE=application/x-www-form-urlencoded");
         }
-
-        // Récupérer les variables d'environnement
-        this->retrieve_query_string();
-        char** envp = this->generate_envp();
-
-        const char* php_path = "/usr/bin/php-cgi";
-        char* argv[] = { (char*)"php-cgi", NULL };
-
-        execve(php_path, argv, envp);
-
-        // Si execve échoue :
-        perror("execve failed");
-        exit(1);
-    }
-    else
-    {
-        // === Processus père ===
-
-        // Fermeture des extrémités inutiles
-        close(stdout_pipe[1]);
-        if (_method == "POST")
-        {
-            close(stdin_pipe[0]);
-            write(stdin_pipe[1], _body.c_str(), _body.size()); // Envoie du body POST
-            close(stdin_pipe[1]);
-        }
-
-        // Lecture de la sortie CGI
-        std::string response;
-        char buffer[4096];
-        ssize_t count;
-
-        while ((count = read(stdout_pipe[0], buffer, sizeof(buffer))) > 0)
-        {
-            response.append(buffer, count);
-        }
-
-        close(stdout_pipe[0]);
-        waitpid(pid, NULL, 0);
-
-        // Envoie de la réponse au client (préfixée d'une ligne de statut HTTP)
-        write(_client_fd, "HTTP/1.1 200 OK\r\n", 17);
-        write(_client_fd, response.c_str(), response.size());
-
-        _response = response; // Pour log ou debug
-    }
-}
-
-
-void CGI::retrieve_query_string()
-{
-    size_t question_mark = _path.find('?');
-
-    if (question_mark != std::string::npos)
-    {
-        _path = _path.substr(0, question_mark);
-        _query_string = _path.substr(question_mark + 1);
-    }
-    else
-    {
-        _query_string = "";
-    }
-}
-
-void CGI::handle_post()
-{
-
-}
-
-std::string to_string(int value) {
-    std::ostringstream oss;
-    oss << value;
-    return oss.str();
-}
-
-char ** CGI::generate_envp()
-{
-    std::vector<std::string> env_strings;
-    char buf[1024];
-    std::string script_path;
-
-    if (getcwd(buf, sizeof(buf)) == NULL)
-    {
-        std::cout << "An error has occured on path " << std::endl;
-        return NULL;
     }
 
-    script_path = std::string(buf) + "/www/website1/cgi" + _path;
-
-    if (access(script_path.c_str(), F_OK) != 0) 
-    {
-        std::cerr << "PHP script not found at: " << script_path << std::endl;
+    // HEADERS → HTTP_*
+    for (std::map<std::string,std::string>::const_iterator it = _headers.begin();
+         it != _headers.end(); ++it) {
+        const std::string& name = it->first;
+        const std::string& value = it->second;
+        if (name.empty() || value.empty()) continue;
+        if (name == "Content-Type" || name == "Content-Length") continue;
+        std::string key = "HTTP_" + toUpperUnderscore(name); // doit donner HTTP_USER_AGENT etc.
+        env.push_back(key + "=" + value);
     }
 
-    env_strings.push_back("REDIRECT_STATUS=200");
-    env_strings.push_back("REQUEST_METHOD=" + _method);
-    env_strings.push_back("SCRIPT_FILENAME=" + script_path);
-    env_strings.push_back("QUERY_STRING=" + _query_string);
-    env_strings.push_back("GATEWAY_INTERFACE=CGI/1.1");
-    env_strings.push_back("SERVER_PROTOCOL=HTTP/1.1");
-    env_strings.push_back("SERVER_SOFTWARE=MiniCPPServer/1.0");
-    env_strings.push_back("REMOTE_ADDR=127.0.0.1");
-
-    if (_method == "POST")
-    {
-        env_strings.push_back("CONTENT_TYPE=" + _content_type);   // exemple : application/x-www-form-urlencoded
-        env_strings.push_back("CONTENT_LENGTH=" + to_string(_content_length));
+    env.push_back("REDIRECT_STATUS=200");
+    // Conversion -> char**
+    char** envp = new char*[env.size() + 1];
+    for (size_t i = 0; i < env.size(); ++i) {
+        envp[i] = new char[env[i].size() + 1];
+        strcpy(envp[i], env[i].c_str());
     }
-
-    char **envp = (char **)malloc(sizeof(char *) * (env_strings.size() + 1));
-    if (!envp)
-        return NULL;
-
-    for (size_t i = 0; i < env_strings.size(); ++i)
-    {
-        envp[i] = strdup(env_strings[i].c_str());
-    }
-
-    envp[env_strings.size()] = NULL;
-
+    envp[env.size()] = 0;
     return envp;
 }
 
 
-std::string CGI::getResponse()
-{
-    return (_response);
+bool CGI::start_cgi(int epfd, int client_fd) {
+    int outp[2];
+    if (make_pipe_nonblock(outp) < 0) return false;
+
+    int inp[2] = { -1, -1 };
+    bool isPost = (_method == "POST");
+    if (isPost && make_pipe_nonblock(inp) < 0) {
+        close(outp[0]); close(outp[1]);
+        return false;
+    }
+
+    retrieve_query_string();
+    char** envp = generate_envp();
+
+
+    pid_t pid = fork();
+    if (pid == -1) {
+        if (isPost) { close(inp[0]); close(inp[1]); }
+        close(outp[0]); close(outp[1]);
+        free_envp_(envp);
+        return false;
+    }
+
+    if (pid == 0) {
+        // enfant
+        dup2(outp[1], STDOUT_FILENO);
+        if (isPost) dup2(inp[0], STDIN_FILENO);
+
+        close(outp[0]); close(outp[1]);
+        if (isPost) { close(inp[0]); close(inp[1]); }
+
+        const char* php_path = "/usr/bin/php-cgi";
+        char* argv[2]; argv[0] = (char*)"php-cgi"; argv[1] = 0;
+        execve(php_path, argv, envp);
+        perror("execve php-cgi failed");
+        _exit(127);
+    }
+
+    // parent
+    close(outp[1]);
+
+    if (isPost) close(inp[0]);
+
+    free_envp_(envp);
+    CgiJob* job = new CgiJob();
+    job->client_fd = client_fd;
+    job->pid       = pid;
+    job->cgi_out   = outp[0];
+    job->cgi_in    = isPost ? inp[1] : -1;
+    if (isPost) 
+    {
+        job->in_buf = _body;
+        job->in_off = 0;
+    }
+    
+    CgiReactor::instance().registerJob(epfd, job);
+    // CgiReactor::instance().debugPrintJobs();
+    return true;
 }
 
-void CGI::setBody(std::string body)
-{
-    _body = body;
-}
 
-void CGI::setContentType(std::string content_type)
-{
-    _content_type = content_type;
-}
-
-void CGI::setContentLength(size_t content_length)
-{
-    _content_length = content_length;
-}
-
-CGI::~CGI()
-{}
