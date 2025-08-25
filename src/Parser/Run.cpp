@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Run.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 09:51:36 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/15 21:06:50 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/25 13:09:33 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,13 +78,13 @@ void	Run::run()
 			if (CgiReactor::instance().isCgiFd(fd)) 
 			{
 				std::cout << "[isCgiFd] fd=" << fd << " found = 1" << std::endl;
-            	std::cout << "+++++++handleIoEvent CGI fd=" << fd << std::endl;
+            	std::cout << "+++++++handleIoEvent./we	 CGI fd=" << fd << std::endl;
                 CgiReactor::instance().handleIoEvent(this->_epoll, fd, this->_events[i].events, req);
                 continue; // on a géré cet event
             }
 			else
 			{
-				std::cout << "[isCgiFd] fd=" << fd << " found = 0" << std::endl;
+				std::cout << "[NotCgiFd] fd=" << fd << " found = 0" << std::endl;
 			}
 			int index = isSocket(fd, server);
 			if (index >= 0)
@@ -138,6 +138,7 @@ void	Run::runEpoll( std::vector<Server> &server )
 	this->_epoll = epoll_create(true);
 	for (size_t i = 0; i < server.size(); i++)
 	{
+		server[i].setEpFd(this->_epoll);
 		std::vector<int> tmp = server[i].getSocket();
 		for (size_t u = 0; u < tmp.size(); u++)
 		{

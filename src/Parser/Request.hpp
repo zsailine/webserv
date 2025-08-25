@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 11:57:31 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/15 20:33:50 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/25 13:46:52 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ class	Request
 		string	getHeader( int fd ) { return this->_header[fd]; }
 		string	getBody( int fd ) { return this->_body[fd]; }
 		string	getResponse( int fd ) { return this->_response[fd]; }
-		void setResponse(int fd, const std::string &resp) {
+		void 	setResponse(int fd, const std::string &resp) {
         _response[fd] = resp;
         _sent[fd] = 0;
     	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:01:59 by zsailine          #+#    #+#             */
-/*   Updated: 2025/08/14 12:34:25 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/25 10:18:29 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,16 +187,19 @@ void	Server::addClient(int fd)
 
 Server::Server(const Server &toCopy)
 {
+	// this = &obj;
 	_socket = toCopy._socket;
 	_map = toCopy._map;
 	_routes = toCopy._routes;
 	errorPages = toCopy.errorPages;
 	index = toCopy.index;
+	epfd = toCopy.epfd;
 }
 
 Server::Server(int number, std::vector<std::string> const &block)
 {
 	index = number;
+	epfd = -1;
 	init_value();
 	for (std::vector<std::string>::const_iterator it = block.begin(); it != block.end(); it++)
 	{
@@ -218,6 +221,7 @@ const Server & Server::operator=(const Server & obj)
 		errorPages = obj.errorPages;
 		index = obj.index;
 		client_fds = obj.client_fds;
+		epfd = obj.epfd;
 	}
 	return (*this);
 }

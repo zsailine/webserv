@@ -6,11 +6,11 @@ class CgiJob {
 public:
     int          client_fd;
     pid_t        pid;
-    int          cgi_out;      // lecture (stdout du CGI)
-    int          cgi_in;       // écriture (stdin du CGI), -1 si GET
-    std::string  in_buf;       // body POST
-    size_t       in_off;       // offset écrit
-    std::string  out_buf;      // sortie brute CGI (headers CGI + body)
+    int          cgi_out;      
+    int          cgi_in;       
+    std::string  in_buf;       
+    size_t       in_off;       
+    std::string  out_buf;      
 
     // HTTP final
     bool         headers_done;

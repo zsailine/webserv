@@ -26,7 +26,6 @@ void CgiReactor::setCloExec_(int fd) {
 bool CgiReactor::isCgiFd(int fd) const 
 {
     bool found = (_byFd.find(fd) != _byFd.end());
-    std::cerr << "[isCgiFd] fd=" << fd << " found = " << found << std::endl;
     return found;
 }
 
@@ -39,7 +38,9 @@ void CgiReactor::registerJob(int epfd, CgiJob* job) {
     setCloExec_(job->cgi_out);
     ev.data.fd = job->cgi_out;
     ev.events  = EPOLLIN | EPOLLERR | EPOLLHUP;
-    epoll_ctl(epfd, EPOLL_CTL_ADD, job->cgi_out, &ev);
+    if (epoll_ctl(epfd, EPOLL_CTL_ADD, job->cgi_out, &ev) < 0) {
+        perror("epoll_ctl ADD cgi_out");
+    }
     _byFd[job->cgi_out] = job;
 
     // cgi_in: écriture (si POST)
@@ -57,8 +58,6 @@ void CgiReactor::registerJob(int epfd, CgiJob* job) {
     std::cerr << "[REGISTER] cgi_out = " << job->cgi_out
           << " cgi_in = " << job->cgi_in
           << " client_fd = " << job->client_fd << std::endl;
-
-
 }
 
 bool CgiReactor::childIsDone_(pid_t pid) {
@@ -74,7 +73,6 @@ bool CgiReactor::childIsDone_(pid_t pid) {
     }
     return false;
 }
-
 
 void CgiReactor::parseCgiHeaders_(CgiJob* job) {
     std::string::size_type p = job->out_buf.find("\r\n\r\n");
@@ -100,17 +98,14 @@ void CgiReactor::parseCgiHeaders_(CgiJob* job) {
         if (le == std::string::npos) headers.erase(lb);
         else headers.erase(lb, le + 2 - lb);
     }
-
     job->http_body = body;
     job->http_headers = headers + "\r\n";
     job->headers_done = true;
 }
 
-void CgiReactor::finalize_(int epfd, CgiJob* job, Request& req) {
+void CgiReactor::finalize_(int epfd, CgiJob* job, Request& req) 
+{
     // nettoyer fds
-
-    write(1, "finalize", 8);
-
     if (job->cgi_out >= 0) {
         delEpollEvent(epfd, job->cgi_out);
         close(job->cgi_out);
@@ -131,9 +126,8 @@ void CgiReactor::finalize_(int epfd, CgiJob* job, Request& req) {
         job->http_body = "Bad Gateway";
     }
 
-    // Construire la réponse HTTP
+    // Construction de la réponse HTTP
     std::string statusLine = "HTTP/1.1 ";
-    // simple mapping basique
     switch (job->status_code) {
         case 200: statusLine += "200 OK\r\n"; break;
         case 404: statusLine += "404 Not Found\r\n"; break;
@@ -141,7 +135,7 @@ void CgiReactor::finalize_(int epfd, CgiJob* job, Request& req) {
         case 502: statusLine += "502 Bad Gateway\r\n"; break;
         default:  {
             std::ostringstream oss; oss << job->status_code;
-            statusLine += oss.str() + " OK\r\n"; // fallback
+            statusLine += oss.str() + " OK\r\n";
         } break;
     }
 
@@ -151,12 +145,8 @@ void CgiReactor::finalize_(int epfd, CgiJob* job, Request& req) {
         job->http_headers += "Content-Length: " + oss.str() + "\r\n";
     }
     job->http_headers += "Connection: close\r\n";
-
     std::string full = statusLine + job->http_headers + "\r\n" + job->http_body;
-
-    // Mettre la réponse dans Request (sendChunks l’utilise)
     req.setResponse(job->client_fd, full);
-
     // basculer le client en écriture
     modifyEpollEvent(epfd, job->client_fd, EPOLLOUT);
 
@@ -175,7 +165,7 @@ void CgiReactor::handleIoEvent(int epfd, int fd, uint32_t events, Request& req) 
     if (it == _byFd.end()) return;
     CgiJob* job = it->second;
 
-    // EPOLLOUT → écrire POST vers CGI
+    // EPOLLOUT : écrire POST vers CGI
     if (job->cgi_in >= 0 && (events & EPOLLOUT) && fd == job->cgi_in) {
         while (job->in_off < job->in_buf.size()) {
             ssize_t w = write(job->cgi_in, job->in_buf.data() + job->in_off,
@@ -197,8 +187,7 @@ void CgiReactor::handleIoEvent(int epfd, int fd, uint32_t events, Request& req) 
             job->cgi_in = -1;
         }
     }
-    
-    // EPOLLIN/HUP/ERR → lire la sortie CGI
+    // EPOLLIN/HUP/ERR : lire la sortie CGI
     if ((fd == job->cgi_out) && (events & (EPOLLIN | EPOLLHUP | EPOLLERR)))  {
         char buf[8192];
         for (;;) {
@@ -221,7 +210,6 @@ void CgiReactor::handleIoEvent(int epfd, int fd, uint32_t events, Request& req) 
         if (childIsDone_(job->pid)) job->child_exited = true;
         
         if (job->cgi_in == -1 && job->child_exited) {
-            std::cerr << "------------------------ END ---------------------------" << std::endl;
             finalize_(epfd, job, req);
         }
     }
