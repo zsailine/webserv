@@ -71,6 +71,21 @@ void	Run::run()
 		for (int i = 0; i < this->_client; i++)
 		{
 			int fd = this->_events[i].data.fd;
+			std::cerr << "[EPOLL] fd=" << fd 
+			  << " events=" << this->_events[i].events << std::endl;
+			
+			CgiReactor::instance().debugPrintJobs();
+			if (CgiReactor::instance().isCgiFd(fd)) 
+			{
+				std::cout << "[isCgiFd] fd=" << fd << " found = 1" << std::endl;
+            	std::cout << "+++++++handleIoEvent CGI fd=" << fd << std::endl;
+                CgiReactor::instance().handleIoEvent(this->_epoll, fd, this->_events[i].events, req);
+                continue; // on a géré cet event
+            }
+			else
+			{
+				std::cout << "[isCgiFd] fd=" << fd << " found = 0" << std::endl;
+			}
 			int index = isSocket(fd, server);
 			if (index >= 0)
 				this->handleSocket(fd, server, index);
@@ -78,7 +93,10 @@ void	Run::run()
 			{
 				try { if (this->_events[i].events & EPOLLIN)
 				{
-					try { done = this->handleClient(req, server, fd, indie); }
+					try 
+					{ 
+						done = this->handleClient(req, server, fd, indie); 
+					}
 					catch ( const std::exception &e ) { done = true; }
 					if (done)
 					{
@@ -89,6 +107,7 @@ void	Run::run()
 				else if (	this->_events[i].events & EPOLLOUT)
 				{
 					sent = req.sendChunks(fd, server[indie]);
+					std::cerr << RED "in sent" RESET << std::endl; 
 					if (sent)
 					{
 						sent = false;

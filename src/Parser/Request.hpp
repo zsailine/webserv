@@ -10,25 +10,28 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#pragma once
+
 #ifndef REQUEST_HPP
 #define REQUEST_HPP
 
 #include "lib.hpp"
 #include "class.hpp"
 #include "../utils/utils.hpp"
+//#include "../utils/tools.cpp"
 
 class Body;
 
 class	Request
 {
 	private:
+		int _epfd;
+	public:
 		std::map<int, string>	_response;
 		std::map<int, string>	_header;
 		std::map<int, string>	_body;
 		std::map<int, string>	_req;
 		std::map<int, size_t>	_sent;
-
-	public:
 		Request();
 		bool	readChunks( int &fd, Server &server);
 		bool	handleRequest( int fd, Body &bod, Server &server );
@@ -38,6 +41,11 @@ class	Request
 		string	getHeader( int fd ) { return this->_header[fd]; }
 		string	getBody( int fd ) { return this->_body[fd]; }
 		string	getResponse( int fd ) { return this->_response[fd]; }
+		void setResponse(int fd, const std::string &resp) {
+        _response[fd] = resp;
+        _sent[fd] = 0;
+    	}
+		void setEpollFd(int epfd) { _epfd = epfd; }
 		~Request();
 };
 

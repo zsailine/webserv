@@ -32,13 +32,14 @@ SRC_SENDER	=	$(DIR_SENDER)Response.cpp	\
 				$(DIR_SENDER)Post.cpp
 
 SRC_CGI  =      $(DIR_CGI)CGI.cpp           \
-				$(DIR_CGI)PostCGI.cpp
+				$(DIR_CGI)CgiReactor.cpp
 
 SRC =	$(SRC_MAIN)		\
 		$(SRC_PARSER)	\
 		$(SRC_UTILS)	\
 		$(SRC_SERVER)	\
-		$(SRC_SENDER)
+		$(SRC_SENDER)	\
+		$(SRC_CGI)
 
 OBJ = $(SRC:%.cpp=$(OBJ_DIR)%.o)
 

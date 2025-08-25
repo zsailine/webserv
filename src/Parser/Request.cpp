@@ -130,31 +130,109 @@ bool	Request::handleRequest( int fd, Body &bod, Server &server )
 	static string	before = "";
 
 	response.defineStatus();
-	if (bod.getMethod() == "GET")
-	{
-		beforebefore = sender.handleGet(server, response, bod);
-		response.getExtension();
-		bod.setContent(readFile(response.getPath()));
-		response.http(bod);
-	}
-	else if (bod.getMethod() == "POST")
-		sender.postResponse(response, bod, server);
-	else if (bod.getMethod() == "DELETE")
-		sender.deleteResponse(response, bod, server);
+
+	const std::string &header = this->_header[fd];
+    std::string requestURI = extractRequestURI(header);
+
+	std::cerr << BLUE << bod.getHeader() << RESET << std::endl; 
+
+    if (isPhpUri(requestURI)) {
+        // 1) fichier script sur disque
+        std::string scriptFile = resolveScriptFilename(server, requestURI);
+
+        // 2) headers -> map
+        std::map<std::string,std::string> hdrs;
+        parseHeadersToMap(header, hdrs);
+
+        // 3) Préparer CGI
+        CGI cgi;
+        cgi.setMethod(bod.getMethod());
+        if (bod.getMethod() == "POST") {
+            cgi.setBody(this->_body[fd]); // corps déjà extrait dans parseRequest
+        }
+
+        cgi.setRequestURI(requestURI);         // "/index.php?x=1"
+        cgi.setScriptFilename("www/website1/cgi" + scriptFile);     // "/var/www/html/index.php"
+        // SCRIPT_NAME = URI sans query
+        std::string scriptName = requestURI;
+        std::string::size_type qq = scriptName.find('?');
+        if (qq != std::string::npos) scriptName.erase(qq);
+        cgi.setScriptName(scriptName);
+
+        // Host / Port
+        std::string host = getType(header, "Host:", "\r\n"); // tu l'utilises déjà dans checkHeader
+        std::string serverName = host;
+        std::string serverPort = "80";
+        std::string::size_type colon = host.find(':');
+        if (colon != std::string::npos) {
+            serverName = host.substr(0, colon);
+            serverPort = host.substr(colon + 1);
+        } else {
+            std::string listen = server.get("listen");
+            std::string::size_type c = listen.find(':');
+            if (c != std::string::npos) serverPort = listen.substr(c+1);
+        }
+        cgi.setServerName(serverName);
+        cgi.setServerPort(serverPort);
+
+        // DocumentRoot (utile)
+        cgi.setDocumentRoot(server.get("root"));
+
+        // (Optionnel) Remote IP/port si tu as ces infos côté Server
+        // cgi.setRemoteAddr(server.getClientIp(fd));
+        // cgi.setRemotePort(server.getClientPort(fd));
+
+        // Push tous les en-têtes reçus
+        for (std::map<std::string,std::string>::const_iterator it = hdrs.begin(); it != hdrs.end(); ++it)
+            cgi.setHeader(it->first, it->second);
+
+		std::cout << "start cgi" << std::endl;
+
+        // 4) Démarrer CGI non bloquant
+        if (!cgi.start_cgi(this->_epfd, fd)) {
+            response.set_status(500);
+            response.set_mime("text/plain");
+            response.set_body("CGI start failed");
+            response.generateHeader(bod);
+            response.response();
+            this->_response[fd] = response.getResponse();
+            return true; // prêt à envoyer 500
+        }
+
+		std::cerr << "++++++++++++++h e r e+++++++++++++++\n";
+
+        return false; // pas prêt : CgiReactor basculera en EPOLLOUT quand terminé
+    }
 	else
 	{
-		response.set_status(405);
-		response.set_mime("text/html");
-		response.set_body(generateHTML(response.getStatus(), response.description(response.getStatus())));
-		response.generateHeader(bod);
-		response.pushNewHeader("Allow : GET, POST, DELETE");
-		response.response();
+		if (bod.getMethod() == "GET")
+		{
+			beforebefore = sender.handleGet(server, response, bod);
+			response.getExtension();
+			bod.setContent(readFile(response.getPath()));
+			response.http(bod);
+		}
+		else if (bod.getMethod() == "POST")
+			sender.postResponse(response, bod, server);
+		else if (bod.getMethod() == "DELETE")
+			sender.deleteResponse(response, bod, server);
+		else
+		{
+			response.set_status(405);
+			response.set_mime("text/html");
+			response.set_body(generateHTML(response.getStatus(), response.description(response.getStatus())));
+			response.generateHeader(bod);
+			response.pushNewHeader("Allow : GET, POST, DELETE");
+			response.response();
+		}
+		printLogs(bod.getMethod(), bod.getPath(), bod.getVersion());
+		printAnswer(bod, response);
+		this->_response[fd] = response.getResponse();
+		before = beforebefore;
+		return true;
+
 	}
-	printLogs(bod.getMethod(), bod.getPath(), bod.getVersion());
-	printAnswer(bod, response);
-	this->_response[fd] = response.getResponse();
-	before = beforebefore;
-	return true;
+
 }
 
 bool	Request::sendChunks( int &fd, Server &server )
@@ -190,5 +268,5 @@ bool	Request::sendChunks( int &fd, Server &server )
 	return true;
 }
 
-Request::Request() {}
+Request::Request() : _epfd(-1) {}
 Request::~Request() {}

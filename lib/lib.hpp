@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <dirent.h>
 #include <iostream>
+#include <sstream>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -37,6 +38,7 @@
 #include <sys/stat.h>
 #include <netdb.h>
 #include <signal.h>
+#include <sys/wait.h>
 
 // ========== COLOR ==========
 
