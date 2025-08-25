@@ -6,7 +6,7 @@
 /*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 12:02:47 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/25 14:53:03 by aranaivo         ###   ########.fr       */
+/*   Updated: 2025/08/25 15:10:11 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@ bool	Request::handleRequest( int fd, Body &bod, Server &server )
 	static string	before = "";
 
 	response.defineStatus();
-	const std::string &header = this->_header[fd];
+	std::string header = this->_header[fd];
     std::string requestURI = extractRequestURI(header);
 
 	int url = server.check_url(bod.getPath());
@@ -141,59 +141,9 @@ bool	Request::handleRequest( int fd, Body &bod, Server &server )
 		return (true);
 	}
 
-    if (isPhpUri(requestURI)) {
-        std::string scriptFile = resolveScriptFilename(server, requestURI);
-        std::map<std::string,std::string> hdrs;
-        parseHeadersToMap(header, hdrs);
-
-		CGI cgi;
-        cgi.setMethod(bod.getMethod());
-        if (bod.getMethod() == "POST") {
-            cgi.setBody(this->_body[fd]); // Body
-        }
-        cgi.setRequestURI(requestURI);
-
-        if (server.getValue(url, "cgi_root").size() == 0)
-		{
-			response.set_path(server.getError(404));
-			response.set_status(403);
-			return (true);
-		}
-		cgi.setScriptFilename(server.getValue(url, "cgi_root") + scriptFile);     // path du fichier php
-        std::string scriptName = requestURI;
-        std::string::size_type qq = scriptName.find('?');
-        if (qq != std::string::npos) scriptName.erase(qq);
-        cgi.setScriptName(scriptName);
-        std::string host = getType(header, "Host:", "\r\n");
-        std::string serverName = host;
-        std::string serverPort = "80";
-        std::string::size_type colon = host.find(':');
-        if (colon != std::string::npos)
-		{
-            serverName = host.substr(0, colon);
-            serverPort = host.substr(colon + 1);
-        }
-		else 
-		{
-            std::string listen = server.get("listen");
-            std::string::size_type c = listen.find(':');
-            if (c != std::string::npos) serverPort = listen.substr(c+1);
-        }
-        cgi.setServerName(serverName);
-        cgi.setServerPort(serverPort);
-        cgi.setDocumentRoot(server.get("root"));
-        for (std::map<std::string,std::string>::const_iterator it = hdrs.begin(); it != hdrs.end(); ++it)
-            cgi.setHeader(it->first, it->second);
-        if (!cgi.start_cgi(server.getEpFd(), fd)) {
-            response.set_status(500);
-            response.set_mime("text/plain");
-            response.set_body("CGI start failed");
-            response.generateHeader(bod);
-            response.response();
-            this->_response[fd] = response.getResponse();
-            return true;
-        }
-        return false;
+    if (isPhpUri(requestURI)) 
+	{
+		return (this->handleCgi(fd, bod, server, response, url, header, requestURI));	
     }
 	else
 	{
@@ -256,6 +206,62 @@ bool	Request::sendChunks( int &fd, Server &server )
 		}
 	}
 	return true;
+}
+
+bool	Request::handleCgi( int fd, Body &bod, Server &server, Response &response, int url, std::string &header, std::string requestURI)
+{
+	    std::string scriptFile = resolveScriptFilename(server, requestURI);
+        std::map<std::string,std::string> hdrs;
+        parseHeadersToMap(header, hdrs);
+
+		CGI cgi;
+        cgi.setMethod(bod.getMethod());
+        if (bod.getMethod() == "POST") {
+            cgi.setBody(this->_body[fd]); // Body
+        }
+        cgi.setRequestURI(requestURI);
+
+        if (server.getValue(url, "cgi_root").size() == 0)
+		{
+			response.set_path(server.getError(404));
+			response.set_status(403);
+			return (true);
+		}
+		cgi.setScriptFilename(server.getValue(url, "cgi_root") + scriptFile);     // path du fichier php
+        std::string scriptName = requestURI;
+        std::string::size_type qq = scriptName.find('?');
+        if (qq != std::string::npos) scriptName.erase(qq);
+        cgi.setScriptName(scriptName);
+        std::string host = getType(header, "Host:", "\r\n");
+        std::string serverName = host;
+        std::string serverPort = "80";
+        std::string::size_type colon = host.find(':');
+        if (colon != std::string::npos)
+		{
+            serverName = host.substr(0, colon);
+            serverPort = host.substr(colon + 1);
+        }
+		else 
+		{
+            std::string listen = server.get("listen");
+            std::string::size_type c = listen.find(':');
+            if (c != std::string::npos) serverPort = listen.substr(c+1);
+        }
+        cgi.setServerName(serverName);
+        cgi.setServerPort(serverPort);
+        cgi.setDocumentRoot(server.get("root"));
+        for (std::map<std::string,std::string>::const_iterator it = hdrs.begin(); it != hdrs.end(); ++it)
+            cgi.setHeader(it->first, it->second);
+        if (!cgi.start_cgi(server.getEpFd(), fd)) {
+            response.set_status(500);
+            response.set_mime("text/plain");
+            response.set_body("CGI start failed");
+            response.generateHeader(bod);
+            response.response();
+            this->_response[fd] = response.getResponse();
+            return true;
+        }
+        return false;		
 }
 
 Request::Request() : _epfd(-1) {}

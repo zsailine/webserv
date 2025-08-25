@@ -54,23 +54,13 @@ void CgiReactor::registerJob(int epfd, CgiJob* job) {
         epoll_ctl(epfd, EPOLL_CTL_ADD, job->cgi_in, &ev);
         _byFd[job->cgi_in] = job;
     }
-
-    std::cerr << "[REGISTER] cgi_out = " << job->cgi_out
-          << " cgi_in = " << job->cgi_in
-          << " client_fd = " << job->client_fd << std::endl;
 }
 
 bool CgiReactor::childIsDone_(pid_t pid) {
     int st = 0;
     pid_t r = waitpid(pid, &st, WNOHANG);
-    if (r == pid) {
-        if (WIFEXITED(st)) {
-            std::cerr << "[DEBUG] CGI " << pid << " exited, status=" << WEXITSTATUS(st) << std::endl;
-        } else if (WIFSIGNALED(st)) {
-            std::cerr << "[DEBUG] CGI " << pid << " killed by signal " << WTERMSIG(st) << std::endl;
-        }
+    if (r == pid) 
         return true;
-    }
     return false;
 }
 
@@ -216,8 +206,8 @@ void CgiReactor::handleIoEvent(int epfd, int fd, uint32_t events, Request& req) 
 }
 
 
-void CgiReactor::debugPrintJobs() {
-    std::cout << CYAN << "---- [DEBUG] CGI Jobs by FD ----" << std::endl;
+void CgiReactor::debugPrintJobs() 
+{
     for (std::map<int, CgiJob*>::iterator it = _byFd.begin(); it != _byFd.end(); ++it) {
         int fd = it->first;
         CgiJob* job = it->second;
@@ -231,5 +221,4 @@ void CgiReactor::debugPrintJobs() {
                   << " | out_buf.size=" << job->out_buf.size()
                   << std::endl;
     }
-    std::cout << "--------------------------------" RESET <<  std::endl;
 }
