@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   CGI.cpp                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/26 15:34:41 by zsailine          #+#    #+#             */
+/*   Updated: 2025/08/26 15:54:46 by zsailine         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "CGI.hpp"
 #include "CgiReactor.hpp"
 #include "CgiJob.hpp"
@@ -11,7 +23,8 @@
 #include <sstream>
 #include <cctype>
 
-static int make_pipe_nonblock(int p[2]) {
+static int make_pipe_nonblock(int p[2])
+{
     if (pipe(p) == -1) return -1;
     int fl;
 
@@ -43,7 +56,8 @@ void CGI::retrieve_query_string() {
     }
 }
 
-static std::string toUpperUnderscore(const std::string& in) {
+static std::string toUpperUnderscore(const std::string& in)
+{
     std::string out;
     for (std::string::size_type i = 0; i < in.size(); ++i) {
         char c = in[i];
@@ -53,7 +67,8 @@ static std::string toUpperUnderscore(const std::string& in) {
     return out;
 }
 
-char** CGI::generate_envp() {
+char** CGI::generate_envp()
+{
     std::vector<std::string> env;
 
     env.push_back("GATEWAY_INTERFACE=CGI/1.1");
@@ -105,7 +120,8 @@ char** CGI::generate_envp() {
 }
 
 
-bool CGI::start_cgi(int epfd, int client_fd) {
+bool CGI::start_cgi(Request &req, int epfd, int client_fd)
+{
     int outp[2];
     
     if (make_pipe_nonblock(outp) < 0) 
@@ -134,6 +150,9 @@ bool CGI::start_cgi(int epfd, int client_fd) {
             dup2(inp[0], STDIN_FILENO);
         close(outp[0]); 
         close(outp[1]);
+        close(epfd);
+        close(client_fd);
+        req.closeSocket();
         if (isPost) 
         { 
             close(inp[0]); 

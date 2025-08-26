@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   CGI.hpp                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/26 15:34:52 by zsailine          #+#    #+#             */
+/*   Updated: 2025/08/26 15:52:57 by zsailine         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #pragma once
 #include "lib.hpp"
 #include "class.hpp"
@@ -15,7 +27,7 @@ public:
     void    setRemotePort(const std::string& s)   { _remote_port = s; }
     void    setDocumentRoot(const std::string& s) { _document_root = s; }
     void    setHeader(const std::string& k, const std::string& v) { _headers[k] = v; }
-    bool    start_cgi(int epfd, int client_fd);
+    bool    start_cgi(Request &req, int epfd, int client_fd);
     void    retrieve_query_string();
     char**  generate_envp();
 

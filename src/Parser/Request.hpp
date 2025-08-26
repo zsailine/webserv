@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 11:57:31 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/26 13:31:30 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/26 15:55:05 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ class	Request
 		std::map<int, string>	_body;
 		std::map<int, string>	_req;
 		std::map<int, size_t>	_sent;
+		std::vector<int>		_sockets;
 		Error					errorPages;
 	public:
 		Request();
@@ -47,6 +48,16 @@ class	Request
 			_sent[fd] = 0;
     	}
 		void	setError(Error error) { errorPages = error;}
+		void	setSocket(std::vector<Server> &server)
+		{
+			for (size_t i = 0 ; i < server.size(); i++)
+			{
+				std::vector<int> tab = server[i].getSocket();
+				for (size_t j = 0; j < tab.size(); j++)
+					_sockets.push_back(tab[j]);
+			}
+		}
+		void	closeSocket() { for (size_t i = 0; i < _sockets.size(); i++) close(_sockets[i]);}
 		std::string	getError(int key);
 		~Request();
 };

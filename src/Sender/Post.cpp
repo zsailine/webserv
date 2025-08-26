@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Post.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 10:47:32 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/14 16:36:06 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/26 15:16:53 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,6 @@ int	Post::storeFile( string content, size_t head, string url )
 	path = url + file;
 	int	fd = open(path.c_str(), O_RDONLY, 0644);
 	if (fd != -1) return close(fd), 200; 
-	close(fd);
 	fd = open(path.c_str(), O_CREAT | O_RDWR, 0644);
 	if (fd == -1) return 500;
 	if (content.substr(head, 4) == "\r\n\r\n")

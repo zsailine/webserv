@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 12:02:47 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/26 13:38:10 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/26 15:53:06 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -270,7 +270,7 @@ bool	Request::handleCgi( int fd, Body &bod, Server &server, Response &response, 
         cgi.setDocumentRoot(server.get("root"));
         for (std::map<std::string,std::string>::const_iterator it = hdrs.begin(); it != hdrs.end(); ++it)
             cgi.setHeader(it->first, it->second);
-        if (!cgi.start_cgi(server.getEpFd(), fd)) {
+        if (!cgi.start_cgi(*this, server.getEpFd(), fd)) {
             response.set_status(500);
             response.set_mime("text/plain");
             response.set_body("CGI start failed");
