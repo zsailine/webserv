@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:01:59 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/25 14:04:11 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/14 12:34:25 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "Router.hpp"
-
+#include "../utils/utils.hpp"
 
 void	Server::init_value()
 {
@@ -138,7 +138,28 @@ void	Server::check_value(int number)
 
 std::string			Server::get(std::string type)
 {
-	return (_map[type]);
+	string	answer = _map[type];
+	for (size_t i = 0; i < answer.size(); i++)
+	{
+		if (std::isspace(answer[i]))
+		{
+			answer.erase(i, 1);
+			i = 0;
+		}
+		else
+			break;
+	}
+	for (size_t i = answer.size() - 1; i > 0; i--)
+	{
+		if (std::isspace(answer[i]))
+		{
+			answer.erase(i, 1);
+			i = answer.size() - 1;
+		}
+		else
+			break;
+	}
+	return answer;
 }
 
 int Server::getIndex() const
@@ -288,7 +309,7 @@ int Server::check_url(std::string url)
 	return (index);
 }
 
-void				Server::setfd(int target, int toChange)
+void	Server::setfd(int target, int toChange)
 {
 	std::vector<int>::iterator it = std::find(client_fds.begin(), client_fds.end(), target);
 	if (it != client_fds.end())

@@ -6,11 +6,12 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 10:33:07 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/25 09:52:58 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/25 15:55:49 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Router.hpp"
+
 void	Router::init_value()
 {
 	_map.insert(std::pair<std::string, std::string>("url", ""));
@@ -18,7 +19,9 @@ void	Router::init_value()
 	_map.insert(std::pair<std::string, std::string>("allowedMethods", ""));
 	_map.insert(std::pair<std::string, std::string>("index", ""));
 	_map.insert(std::pair<std::string, std::string>("cgi_root", ""));
+	_map.insert(std::pair<std::string, std::string>("redirection", ""));
 	_map.insert(std::pair<std::string, std::string>("upload_directory", ""));
+	_map.insert(std::pair<std::string, std::string>("listingDirectory", ""));
 }
 
 static int oneValue(std::string const &name, std::string const &key, std::string &str, std::string &value)
@@ -117,6 +120,13 @@ static void is_directory (std::string toCmp, std::string const &name, std::strin
 
 void	Router::check_value(std::string const &name)
 {
+	if (_map["listingDirectory"].size() == 0)
+		_map["listingDirectory"] = "no";
+	if (_map["listingDirectory"].compare("yes") && _map["listingDirectory"].compare("no"))
+	{
+		std::cerr << "[ Route " << name << " ]\n" << "Error: listingDirectory is not valid\n";
+		throw std::exception();
+	}
 	if (_map["url"].size() == 0 || _map["url"][0] != '/')
 	{
 		std::cerr << "[ Route " << name << " ]\n" << "Error: url is not defined\n";

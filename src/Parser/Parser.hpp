@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 14:48:50 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/18 13:43:27 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/07/30 14:05:59 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,6 @@ class Parser
 int isWord(std::string const &str);
 void RemoveWhiteSpace(std::string& str);
 int nbr_of_words(std::string const &str);
-int ft_atoi(std::string number);
+long long ft_atoi(std::string number);
 
 #endif

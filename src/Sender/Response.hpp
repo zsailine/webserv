@@ -6,54 +6,52 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 09:53:09 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/07/18 11:57:33 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/25 16:03:56 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SERVER_RESPONSE_HPP
-#define SERVER_RESPONSE_HPP
+#ifndef RESPONSE_HPP
+#define RESPONSE_HPP
 
 #include "lib.hpp"
-#include "class.hpp"
-
-class Tools;
+#include "../Parser/Body.hpp"
+#include "../utils/utils.hpp"
+#include "../Server/Server.hpp"
 
 class Response
 {
     private:
-    
-        int                                  _status;
-        string                               _path;
-        string                               _content;
-        string                               _mime;
-        string                               _response;
-        string                               _version;
-        string                               _method;
-        string                               _message;
+        int                                 _status;
+        string                              _path;
+        string                              _mime;
+        string                              _response;
+        string                              _header;
+        string                              _body;
         std::map<std::string, std::string>  _mimetype;
 
     public:
-    
-        Response( std::string const &message );
-
-        void        set_header(const std::string &req);
+        Response();
         void        defineStatus();
         void        getExtension();
-        void        http( int status, string file );
+        void        set_path(std::string index, std::string url, std::string path, int listing);
+        void        http( Body bod);
+        void        makeRedirection(std::string redirection);
+        void        makeListing(std::string url, Body &bod, Server &server);
+        void	    generateHeader( Body bod );
+        void        pushNewHeader( string header );
+        void        response();
         string      description ( int status );
-        void        run();
-        
+
         string      getPath() const { return this->_path; }
-        string      getContent() const { return this->_content; } 
         string      getMime() const { return this->_mime; }
         string      getResponse() const { return this->_response; } 
-        string      getVersion() const { return this->_version; } 
-        string      getMethod() const { return this->_method; }
         int         getStatus() const { return this->_status; }
-        
-        void        set_path(std::string index, std::string url, std::string path);
-        void        set_path(std::string path);
-        void        set_status(int status);
+
+        void        set_status( int status ) { this->_status = status; }
+        void        set_path( std::string path ) { this->_path = path; }
+        void        set_body( string body ) { this->_body = body; }
+        void        set_mime( string mime ) { this->_mime = mime; }
+
         ~Response() {}
 };
 

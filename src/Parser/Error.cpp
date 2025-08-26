@@ -3,21 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   Error.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:56:23 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/21 14:27:34 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/16 08:32:31 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Error.hpp"
+#include "../utils/utils.hpp"
 
 void	Error::init_value()
 {
-	_map.insert(std::pair<int, std::string>(404, ""));
+	_map.insert(std::pair<int, std::string>(400, ""));
 	_map.insert(std::pair<int, std::string>(401, ""));
 	_map.insert(std::pair<int, std::string>(403, ""));
-	_map.insert(std::pair<int, std::string>(400, ""));
+	_map.insert(std::pair<int, std::string>(404, ""));
+	_map.insert(std::pair<int, std::string>(405, ""));
+	_map.insert(std::pair<int, std::string>(413, ""));
+	_map.insert(std::pair<int, std::string>(431, ""));
+	_map.insert(std::pair<int, std::string>(500, ""));
+	_map.insert(std::pair<int, std::string>(501, ""));
+	_map.insert(std::pair<int, std::string>(505, ""));
 }
 
 static int oneValue(int &key, std::string &str, std::string &value)
@@ -78,7 +85,7 @@ static std::string ft_add(int key)
 	std::stringstream is;
 
 	is << key;
-	std::string result = "www/errorPages/" + is.str() + ".html";
+	std::string result = "config/errorPages/" + is.str() + ".html";
 	return (result);
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Sender.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:19:34 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/25 09:51:25 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/20 07:53:01 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 #include "class.hpp"
 
 class Response;
-class Post;
 
 class Sender
 {
@@ -25,15 +24,12 @@ class Sender
 
 		std::string	_response;
 
-		std::string	handleGet(Server &server, Response &response);
-		
 	public:
 
 		Sender() {}
-		std::string	handleRequest( std::string message, int fd, Server &server, std::string before );
-		void		sendMessage( int fd, string message );
-		void		postResponse( string &message, Response &ref );
-		void		deleteResponse();
+		void	handleGet( Server &server, Response &response, Body &body );
+		void	postResponse( Response &response, Body &body, Server &server );
+		void	deleteResponse( Response &response, Body &body, Server &server );
 };
 
 #endif

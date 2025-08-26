@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 08:22:27 by mitandri          #+#    #+#             */
-/*   Updated: 2025/07/08 14:41:04 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/20 07:57:17 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,14 @@ int	main( int ac, char **av )
 		std::string	parameter;
 		
 		if (ac > 2)
-			throw(std::invalid_argument(RED "Need two arguments at most" RESET));
-		(ac == 1) ? parameter = "config/test.conf" : parameter = av[1];
+		{
+			std::cout << RED "Need two arguments at most" RESET << std::endl;
+			throw std::exception();
+		}
+		(ac == 1) ? parameter = "config/default.conf" : parameter = av[1];
 		Run	start(parameter);
 		start.run();
 	}
-	catch( const std::exception& e )
-	{}
+	catch( const std::exception& e ) {}
 	return 0;
 }
