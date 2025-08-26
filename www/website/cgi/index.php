@@ -49,7 +49,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -64,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php if (!empty($message)) echo "<p><b>$message</b></p>"; ?>
 
     <!-- Formulaire POST classique -->
-    <form method="POST" action="/index.php" enctype="multipart/form-data">
+    <form method="POST" action="index.php" enctype="multipart/form-data">
         <label for="name">Nom</label>
         <input type="text" name="name"/>
 

@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 09:51:36 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/26 09:37:57 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/26 10:37:52 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,6 @@ void	Run::run()
 		for (int i = 0; i < this->_client; i++)
 		{
 			int fd = this->_events[i].data.fd;
-			CgiReactor::instance().debugPrintJobs();
 			if (CgiReactor::instance().isCgiFd(fd)) 
 			{
                 CgiReactor::instance().handleIoEvent(this->_epoll, fd, this->_events[i].events, req);

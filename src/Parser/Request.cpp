@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 12:02:47 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/26 09:36:31 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/26 12:23:39 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,22 +128,40 @@ bool	Request::handleRequest( int fd, Body &bod, Server &server )
 {
 	Sender			sender;
 	Response		response;
-	string			beforebefore;
-	static string	before = "";
-
+	
 	response.defineStatus();
 	std::string header = this->_header[fd];
     std::string requestURI = extractRequestURI(header);
-
+	
 	int url = server.check_url(bod.getPath());
+	printLogs(bod.getMethod(), bod.getPath(), bod.getVersion());
 	if (url == -1)
 	{
 		response.set_path(server.getError(404));
 		response.set_status(404);
+		sender.handleGet(server, response, bod);
+		response.getExtension();
+		bod.setContent(readFile(response.getPath()));
+		response.http(bod);
+		printLogs(bod.getMethod(), bod.getPath(), bod.getVersion());
+		printAnswer(bod, response);
+		this->_response[fd] = response.getResponse();
 		return (true);
 	}
-
-    if (isPhpUri(requestURI)) 
+	if (server.getValue(url, "allowedMethods").find(bod.getMethod()) == string::npos)
+	{
+		response.set_path(server.getError(405));
+		response.set_status(405);
+		sender.handleGet(server, response, bod);
+		response.getExtension();
+		bod.setContent(readFile(response.getPath()));
+		response.http(bod);
+		printLogs(bod.getMethod(), bod.getPath(), bod.getVersion());
+		printAnswer(bod, response);
+		this->_response[fd] = response.getResponse();
+		return (true);
+	}
+    if (isPhpUri(requestURI) && server.getValue(url, "cgi_root").size() != 0) 
 	{
 		return (this->handleCgi(fd, bod, server, response, url, header, requestURI));	
     }
@@ -151,7 +169,7 @@ bool	Request::handleRequest( int fd, Body &bod, Server &server )
 	{
 		if (bod.getMethod() == "GET")
 		{
-			beforebefore = sender.handleGet(server, response, bod);
+			sender.handleGet(server, response, bod);
 			response.getExtension();
 			bod.setContent(readFile(response.getPath()));
 			response.http(bod);
@@ -169,10 +187,8 @@ bool	Request::handleRequest( int fd, Body &bod, Server &server )
 			response.pushNewHeader("Allow : GET, POST, DELETE");
 			response.response();
 		}
-		printLogs(bod.getMethod(), bod.getPath(), bod.getVersion());
 		printAnswer(bod, response);
 		this->_response[fd] = response.getResponse();
-		before = beforebefore;
 		return true;
 	}
 }
@@ -190,7 +206,7 @@ bool	Request::sendChunks( int &fd, Server &server )
 		string	number = toString(fd);
 		server.setfd(fd, -1);
 		close(fd);
-		throw std::invalid_argument(RED "ERROR\t\t:\tClient " + number + " closed connection unexpectedly" RESET);
+		throw std::invalid_argument("");
 	}
 	else
 	{
@@ -222,13 +238,28 @@ bool	Request::handleCgi( int fd, Body &bod, Server &server, Response &response, 
             cgi.setBody(this->_body[fd]); // Body
         }
         cgi.setRequestURI(requestURI);
+		
 
-        if (server.getValue(url, "cgi_root").size() == 0)
-		{
-			response.set_path(server.getError(404));
-			response.set_status(403);
-			return (true);
-		}
+		// std::cout << "yo\n";
+		// std::string path = server.getValue(url, "cgi_root");
+		// std::string uri = server.getValue(url, "url");
+		// std::string _path;
+		// if (path[path.size() - 1] == '/')
+		// 	path = path.substr(0, path.size() - 1);
+		// char tmp = _path.substr(uri.size())[0];
+		// if (tmp != '/')
+		// 	_path = path + '/'  +_path.substr(uri.size());
+		// else
+		// 	_path = path + _path.substr(uri.size());
+		// if (isDirectory(_path))
+		// {
+		// 	if (_path[path.size() - 1] != '/')
+		// 		_path = _path + '/';
+		// }
+		// std::cout << "The path is " << _path + scriptFile << std::endl;
+	
+
+
 		cgi.setScriptFilename(server.getValue(url, "cgi_root") + scriptFile);     // path du fichier php
         std::string scriptName = requestURI;
         std::string::size_type qq = scriptName.find('?');
@@ -266,5 +297,5 @@ bool	Request::handleCgi( int fd, Body &bod, Server &server, Response &response, 
         return false;		
 }
 
-Request::Request() : _epfd(-1) {}
+Request::Request() {}
 Request::~Request() {}
