@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 08:22:27 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/15 21:08:45 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/26 09:33:59 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	main( int ac, char **av )
 			std::cout << RED "Need two arguments at most" RESET << std::endl;
 			throw std::exception();
 		}
-		(ac == 1) ? parameter = "config/test.conf" : parameter = av[1];
+		(ac == 1) ? parameter = "config/default.conf" : parameter = av[1];
 		Run	start(parameter);
 		start.run();
 	}

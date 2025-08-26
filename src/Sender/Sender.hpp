@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Sender.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:19:34 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/15 18:40:55 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/26 09:40:56 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ class Sender
 	public:
 
 		Sender() {}
-		string	handleGet( Server &server, Response &response, Body &body );
+		void	handleGet( Server &server, Response &response, Body &body );
 		void	postResponse( Response &response, Body &body, Server &server );
 		void	deleteResponse( Response &response, Body &body, Server &server );
 };

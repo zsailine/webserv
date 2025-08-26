@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   epoll.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 10:02:38 by zsailine          #+#    #+#             */
-/*   Updated: 2025/08/01 10:19:33 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/26 09:41:48 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

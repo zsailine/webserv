@@ -1,0 +1,24 @@
+body {
+	background-color: rgb(46, 45, 48);
+}
+
+main {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	min-height: 75vh;
+	text-align: center;
+	gap: 20px;
+}
+
+h1 {
+	color: aliceblue;
+	font-family: "Jersey 25", sans-serif;
+	font-weight: bold;
+	font-size: 60px;
+}
+
+video {
+    border-radius: 25px;    
+}

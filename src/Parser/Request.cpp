@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 12:02:47 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/25 15:10:11 by aranaivo         ###   ########.fr       */
+/*   Updated: 2025/08/26 09:36:31 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,13 +86,14 @@ bool	Request::parseRequest( int fd, string &body, int bLength, Server &server )
 		rep.set_status(headValue);
 		rep.set_mime("text/html");
 		if (bod.getMethod() != "HEAD")
-			rep.set_body(generateHTML(rep.getStatus(), rep.description(rep.getStatus())));
+			rep.set_body(readFile(server.getError(headValue)));
 		rep.generateHeader(bod);
 		if (headValue == 405)
 			rep.pushNewHeader("Allow: GET, POST, DELETE");
 		if (headValue >= 400)
 			rep.pushNewHeader("Connection: close");
 		rep.response();
+		printAnswer(bod, rep);
 		this->_response[fd] = rep.getResponse();
 		throw std::invalid_argument("TOO LARGE");
 	}
@@ -107,9 +108,10 @@ bool	Request::parseRequest( int fd, string &body, int bLength, Server &server )
 			printLogs(bod.getMethod(), bod.getPath(), bod.getVersion());
 			rep.set_status(413);
 			rep.set_mime("text/html");
-			rep.set_body(generateHTML(rep.getStatus(), rep.description(rep.getStatus())));
+			rep.set_body(readFile(server.getError(rep.getStatus())));
 			rep.generateHeader(bod);
 			rep.response();
+			printAnswer(bod, rep);
 			this->_response[fd] = rep.getResponse();
 			throw std::invalid_argument("TOO LARGE");
 		}

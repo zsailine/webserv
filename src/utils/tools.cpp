@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tools.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 09:58:05 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/16 08:47:29 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/26 09:42:24 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,12 @@ void	printAnswer( Body &body, Response &ref )
 	}
 	if (body.getMethod() == "GET")
 		intro = color + string("ANSWER GET\t:\t");
-	if (body.getMethod() == "POST")
+	else if (body.getMethod() == "POST")
 		intro = color + string("ANSWER POST\t:\t");
-	if (body.getMethod() == "DELETE")
+	else if (body.getMethod() == "DELETE")
 		intro = color + string("ANSWER DELETE\t:\t");
+	else
+		intro = color + string("ANSWER " + body.getMethod() + "\t:\t");
 	addEpollEvent(run.getEpoll(), STDOUT_FILENO);
 	std::cout << intro + body.getVersion() + " " << ref.getStatus()
 		<< " " + ref.description(ref.getStatus()) + RESET << std::endl;

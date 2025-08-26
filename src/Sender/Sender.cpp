@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Sender.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:23:21 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/16 08:26:19 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/26 09:40:40 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,16 +46,39 @@ static int ft_error_before(Server &server, Response &response)
 	return (url);
 }
 
-string	Sender::handleGet( Server &server, Response &response, Body &body )
+void	Sender::handleGet( Server &server, Response &response, Body &body )
 {
 	response.set_path(body.getPath());
 	int url = ft_error_before(server, response);
 	if (url == -1)
-		return "";
-	std::string path = server.getValue(url, "root");
-	response.set_path(server.getValue(url, "index"), server.getValue(url, "url"),  path);
-	ft_Error(server, response);
-	return (server.getValue(url, "allowedMethods"));
+	{
+		response.getExtension();
+		body.setContent(readFile(response.getPath()));
+		response.http(body);
+		return;
+	}
+	std::string redirection = server.getValue(url, "redirection");
+	std::string listing = server.getValue(url, "listingDirectory");
+	if (listing.compare("no") && isDirectory(response.getPath()))
+	{
+		std::string request = response.getPath();
+		std::string path = server.getValue(url, "root");
+		response.set_path(server.getValue(url, "index"), server.getValue(url, "url"),  path, 1);
+		response.makeListing(request, body, server);
+		response.http(body);
+		return ;
+	}
+	if (server.getValue(url, "redirection").size() == 0)
+	{
+		std::string path = server.getValue(url, "root");
+		response.set_path(server.getValue(url, "index"), server.getValue(url, "url"),  path, 0);
+		ft_Error(server, response);
+		response.getExtension();
+		body.setContent(readFile(response.getPath()));
+		response.http(body);
+		return ;
+	}
+	response.makeRedirection(redirection);
 }
 
 int	postStatus( Response &response, Body &body, Server &server )
