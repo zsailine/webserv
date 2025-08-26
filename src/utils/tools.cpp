@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tools.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 09:58:05 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/26 12:54:09 by aranaivo         ###   ########.fr       */
+/*   Updated: 2025/08/26 13:32:45 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,31 +207,11 @@ void parseHeadersToMap(const std::string &header,
 // Résout le chemin disque du script via root + path (sans query)
 std::string resolveScriptFilename(Server &server, const std::string &uri) {
     std::string path = uri;
-    std::string::size_type q = path.find('?');
+	std::string::size_type q = path.find('?');
     if (q != std::string::npos) path.erase(q);
     std::string root = server.get("root");
     if (!root.empty() && root[root.size()-1] == '/')
         root.erase(root.size()-1);
     return root + path;
-}
-
-std::string loadErrorPage(int code)
-{
-    std::ostringstream path;
-    path << "config/erroPages" << code << ".html";
-    int fd = open(path.str().c_str(), O_RDONLY);
-    if (fd == -1) {
-        std::ostringstream oss;
-        oss << "<html><body><h1>" << code << " Error</h1></body></html>";
-        return oss.str();
-    }
-    std::string body;
-    char buf[1024];
-    ssize_t r;
-    while ((r = read(fd, buf, sizeof(buf))) > 0) {
-        body.append(buf, r);
-    }
-    close(fd);
-    return body;
 }
 

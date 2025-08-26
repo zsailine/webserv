@@ -117,18 +117,18 @@ void CgiReactor::finalize_(int epfd, CgiJob* job, Request& req)
     switch (job->status_code) {
         case 200: statusLine += "200 OK\r\n"; break;
         case 404: statusLine += "404 Not Found\r\n"; 
-                job->http_body = loadErrorPage(404);
+                job->http_body = readFile(req.getError(404));
                 break;
         case 500: statusLine += "500 Internal Server Error\r\n"; 
-                job->http_body = loadErrorPage(500);
+                job->http_body = readFile(req.getError(500));
                 break;
         case 502: statusLine += "502 Bad Gateway\r\n"; 
-                job->http_body = loadErrorPage(502);
+                job->http_body = readFile(req.getError(502));
                 break;
         default: {
             std::ostringstream oss; oss << job->status_code;
             statusLine += oss.str() + " Error\r\n";
-            job->http_body = loadErrorPage(job->status_code);
+            job->http_body = readFile(req.getError(404));
         } break;
     }
 

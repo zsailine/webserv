@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 11:57:31 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/26 09:46:39 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/26 13:31:30 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ class	Request
 		std::map<int, string>	_body;
 		std::map<int, string>	_req;
 		std::map<int, size_t>	_sent;
+		Error					errorPages;
 	public:
 		Request();
 		bool	handleCgi(int fd, Body &bod, Server &server, Response &response, int url, std::string &header, std::string requestURI);
@@ -45,6 +46,8 @@ class	Request
 			_response[fd] = resp;
 			_sent[fd] = 0;
     	}
+		void	setError(Error error) { errorPages = error;}
+		std::string	getError(int key);
 		~Request();
 };
 

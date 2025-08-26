@@ -6,11 +6,16 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 12:02:47 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/26 12:23:39 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/26 13:38:10 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Request.hpp"
+
+std::string			Request::getError(int key)
+{
+	return (this->errorPages.getError(key));
+}
 
 bool	Request::readChunks( int &fd, Server &server )
 {
@@ -238,28 +243,8 @@ bool	Request::handleCgi( int fd, Body &bod, Server &server, Response &response, 
             cgi.setBody(this->_body[fd]); // Body
         }
         cgi.setRequestURI(requestURI);
-		
-
-		// std::cout << "yo\n";
-		// std::string path = server.getValue(url, "cgi_root");
-		// std::string uri = server.getValue(url, "url");
-		// std::string _path;
-		// if (path[path.size() - 1] == '/')
-		// 	path = path.substr(0, path.size() - 1);
-		// char tmp = _path.substr(uri.size())[0];
-		// if (tmp != '/')
-		// 	_path = path + '/'  +_path.substr(uri.size());
-		// else
-		// 	_path = path + _path.substr(uri.size());
-		// if (isDirectory(_path))
-		// {
-		// 	if (_path[path.size() - 1] != '/')
-		// 		_path = _path + '/';
-		// }
-		// std::cout << "The path is " << _path + scriptFile << std::endl;
-	
-
-
+		std::string uri = server.getValue(url, "url");
+		scriptFile = "/" + scriptFile.substr(uri.size());
 		cgi.setScriptFilename(server.getValue(url, "cgi_root") + scriptFile);     // path du fichier php
         std::string scriptName = requestURI;
         std::string::size_type qq = scriptName.find('?');

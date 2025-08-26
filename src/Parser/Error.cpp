@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Error.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:56:23 by zsailine          #+#    #+#             */
-/*   Updated: 2025/08/16 08:32:31 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/26 13:35:06 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ void	Error::init_value()
 	_map.insert(std::pair<int, std::string>(431, ""));
 	_map.insert(std::pair<int, std::string>(500, ""));
 	_map.insert(std::pair<int, std::string>(501, ""));
+	_map.insert(std::pair<int, std::string>(502, ""));
 	_map.insert(std::pair<int, std::string>(505, ""));
 }
 

@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 14:53:57 by zsailine          #+#    #+#             */
-/*   Updated: 2025/08/26 09:41:33 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/26 13:29:35 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ class Server
 		std::string			getError(int key);
 		std::string			get(std::string type);
 		void				setError(Error &error);
+		Error				ft_error(){ return errorPages;}
 		std::vector<int> 	getClientFds();
 		void				setfd(int target, int toChange);
 		int					getEpFd(){return epfd;}
