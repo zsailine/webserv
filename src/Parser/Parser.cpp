@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 15:41:42 by zsailine          #+#    #+#             */
-/*   Updated: 2025/07/21 14:25:52 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/26 13:49:00 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,6 +182,11 @@ void	Parser::get_blocks( std::vector<std::string> &block)
 		{
 			i++;
 		}
+	}
+	if (server.size() == 0)
+	{
+		std::cerr << "Error\nThere is no server\n";
+		throw std::exception();
 	}
 }
 
