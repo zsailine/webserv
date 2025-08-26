@@ -16,7 +16,6 @@ public:
     bool isCgiFd(int fd) const;
     void handleIoEvent(int epfd, int fd, uint32_t events, Request& req);
     void forgetJob(CgiJob* job);
-    void debugPrintJobs();
 
 private:
     CgiReactor() {}

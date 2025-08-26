@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:55:45 by zsailine          #+#    #+#             */
-/*   Updated: 2025/08/11 14:22:49 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/26 09:42:36 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,4 +104,3 @@ int ft_exist(std::string path)
 	close(fd);
 	return (1);
 }	
-

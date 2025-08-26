@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 09:53:26 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/08/16 08:31:46 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/26 10:24:03 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,12 @@ Response::Response()
 	this->_mimetype.insert(std::pair<string, string>(".mp3", "audio/mpeg"));
 	this->_mimetype.insert(std::pair<string, string>(".mp4", "video/mp4"));
 	this->_mimetype.insert(std::pair<string, string>(".png", "image/png"));
-	this->_mimetype.insert(std::pair<string, string>(".pdf", "application/"));
+	this->_mimetype.insert(std::pair<string, string>(".pdf", "application/pdf"));
 	this->_mimetype.insert(std::pair<string, string>(".php", "application/pdf"));
 	this->_mimetype.insert(std::pair<string, string>(".wav", "audio/wav"));
 }
 
-void	Response::set_path(std::string index, std::string url, std::string path)
+void	Response::set_path(std::string index, std::string url, std::string path, int listing)
 {
 	if (path[path.size() - 1] == '/')
 		path = path.substr(0, path.size() - 1);
@@ -47,7 +47,7 @@ void	Response::set_path(std::string index, std::string url, std::string path)
 		_path = path + '/'  +_path.substr(url.size());
 	else
 		_path = path + _path.substr(url.size());
-	if (isDirectory(_path))
+	if (!listing && isDirectory(_path))
 	{
 		if (_path[path.size() - 1] != '/')
 			_path = _path + '/' + index;
@@ -83,6 +83,54 @@ void	Response::http( Body bod )
 	this->_response.append(bod.getContent());
 }
 
+void	Response::makeRedirection(std::string redirection)
+{
+	this->set_status(301);
+	this->_response.append("HTTP/1.1 301 Moved Permanently\r\n");
+	this->_response.append("Location: " + redirection + "\r\n");
+	this->_response.append("Content-Length: 0\r\n");
+	this->_response.append("Connection: close\r\n");
+	this->_response.append("\r\n");
+}
+
+void	Response::makeListing(std::string url, Body &body, Server &server)
+{
+	std::string html;
+
+    DIR *dir = opendir(_path.c_str());
+    if (!dir)
+	{
+		this->set_status(404);
+		body.setContent(readFile(server.getError(404)));
+	} 
+	else
+	{
+		html += "<!DOCTYPE html>\n";
+		html += "<html lang=\"en\">\n<head>\n";
+		html += "    <meta charset=\"UTF-8\">\n";
+		html += "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n";
+		html += "    <title>Listing</title>\n";
+		html += "</head>\n<body>\n";
+		html += "    <h1>Index of " + url + "</h1>\n";
+		html += "    <ul>\n";
+        struct dirent *entry;
+        while ((entry = readdir(dir)) != NULL) {
+            std::string name = entry->d_name;
+            if (name == ".") 
+				continue;
+			std::string href = url;
+			if (!ft_ends_with(href, "/"))
+				href += "/"; 
+            href += name;
+            html += "        <li><a href=\"" + href + "\">" + name + "</a></li>\n";
+        }
+        closedir(dir);
+		html += "    </ul>\n";
+		html += "</body>\n</html>\n";
+		body.setContent(html);
+    }
+}
+
 void	Response::generateHeader( Body bod )
 {
 	string	description = this->description(this->_status);
@@ -116,6 +164,7 @@ string	Response::description( int status )
 	if (status == 201) return "Created";
 	if (status == 202) return "Accepted";
 	if (status == 204) return "No Content";
+	if (status == 301) return "Moved permanently";
 	if (status == 400) return "Bad Request";
 	if (status == 401) return "Unauthorized";
 	if (status == 403) return "Forbidden";

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+	<title>Webserv</title>
+	<link href="style.css" rel="stylesheet">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Jersey+10&family=Jersey+25&display=swap" rel="stylesheet">
+</head>
+
+<body>
+	<header>
+		<div class="banner">
+			<h1><em>WELCOME</em> TO OUR WEBSERVER</h1>
+		</div>
+	</header>
+	<main>
+		<div class="methods" id="methods">
+			<div class="card">
+				<h2>Get</h2>
+				<a href="get/index.html" class="button">Try</a>
+			</div>
+			<div class="card">
+				<h2>Post</h2>
+				<a href="post/index.html" class="button">Try</a>
+			</div>
+			<div class="card">
+				<h2>Delete</h2>
+				<a href="delete/index.html" class="button">Try</a>
+			</div>
+		</div>
+		<div class="methods">
+			<div class="card">
+				<h2>PATCH</h2>
+				<a href="#" class="button" onclick="headRequest(event)">Try</a>
+				<script>
+					function headRequest(event) {
+						event.preventDefault();
+						fetch('/', { method: 'PATCH' })
+							.then(res => {
+								return res.text().then(html => {
+								document.open();
+								document.write(html);
+								document.close();
+								});
+							});
+					}
+				</script>
+			</div>
+			<div class="card">
+				<h2>404</h2>
+				<a href="nonexistent.html" class="button">Try</a>
+			</div>
+			<div class="card">
+				<h2>Cgi</h2>
+				<a href="index.php" class="button">Try</a>
+			</div>
+		</div>
+	</main>
+</body>
+
+</html>

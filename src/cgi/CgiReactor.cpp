@@ -204,21 +204,3 @@ void CgiReactor::handleIoEvent(int epfd, int fd, uint32_t events, Request& req) 
         }
     }
 }
-
-
-void CgiReactor::debugPrintJobs() 
-{
-    for (std::map<int, CgiJob*>::iterator it = _byFd.begin(); it != _byFd.end(); ++it) {
-        int fd = it->first;
-        CgiJob* job = it->second;
-        std::cout << "FD=" << fd
-                  << " | client_fd=" << job->client_fd
-                  << " | cgi_out=" << job->cgi_out
-                  << " | cgi_in=" << job->cgi_in
-                  << " | child_exited=" << job->child_exited
-                  << " | in_off=" << job->in_off
-                  << " | in_buf.size=" << job->in_buf.size()
-                  << " | out_buf.size=" << job->out_buf.size()
-                  << std::endl;
-    }
-}

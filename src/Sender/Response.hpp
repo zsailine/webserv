@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 09:53:09 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/08/14 15:07:12 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/26 09:38:51 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "lib.hpp"
 #include "../Parser/Body.hpp"
 #include "../utils/utils.hpp"
+#include "../Server/Server.hpp"
 
 class Response
 {
@@ -32,8 +33,10 @@ class Response
         Response();
         void        defineStatus();
         void        getExtension();
-        void        set_path(std::string index, std::string url, std::string path);
+        void        set_path(std::string index, std::string url, std::string path, int listing);
         void        http( Body bod);
+        void        makeRedirection(std::string redirection);
+        void        makeListing(std::string url, Body &bod, Server &server);
         void	    generateHeader( Body bod );
         void        pushNewHeader( string header );
         void        response();
