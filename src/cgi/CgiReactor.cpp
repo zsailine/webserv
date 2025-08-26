@@ -6,7 +6,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sstream> // pour Content-Length to string
+#include <sstream> 
 
 CgiReactor& CgiReactor::instance() {
     static CgiReactor g;
@@ -70,7 +70,6 @@ void CgiReactor::parseCgiHeaders_(CgiJob* job) {
     std::string headers = job->out_buf.substr(0, p);
     std::string body    = job->out_buf.substr(p + 4);
 
-    // Status:
     std::string::size_type s = headers.find("Status:");
     if (s != std::string::npos) {
         std::string::size_type e = headers.find("\r\n", s);
@@ -81,7 +80,6 @@ void CgiReactor::parseCgiHeaders_(CgiJob* job) {
             while (!val.empty() && (val[0]==' ' || val[0]=='\t')) val.erase(0,1);
             job->status_code = atoi(val.c_str());
         }
-        // retirer la ligne Status:
         std::string::size_type lb = (s == 0) ? 0 : headers.rfind("\r\n", s);
         if (lb == std::string::npos) lb = 0; else lb += 2;
         std::string::size_type le = headers.find("\r\n", s);
@@ -95,7 +93,6 @@ void CgiReactor::parseCgiHeaders_(CgiJob* job) {
 
 void CgiReactor::finalize_(int epfd, CgiJob* job, Request& req) 
 {
-    // nettoyer fds
     if (job->cgi_out >= 0) {
         delEpollEvent(epfd, job->cgi_out);
         close(job->cgi_out);
@@ -116,16 +113,22 @@ void CgiReactor::finalize_(int epfd, CgiJob* job, Request& req)
         job->http_body = "Bad Gateway";
     }
 
-    // Construction de la réponse HTTP
     std::string statusLine = "HTTP/1.1 ";
     switch (job->status_code) {
         case 200: statusLine += "200 OK\r\n"; break;
-        case 404: statusLine += "404 Not Found\r\n"; break;
-        case 500: statusLine += "500 Internal Server Error\r\n"; break;
-        case 502: statusLine += "502 Bad Gateway\r\n"; break;
-        default:  {
+        case 404: statusLine += "404 Not Found\r\n"; 
+                job->http_body = loadErrorPage(404);
+                break;
+        case 500: statusLine += "500 Internal Server Error\r\n"; 
+                job->http_body = loadErrorPage(500);
+                break;
+        case 502: statusLine += "502 Bad Gateway\r\n"; 
+                job->http_body = loadErrorPage(502);
+                break;
+        default: {
             std::ostringstream oss; oss << job->status_code;
-            statusLine += oss.str() + " OK\r\n";
+            statusLine += oss.str() + " Error\r\n";
+            job->http_body = loadErrorPage(job->status_code);
         } break;
     }
 
@@ -137,7 +140,6 @@ void CgiReactor::finalize_(int epfd, CgiJob* job, Request& req)
     job->http_headers += "Connection: close\r\n";
     std::string full = statusLine + job->http_headers + "\r\n" + job->http_body;
     req.setResponse(job->client_fd, full);
-    // basculer le client en écriture
     modifyEpollEvent(epfd, job->client_fd, EPOLLOUT);
 
     delete job;
@@ -155,7 +157,6 @@ void CgiReactor::handleIoEvent(int epfd, int fd, uint32_t events, Request& req) 
     if (it == _byFd.end()) return;
     CgiJob* job = it->second;
 
-    // EPOLLOUT : écrire POST vers CGI
     if (job->cgi_in >= 0 && (events & EPOLLOUT) && fd == job->cgi_in) {
         while (job->in_off < job->in_buf.size()) {
             ssize_t w = write(job->cgi_in, job->in_buf.data() + job->in_off,
@@ -177,14 +178,12 @@ void CgiReactor::handleIoEvent(int epfd, int fd, uint32_t events, Request& req) 
             job->cgi_in = -1;
         }
     }
-    // EPOLLIN/HUP/ERR : lire la sortie CGI
     if ((fd == job->cgi_out) && (events & (EPOLLIN | EPOLLHUP | EPOLLERR)))  {
         char buf[8192];
         for (;;) {
             ssize_t r = read(job->cgi_out, buf, sizeof(buf));
             if (r > 0) job->out_buf.append(buf, (size_t)r);
             else if (r == 0) {
-                // EOF : fermer sortie CGI
                 delEpollEvent(epfd, job->cgi_out);
                 close(job->cgi_out);
                 _byFd.erase(job->cgi_out);

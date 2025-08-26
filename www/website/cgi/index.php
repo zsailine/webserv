@@ -57,8 +57,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="./style.css"> 
     <title>Webserv</title>
 </head>
-<body>
-    <h1>Hello webserv !</h1>
+<body style="background: white; padding: 50px;">
+    <h1 style="color: black">Hello webserv !</h1>
 
     <?php if (!empty($message)) echo "<p><b>$message</b></p>"; ?>
 

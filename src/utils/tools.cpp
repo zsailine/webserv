@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tools.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 09:58:05 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/26 09:42:24 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/26 12:54:09 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,14 +165,12 @@ static bool endsWith(const std::string &s, const char *suf) {
     return s.size() >= n && s.compare(s.size()-n, n, suf) == 0;
 }
 
-// .php dans l'URI
 bool isPhpUri(const std::string &uri) {
     if (endsWith(uri, ".php")) return true;
     std::string::size_type pos = uri.find(".php?");
     return (pos != std::string::npos);
 }
 
-// URI brute depuis la 1re ligne du header ("METHOD URI HTTP/1.1")
 std::string extractRequestURI(const std::string &header) {
     std::string::size_type eol = header.find("\r\n");
     if (eol == std::string::npos) return "";
@@ -216,3 +214,24 @@ std::string resolveScriptFilename(Server &server, const std::string &uri) {
         root.erase(root.size()-1);
     return root + path;
 }
+
+std::string loadErrorPage(int code)
+{
+    std::ostringstream path;
+    path << "config/erroPages" << code << ".html";
+    int fd = open(path.str().c_str(), O_RDONLY);
+    if (fd == -1) {
+        std::ostringstream oss;
+        oss << "<html><body><h1>" << code << " Error</h1></body></html>";
+        return oss.str();
+    }
+    std::string body;
+    char buf[1024];
+    ssize_t r;
+    while ((r = read(fd, buf, sizeof(buf))) > 0) {
+        body.append(buf, r);
+    }
+    close(fd);
+    return body;
+}
+
