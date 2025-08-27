@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Sender.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:23:21 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/26 09:40:40 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/27 11:31:14 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void	Sender::handleGet( Server &server, Response &response, Body &body )
 	response.makeRedirection(redirection);
 }
 
-int	postStatus( Response &response, Body &body, Server &server )
+int	postStatus( Response &response, Body &body)
 {
 	Post	post;
 	string	type = getType(body.getHeader(), "Content-Type:", "\r\n");
@@ -90,14 +90,10 @@ int	postStatus( Response &response, Body &body, Server &server )
 		return 204;
 	if (type.find("boundary") != string::npos)
 		type = getType(body.getHeader(), "Content-Type:", ";");
-	if (type == "application/x-www-form-urlencoded")
-		return post.urlEncoded(body.getBody(), server.get("listen"));
-	else if (type == "multipart/form-data")
+	if (type == "multipart/form-data")
 		return post.multipartForm(body.getBody(), body.getBoundary(), response.getPath(), body.getHost());
-	else if (type == "text/plain" || type =="plain/text")
-		return post.textPlain(body.getBody(), body.getHost());
-	else if (type == "application/octet-stream")
-		return post.octetStream(body.getBody(), body.getPath(), response.getPath());
+	else
+		return post.uploadFile(body.getBody(), response.getPath(), body.getPath());
 	return 501;
 }
 
@@ -114,7 +110,7 @@ int	handlePost( Response &response, Body &body, Server &server )
 	if (not ft_ends_with(path, "/"))
 		path.push_back('/');
 	response.set_path(path);
-	status = postStatus(response, body, server);
+	status = postStatus(response, body);
 	return status;
 }
 

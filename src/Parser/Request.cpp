@@ -3,36 +3,55 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 12:02:47 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/26 15:53:06 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/27 12:00:26 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Request.hpp"
 
-std::string			Request::getError(int key)
+std::string	Request::getError(int key)
 {
 	return (this->errorPages.getError(key));
 }
 
 bool	Request::readChunks( int &fd, Server &server )
 {
+	Run		run;
 	bool	flag = false;
 	char	buffer[BUFFER_SIZE];
 	int		byte;
 
 	byte = read(fd, buffer, sizeof(buffer));
-	if (byte == 0 || byte == -1)
-	{
-		server.setfd(fd, -1);
+	if (byte == -1)
 		close(fd);
+	else if (byte == 0)
+	{
+		close(fd);
+		delEpollEvent(run.getEpoll(), fd);
 	}
 	else if (byte > 0)
 	{
 		buffer[byte] = 0;
 		this->_req[fd].append(buffer, byte);
+		if (this->_req[fd].find("Expect: 100-continue") != string::npos)
+		{
+			string	toSend = "HTTP/1.1 100 Continue\r\n\r\n";
+			if (this->_continue[fd] == false)
+			{
+				int	b = send(fd, toSend.c_str(), toSend.size(), 0);
+				this->_continue[fd] = true;
+				if (b == -1)
+				{
+					server.setfd(fd, -1);
+					close(fd);
+				}
+				else if (b == 0)
+					delEpollEvent(run.getEpoll(), fd);
+			}
+		}
 		if (this->_req[fd].find("\r\n\r\n") != string::npos)
 		{
 			int		bLength, total;
@@ -51,7 +70,7 @@ bool	Request::readChunks( int &fd, Server &server )
 	return flag;
 }
 
-static int	checkHeader( string &header, Body &body, Server &server )
+static int	checkHeader( string &header, Body &body )
 {
 	if (header.size() > BUFFER_SIZE)
 		return 431;
@@ -59,15 +78,6 @@ static int	checkHeader( string &header, Body &body, Server &server )
 		return 405;
 	if (body.getVersion() != "HTTP/1.1")
 		return 505;
-	string	host = getType(header, "Host:", "\r\n");
-	size_t	index = host.find(':');
-	if (index == string::npos)
-		return 400;
-	if (host.substr(0, index) != server.get("server_name"))
-		return 400;
-	string	listen = server.get("listen");
-	if (host.c_str() + (index + 1) != listen.substr(listen.find(':') + 1, string::npos))
-		return 400;
 	return true;
 }
 
@@ -83,7 +93,7 @@ bool	Request::parseRequest( int fd, string &body, int bLength, Server &server )
 	bod.setHeader(header);
 	std::istringstream iss(header);
 	bod.setFirst(iss);
-	int	headValue = checkHeader(header, bod, server);
+	int	headValue = checkHeader(header, bod);
 	if (headValue != 1)
 	{
 		Response	rep;
@@ -198,19 +208,25 @@ bool	Request::handleRequest( int fd, Body &bod, Server &server )
 	}
 }
 
-bool	Request::sendChunks( int &fd, Server &server )
+bool	Request::sendChunks( int &fd )
 {
+	Run	run;
 	int	sent;
 	
 	if (this->_response.size() < BUFFER_SIZE)
 		sent = send(fd, this->_response[fd].c_str(), this->_response[fd].size(), 0);
 	else
 		sent = send(fd, this->_response[fd].c_str(), BUFFER_SIZE, 0);
-	if (sent == 0 || sent == -1)
+	if (sent == -1)
 	{
 		string	number = toString(fd);
-		server.setfd(fd, -1);
 		close(fd);
+		throw std::invalid_argument("");
+	}
+	else if (sent == 0)
+	{
+		close(fd);
+		delEpollEvent(run.getEpoll(), fd);
 		throw std::invalid_argument("");
 	}
 	else

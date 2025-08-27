@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Run.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 09:51:36 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/26 15:52:19 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/27 11:32:22 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,9 +95,9 @@ void	Run::run()
 						modifyEpollEvent(this->_epoll, fd, EPOLLOUT);
 					}
 				}
-				else if (	this->_events[i].events & EPOLLOUT)
+				else if (this->_events[i].events & EPOLLOUT)
 				{
-					sent = req.sendChunks(fd, server[indie]);
+					sent = req.sendChunks(fd);
 					if (sent)
 					{
 						sent = false;

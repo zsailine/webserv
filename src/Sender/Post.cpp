@@ -3,42 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   Post.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 10:47:32 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/26 15:16:53 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/27 11:09:38 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Post.hpp"
-#define INPUT "plainTextInput"
-#define CONTENT "plainTextContent"
 
-std::vector< std::map<string, string> >	Post::_url;
-std::vector< std::map<string, string> >	Post::_multipart;
-std::vector< std::map<string, string> >	Post::_plain;
-
-int	Post::urlEncoded( string body, string host )
-{
-	string						token, key, value;
-	std::map<string, string>	tmp;
-	std::istringstream			iss(body);
-
-	while (std::getline(iss, token, '&'))
-	{
-		int	index = token.find('=') + 1;
-		value = token.c_str() + index;
-		key = token.substr(0, index - 1);
-		tmp.insert(std::pair<string, string>(key, value));
-	}
-	tmp.insert(std::pair<string, string>("host", host));
-	if (this->_url.size() == 0 ||
-		(find(_url.begin(), _url.end(), tmp) == _url.end()))
-		this->_url.push_back(tmp);
-	else
-		return 200;
-	return 201;
-}
+std::vector<std::map<string, string> >	Post::_multipart;
 
 int	Post::multipartForm( string body, string boundary, string path, string host )
 {
@@ -106,42 +80,27 @@ int	Post::storeFile( string content, size_t head, string url )
 	return 201;
 }
 
-int	Post::textPlain( string body,  string host )
+
+int	Post::uploadFile( string body, string path, string url )
 {
-	std::map<string, string>	tmp;
+	Run		run;
+	size_t	index = url.rfind('/');
+	string	file = url.substr(index + 1, string::npos);
+	string	destination;
 
-	while (body.size() > 0)
-	{
-		if (body == "\r\n")
-			break;
-		size_t	index = body.find("\r\n"), equal;
-		string	key, value, line;
-		line = body.substr(0, index);
-		equal = line.find("=");
-		key = line.substr(0, equal);
-		value = line.substr(equal + 1, index - equal);
-		tmp.insert(std::pair<string, string>(key, value));
-		body = body.c_str() + index + 2;
-	}
-	tmp.insert(std::pair<string, string>("host", host));
-	return 201;
-}
-
-int	Post::octetStream( string body, string path, string url )
-{
-	size_t	index = path.rfind('/');
-	string	file = path.substr(index + 1, string::npos);
-
-	if (file == "")
+	if (index == string::npos || file == "")
 		return 400;
-	path = url + file;
-	int	fd = open(path.c_str(), O_RDONLY, 0644);
-	if (fd != -1) return close(fd), 200; 
+	if (not ft_ends_with(path, "/") && not ft_starts_with(file, "/"))
+		path.push_back('/');
+	destination = path + file;
+	if (fileExist(destination))
+		return 200;
+	int	fd = open(destination.c_str(), O_CREAT | O_RDWR, 0644);
+	if (fd == -1)
+		return 500;
+	addEpollEvent(run.getEpoll(), fd);
+	writeFile(destination, body);
 	close(fd);
-	fd = open(path.c_str(), O_CREAT | O_RDWR, 0644);
-	if (fd == -1) return 500;
-	writeFile(path, body);
-	close(fd);
+	delEpollEvent(run.getEpoll(), fd);
 	return 201;
 }
-
