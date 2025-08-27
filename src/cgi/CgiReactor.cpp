@@ -6,7 +6,7 @@
 /*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 15:34:48 by zsailine          #+#    #+#             */
-/*   Updated: 2025/08/27 09:15:34 by aranaivo         ###   ########.fr       */
+/*   Updated: 2025/08/27 09:25:19 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,7 +207,6 @@ void CgiReactor::handleIoEvent(int epfd, int fd, uint32_t events, Request& req) 
             }
             else 
             {
-                if (errno == EAGAIN || errno == EWOULDBLOCK) break;
                 break;
             }
         }
