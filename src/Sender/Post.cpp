@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 10:47:32 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/27 11:09:38 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/27 12:14:57 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,20 +62,30 @@ int	Post::storeData( string content, size_t head, string host )
 
 int	Post::storeFile( string content, size_t head, string url )
 {
+	Run		run;
 	string	file = getType(content, "filename=", "\"\r\n"), path;
 	
 	if (file == "")
 		return 400;
 	path = url + file;
 	int	fd = open(path.c_str(), O_RDONLY, 0644);
-	if (fd != -1) return close(fd), 200; 
+	if (fd != -1)
+	{
+		addEpollEvent(run.getEpoll(), fd);
+		close(fd);
+		delEpollEvent(run.getEpoll(), fd);
+		return 200; 
+	}
 	fd = open(path.c_str(), O_CREAT | O_RDWR, 0644);
-	if (fd == -1) return 500;
+	if (fd == -1)
+		return 500;
+	addEpollEvent(run.getEpoll(), fd);
 	if (content.substr(head, 4) == "\r\n\r\n")
 		head += 4;
 	size_t	end = content.find("\r\n", head);
 	string	inside = content.substr(head, end - head);
 	writeFile(path, inside);
+	delEpollEvent(run.getEpoll(), fd);
 	close(fd);
 	return 201;
 }

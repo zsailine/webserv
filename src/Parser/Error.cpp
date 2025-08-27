@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Error.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:56:23 by zsailine          #+#    #+#             */
-/*   Updated: 2025/08/26 13:35:06 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/27 12:20:35 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ void	Error::check_value()
 	}
 	for(std::map<int , std::string>::iterator it = _map.begin(); it != _map.end(); it++)
 	{
-		if (!ft_exist(it->second))
+		if (!fileExist(it->second))
 		{
 			std::cerr << "[ errorPages ]\n" << "Error: " << it->first << "'s file doesn't exist\n";
 			throw std::exception();

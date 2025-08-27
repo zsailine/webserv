@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tools.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 09:58:05 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/26 13:32:45 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/27 12:16:30 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,27 +92,6 @@ void	writeFile( string path, string content )
 		file << content;
 		file.close();
 	}
-}
-
-void	writeDir( string file, std::vector< std::map<string, string> > c )
-{
-	std::ostringstream	oss;
-	
-	int fd = open(file.c_str(), O_CREAT | O_TRUNC | O_WRONLY, 0640);
-	if (fd == -1)
-		return ;
-	std::map<string, string>::iterator	it;
-	for (size_t i = 0; i < c.size(); i++)
-	{
-		for (it = c[i].begin(); it != c[i].end(); ++it)
-		{
-			if (it->first != "host")
-				oss << it->first << "=" << it->second << " ";
-		}
-		oss << std::endl;
-	}
-	write(fd, oss.str().c_str(), oss.str().size());
-	close(fd);
 }
 
 string	getType( string message, string toFind, string end )
