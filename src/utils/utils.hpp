@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 10:50:05 by zsailine          #+#    #+#             */
-/*   Updated: 2025/08/26 12:54:05 by aranaivo         ###   ########.fr       */
+/*   Updated: 2025/08/26 13:35:45 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,6 @@ bool		isPhpUri(const std::string &uri);
 std::string extractRequestURI(const std::string &header);
 void 		parseHeadersToMap(const std::string &header, std::map<std::string,std::string> &out);
 std::string resolveScriptFilename(Server &server, const std::string &uri);
-std::string loadErrorPage(int code);
-
 
 
 template<typename T>

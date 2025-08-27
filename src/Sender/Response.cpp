@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 09:53:26 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/08/26 10:24:03 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/26 16:09:26 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,8 +100,15 @@ void	Response::makeListing(std::string url, Body &body, Server &server)
     DIR *dir = opendir(_path.c_str());
     if (!dir)
 	{
-		this->set_status(404);
-		body.setContent(readFile(server.getError(404)));
+		if (access(_path.c_str(), F_OK))
+		{
+			this->set_status(404);
+			body.setContent(readFile(server.getError(404)));
+			return ;
+		}
+		this->set_status(403);
+		body.setContent(readFile(server.getError(403)));
+		return ;
 	} 
 	else
 	{
@@ -111,7 +118,7 @@ void	Response::makeListing(std::string url, Body &body, Server &server)
 		html += "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n";
 		html += "    <title>Listing</title>\n";
 		html += "</head>\n<body>\n";
-		html += "    <h1>Index of " + url + "</h1>\n";
+		html += "    <h1>Listing Directory</h1>\n";
 		html += "    <ul>\n";
         struct dirent *entry;
         while ((entry = readdir(dir)) != NULL) {

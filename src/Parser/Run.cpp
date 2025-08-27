@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 09:51:36 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/26 10:37:52 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/26 15:52:19 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,8 @@ void	Run::run()
 	Parser				parse(this->_parameter);
 	bool				done = false, sent = false;
 	std::vector<Server>	server = parse.getServer();
-	
+	req.setError(server[0].ft_error());
+	req.setSocket(server);
 	printInstruction(server);
 	this->runEpoll(server);
 	while(sig)
