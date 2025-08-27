@@ -50,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <title>Webserv</title>
 </head>
 <body style="background: white; padding: 50px;">
@@ -57,17 +58,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <?php if (!empty($message)) echo "<p><b>$message</b></p>"; ?>
 
-    <form method="POST" action="index.php" enctype="multipart/form-data">
-        <label for="name">Nom</label>
-        <input type="text" name="name"/>
-
-        <label for="age">Age</label>
-        <input type="text" name="age"/>
-
-        <label for="avatar">Upload un fichier</label>
-        <input type="file" name="avatar"/>
-
-        <button type="submit">Submit</button>
+    <form class="d-block" method="POST" action="index.php" enctype="multipart/form-data">
+        <div>
+            <label for="name">Nom</label>
+            <input class="form-control" type="text" name="name"/>
+        </div>
+        <div>
+            <label for="age">Age</label>
+            <input class="form-control" type="text" name="age"/>
+        </div>
+        <div>
+            <label for="avatar">Upload un fichier</label>
+        </div>
+        <div>
+            <input class="form-control" type="file" name="avatar"/>
+        </div>
+        <div>
+            <button class="mt-3 btn btn-success" type="submit">Submit</button>
+        </div>
     </form>
 
     <hr>
@@ -81,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo "<li>$file 
                     <form method='POST' action='/index.php' style='display:inline'>
                         <input type='hidden' name='delete_file' value='$file'/>
-                        <button type='submit'>Delete</button>
+                        <button class=\"mx-3 btn btn-danger\" type='submit'>Delete</button>
                     </form>
                   </li>";
         }

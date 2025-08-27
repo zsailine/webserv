@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CgiReactor.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 15:34:48 by zsailine          #+#    #+#             */
-/*   Updated: 2025/08/26 15:56:55 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/27 09:15:34 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,7 +177,7 @@ void CgiReactor::handleIoEvent(int epfd, int fd, uint32_t events, Request& req) 
             ssize_t w = write(job->cgi_in, job->in_buf.data() + job->in_off,
                               job->in_buf.size() - job->in_off);
             if (w > 0) job->in_off += (size_t)w;
-            else if (w < 0 && (errno == EAGAIN || errno == EWOULDBLOCK)) break;
+            else if (w < 0) break;
             else {
                 delEpollEvent(epfd, job->cgi_in);
                 close(job->cgi_in);
