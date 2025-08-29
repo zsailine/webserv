@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 12:02:47 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/29 12:57:42 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/29 13:57:29 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,8 @@ static int	checkHeader( string &header, Body &body )
 		return 405;
 	if (body.getVersion() != "HTTP/1.1")
 		return 505;
+	if (header.find("Transfer-Encoding: chunked") != string::npos)
+		return 501;
 	return true;
 }
 
@@ -166,7 +168,7 @@ bool	Request::handleRequest( int fd, Body &bod, Server &server )
 		response.set_path(server.getError(405));
 		response.set_status(405);
 		response.getExtension();
-		bod.setContent(readFile(response.getPath()));
+		bod.setContent(readFile(response.getPath()));	
 		response.http(bod);
 		printAnswer(bod, response);
 		this->_response[fd] = response.getResponse();
