@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 09:53:26 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/08/26 16:09:26 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/27 15:48:31 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,11 @@ void Response::getExtension()
 	std::string	extension;
 	
 	index = this->_path.rfind('.');
+	if (index == -1)
+	{
+		this->_mime = "text/html";
+		return ;
+	}
 	extension = this->_path.c_str() + index;
 	if (not this->_mimetype.count(extension))
 		this->_mime = "text/plain";

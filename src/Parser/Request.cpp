@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 12:02:47 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/27 12:00:26 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/29 12:57:42 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,11 +154,9 @@ bool	Request::handleRequest( int fd, Body &bod, Server &server )
 	{
 		response.set_path(server.getError(404));
 		response.set_status(404);
-		sender.handleGet(server, response, bod);
 		response.getExtension();
 		bod.setContent(readFile(response.getPath()));
 		response.http(bod);
-		printLogs(bod.getMethod(), bod.getPath(), bod.getVersion());
 		printAnswer(bod, response);
 		this->_response[fd] = response.getResponse();
 		return (true);
@@ -167,11 +165,9 @@ bool	Request::handleRequest( int fd, Body &bod, Server &server )
 	{
 		response.set_path(server.getError(405));
 		response.set_status(405);
-		sender.handleGet(server, response, bod);
 		response.getExtension();
 		bod.setContent(readFile(response.getPath()));
 		response.http(bod);
-		printLogs(bod.getMethod(), bod.getPath(), bod.getVersion());
 		printAnswer(bod, response);
 		this->_response[fd] = response.getResponse();
 		return (true);

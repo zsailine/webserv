@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 09:51:36 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/27 11:32:22 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/29 12:57:40 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ void	Run::run()
 						modifyEpollEvent(this->_epoll, fd, EPOLLOUT);
 					}
 				}
-				else if (this->_events[i].events & EPOLLOUT)
+				if (this->_events[i].events & EPOLLOUT)
 				{
 					sent = req.sendChunks(fd);
 					if (sent)
@@ -136,7 +136,8 @@ void	Run::runEpoll( std::vector<Server> &server )
 			if (listen(tmp[u], 2) != 0)
 			{
 				std::cerr << "Error listening socket for Server "
-					<< server[i].getIndex() << std::endl; 
+					<< server[i].getIndex() << std::endl;
+				close(this->_epoll);
 				closeFds(server);
 			}
 		}

@@ -1,6 +1,6 @@
 NAME = webserv
 
-FLAGS = -Wall -Werror -Wextra -std=c++98 -g
+FLAGS = -Wall -Werror -Wextra -std=c++98
 
 OBJ_DIR = .obj/
 
