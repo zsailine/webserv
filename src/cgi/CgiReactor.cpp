@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CgiReactor.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 15:34:48 by zsailine          #+#    #+#             */
-/*   Updated: 2025/09/08 09:12:43 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/09/08 10:19:15 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,6 +214,5 @@ void CgiReactor::handleIoEvent(int epfd, int fd, uint32_t events, Request& req) 
         if (job->cgi_in == -1 && job->child_exited) {
             finalize_(epfd, job, req);
         }
-        std::cout << "yo\n";
     }
 }

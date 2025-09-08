@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 12:02:47 by mitandri          #+#    #+#             */
-/*   Updated: 2025/09/08 09:16:48 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/09/08 10:17:57 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -247,7 +247,7 @@ bool	Request::sendChunks( int &fd )
 
 bool	Request::handleCgi( int fd, Body &bod, Server &server, Response &response, int url, std::string &header, std::string requestURI)
 {
-	    std::string scriptFile = resolveScriptFilename(server, requestURI);
+	    std::string scriptFile = resolveScriptFilename(requestURI);
         std::map<std::string,std::string> hdrs;
         parseHeadersToMap(header, hdrs);
 

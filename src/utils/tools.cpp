@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tools.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 09:58:05 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/27 12:16:30 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/09/08 10:18:19 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,13 +184,10 @@ void parseHeadersToMap(const std::string &header,
 }
 
 // Résout le chemin disque du script via root + path (sans query)
-std::string resolveScriptFilename(Server &server, const std::string &uri) {
+std::string resolveScriptFilename(const std::string &uri) {
     std::string path = uri;
 	std::string::size_type q = path.find('?');
     if (q != std::string::npos) path.erase(q);
-    std::string root = server.get("root");
-    if (!root.empty() && root[root.size()-1] == '/')
-        root.erase(root.size()-1);
-    return root + path;
+    return path;
 }
 
