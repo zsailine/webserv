@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 09:53:26 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/08/27 15:48:31 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/09/08 09:14:10 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ Response::Response()
 	this->_mimetype.insert(std::pair<string, string>(".mp4", "video/mp4"));
 	this->_mimetype.insert(std::pair<string, string>(".png", "image/png"));
 	this->_mimetype.insert(std::pair<string, string>(".pdf", "application/pdf"));
-	this->_mimetype.insert(std::pair<string, string>(".php", "application/pdf"));
+	// this->_mimetype.insert(std::pair<string, string>(".php", "application/pdf"));
 	this->_mimetype.insert(std::pair<string, string>(".wav", "audio/wav"));
 }
 

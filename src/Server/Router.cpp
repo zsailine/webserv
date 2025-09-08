@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 10:33:07 by zsailine          #+#    #+#             */
-/*   Updated: 2025/08/26 09:41:20 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/09/08 08:32:40 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,21 +127,13 @@ void	Router::check_value(std::string const &name)
 		std::cerr << "[ Route " << name << " ]\n" << "Error: listingDirectory is not valid\n";
 		throw std::exception();
 	}
-	if (_map["url"].size() == 0 || _map["url"][0] != '/')
+	if (_map["url"][0] != '/')
 	{
 		std::cerr << "[ Route " << name << " ]\n" << "Error: url is not defined\n";
 		throw std::exception();
 	}
-	if (_map["root"].size() == 0)
-	{
-		std::cerr << "[ Route " << name << " ]\n" << "Error: root is not defined\n";
-		throw std::exception();
-	}
 	if (_map["allowedMethods"].size() == 0)
-	{
-		std::cerr << "[ Route " << name << " ]\n" << "Error: allowedMethods is not defined\n";
-		throw std::exception();
-	}
+		_map["allowedMethods"] = "GET POST DELETE";
 	if (_map["index"].size() == 0)
 		_map["index"] = "index.html";
 	if (_map["upload_directory"].size() == 0)
@@ -176,6 +168,10 @@ std::map<std::string , std::string> Router::getMap() const
 	return _map;
 }
 
+void		Router::setValue(std::string key, std::string value)
+{
+	_map[key] = value;
+}
 std::string Router::getValue(std::string key)
 {
 	return (_map[key]);
