@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 09:53:26 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/08/26 16:09:26 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/09/08 09:14:10 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ Response::Response()
 	this->_mimetype.insert(std::pair<string, string>(".mp4", "video/mp4"));
 	this->_mimetype.insert(std::pair<string, string>(".png", "image/png"));
 	this->_mimetype.insert(std::pair<string, string>(".pdf", "application/pdf"));
-	this->_mimetype.insert(std::pair<string, string>(".php", "application/pdf"));
+	// this->_mimetype.insert(std::pair<string, string>(".php", "application/pdf"));
 	this->_mimetype.insert(std::pair<string, string>(".wav", "audio/wav"));
 }
 
@@ -62,6 +62,11 @@ void Response::getExtension()
 	std::string	extension;
 	
 	index = this->_path.rfind('.');
+	if (index == -1)
+	{
+		this->_mime = "text/html";
+		return ;
+	}
 	extension = this->_path.c_str() + index;
 	if (not this->_mimetype.count(extension))
 		this->_mime = "text/plain";

@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 10:02:47 by zsailine          #+#    #+#             */
-/*   Updated: 2025/08/16 08:18:53 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/27 11:33:20 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@
 #define RESET "\033[0m"
 #define UNDERLINE "\033[4m"
 
-#define MAX_EVENTS 4
+#define MAX_EVENTS 128
 #define MAX_SIZE 5000
 #define BUFFER_SIZE 8192
 #define CRLF "\r\n\r\n"

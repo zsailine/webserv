@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 11:57:31 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/26 15:55:05 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/08/27 11:41:01 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,17 @@ class	Request
 		std::map<int, string>	_body;
 		std::map<int, string>	_req;
 		std::map<int, size_t>	_sent;
+		std::map<int, bool>		_continue;
 		std::vector<int>		_sockets;
 		Error					errorPages;
+		
 	public:
 		Request();
 		bool	handleCgi(int fd, Body &bod, Server &server, Response &response, int url, std::string &header, std::string requestURI);
 		bool	readChunks( int &fd, Server &server);
 		bool	handleRequest( int fd, Body &bod, Server &server );
 		bool	parseRequest( int fd, string &body, int bLength, Server &server );
-		bool	sendChunks( int &fd, Server &server );
+		bool	sendChunks( int &fd );
 		string	getReq( int fd ) { return this->_req[fd]; }
 		string	getHeader( int fd ) { return this->_header[fd]; }
 		string	getBody( int fd ) { return this->_body[fd]; }

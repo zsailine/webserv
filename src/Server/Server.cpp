@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:01:59 by zsailine          #+#    #+#             */
-/*   Updated: 2025/08/26 09:41:27 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/09/08 08:44:04 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,13 @@ void	Server::init_value()
 	_map.insert(std::pair<std::string, std::string>("server_name", ""));
 	_map.insert(std::pair<std::string, std::string>("routes", ""));
 	_map.insert(std::pair<std::string, std::string>("maxBodySize", ""));
+	_map.insert(std::pair<std::string, std::string>("root", ""));
 }
 
 static int oneValue(int number, std::string const &key, std::string &str, std::string &value)
 {
 	size_t pos = str.find('=');
-    if (key.compare("maxBodySize") == 0)
+    if (key.compare("maxBodySize") == 0 || key.compare("root") == 0 )
 	{
 		std::string value = str.substr(pos + 1);
 		if (nbr_of_words(value) > 1)
@@ -122,6 +123,11 @@ void	Server::check_value(int number)
 	if (_map["routes"].size() == 0)
 	{
 		std::cerr << "[ Server " << number << " ]\n" << "Error: routes are empty\n";
+		throw std::exception();
+	}
+	if (_map["root"].size() == 0)
+	{
+		std::cerr << "[ Server " << number << " ]\n" << "Error: root is not a defined\n";
 		throw std::exception();
 	}
 	if (_map["maxBodySize"].size() == 0)
@@ -251,7 +257,7 @@ int		Server::ft_repeat(std::string url)
 	return (1);
 }
 
-int	Server::addRoute(std::map<std::string, Router> routes)
+int	Server::addRoute(std::map<std::string, Router> &routes)
 {
 	std::stringstream split(_map["routes"]);
 	std::string word;
@@ -267,6 +273,8 @@ int	Server::addRoute(std::map<std::string, Router> routes)
 		{
 			if (it->first.compare(word) == 0 && ft_repeat(it->second.getValue("url")))
 			{
+				if (it->second.getValue("root").size() == 0)
+					it->second.setValue("root", _map["root"]);
 				_routes.push_back(it->second);
 			}
 			it++;
