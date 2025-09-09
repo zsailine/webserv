@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Webserv</title>
 </head>
 <body style="background: white; padding: 50px;">
-    <h1 style="color: black">Hello webserv !</h1>
+    <h1 style="color: black">Hello webserv (PHP CGI)!</h1>
 
     <?php if (!empty($message)) echo "<p><b>$message</b></p>"; ?>
 

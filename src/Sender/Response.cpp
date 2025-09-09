@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 09:53:26 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/09/08 09:14:10 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/09/09 08:14:09 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,11 +108,11 @@ void	Response::makeListing(std::string url, Body &body, Server &server)
 		if (access(_path.c_str(), F_OK))
 		{
 			this->set_status(404);
-			body.setContent(readFile(server.getError(404)));
+			body.setContent(ft_get(server.getError(404)));
 			return ;
 		}
 		this->set_status(403);
-		body.setContent(readFile(server.getError(403)));
+		body.setContent(ft_get(server.getError(403)));
 		return ;
 	} 
 	else

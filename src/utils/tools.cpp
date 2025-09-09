@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tools.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 09:58:05 by mitandri          #+#    #+#             */
-/*   Updated: 2025/09/08 10:18:19 by aranaivo         ###   ########.fr       */
+/*   Updated: 2025/09/09 08:33:24 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void	printAnswer( Body &body, Response &ref )
 	delEpollEvent(run.getEpoll(), STDOUT_FILENO);
 }
 
-string	readFile( string path )
+string	ft_get( string path )
 {
 	std::ifstream		file(path.c_str());
 	std::stringstream	ss;
@@ -144,9 +144,13 @@ static bool endsWith(const std::string &s, const char *suf) {
     return s.size() >= n && s.compare(s.size()-n, n, suf) == 0;
 }
 
-bool isPhpUri(const std::string &uri) {
-    if (endsWith(uri, ".php")) return true;
+bool isCgi(const std::string &uri) {
+    if (endsWith(uri, ".php")) 
+		return true;
     std::string::size_type pos = uri.find(".php?");
+	if (endsWith(uri, ".py"))
+		return true;
+	pos = uri.find(".py?");
     return (pos != std::string::npos);
 }
 
