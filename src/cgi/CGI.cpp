@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 15:34:41 by zsailine          #+#    #+#             */
-/*   Updated: 2025/08/26 15:54:46 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/09/09 08:41:22 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,10 +158,22 @@ bool CGI::start_cgi(Request &req, int epfd, int client_fd)
             close(inp[0]); 
             close(inp[1]); 
         }
-        const char* php_path = "/usr/bin/php-cgi";
-        char* argv[2]; argv[0] = (char*)"php-cgi"; argv[1] = 0;
-        execve(php_path, argv, envp);
-        perror("execve php-cgi failed");
+        if (_script_name.find(".php") != std::string::npos)
+        {
+            const char* php_path = "/usr/bin/php-cgi";
+            char* argv[2]; argv[0] = (char*)"php-cgi"; argv[1] = 0;
+            execve(php_path, argv, envp);
+        } 
+        else if (_script_name.find(".py") != std::string::npos)
+        {
+            const char* python_path = "/usr/bin/python3";
+            char* argv[3]; 
+            argv[0] = (char*)"python3"; 
+            argv[1] = (char*)_script_path.c_str();
+            argv[2] = 0;
+            execve(python_path, argv, envp);
+        }
+        perror("execve cgi failed");
         _exit(127);
     }
 

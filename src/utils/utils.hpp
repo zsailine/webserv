@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 10:50:05 by zsailine          #+#    #+#             */
-/*   Updated: 2025/09/08 10:18:26 by aranaivo         ###   ########.fr       */
+/*   Updated: 2025/09/09 08:32:08 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,13 @@ int			isDirectory(std::string str);
 long long	ft_atoi(std::string number);
 int			ft_isdigit(std::string &str);
 int			afterEquals(int pos, std::string str);
-string		readFile( string path );
+string		ft_get( string path );
 string		getType( string message, string toFind, string end );
 void		writeFile( string path, string content );
 void		printAnswer( Body &body, Response &ref );
 void		printLogs( string method, string path, string version );
 string		generateHTML( int status, string description );
-bool		isPhpUri(const std::string &uri);
+bool		isCgi(const std::string &uri);
 std::string extractRequestURI(const std::string &header);
 void 		parseHeadersToMap(const std::string &header, std::map<std::string,std::string> &out);
 std::string resolveScriptFilename(const std::string &uri);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 12:02:47 by mitandri          #+#    #+#             */
-/*   Updated: 2025/09/08 10:17:57 by aranaivo         ###   ########.fr       */
+/*   Updated: 2025/09/09 08:48:24 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ bool	Request::parseRequest( int fd, string &body, int bLength, Server &server )
 		rep.set_status(headValue);
 		rep.set_mime("text/html");
 		if (bod.getMethod() != "HEAD")
-			rep.set_body(readFile(server.getError(headValue)));
+			rep.set_body(ft_get(server.getError(headValue)));
 		rep.generateHeader(bod);
 		if (headValue == 405)
 			rep.pushNewHeader("Allow: GET, POST, DELETE");
@@ -125,7 +125,7 @@ bool	Request::parseRequest( int fd, string &body, int bLength, Server &server )
 			printLogs(bod.getMethod(), bod.getPath(), bod.getVersion());
 			rep.set_status(413);
 			rep.set_mime("text/html");
-			rep.set_body(readFile(server.getError(rep.getStatus())));
+			rep.set_body(ft_get(server.getError(rep.getStatus())));
 			rep.generateHeader(bod);
 			rep.response();
 			printAnswer(bod, rep);
@@ -157,7 +157,7 @@ bool	Request::handleRequest( int fd, Body &bod, Server &server )
 		response.set_path(server.getError(404));
 		response.set_status(404);
 		response.getExtension();
-		bod.setContent(readFile(response.getPath()));
+		bod.setContent(ft_get(response.getPath()));
 		response.http(bod);
 		printAnswer(bod, response);
 		this->_response[fd] = response.getResponse();
@@ -168,13 +168,13 @@ bool	Request::handleRequest( int fd, Body &bod, Server &server )
 		response.set_path(server.getError(405));
 		response.set_status(405);
 		response.getExtension();
-		bod.setContent(readFile(response.getPath()));	
+		bod.setContent(ft_get(response.getPath()));	
 		response.http(bod);
 		printAnswer(bod, response);
 		this->_response[fd] = response.getResponse();
 		return (true);
 	}
-    if (isPhpUri(requestURI) && server.getValue(url, "cgi_root").size() != 0) 
+    if (isCgi(requestURI) && server.getValue(url, "cgi_root").size() != 0) 
 	{
 		return (this->handleCgi(fd, bod, server, response, url, header, requestURI));	
     }
@@ -184,7 +184,7 @@ bool	Request::handleRequest( int fd, Body &bod, Server &server )
 		{
 			sender.handleGet(server, response, bod);
 			response.getExtension();
-			bod.setContent(readFile(response.getPath()));
+			bod.setContent(ft_get(response.getPath()));
 			response.http(bod);
 		}
 		else if (bod.getMethod() == "POST")
@@ -273,7 +273,7 @@ bool	Request::handleCgi( int fd, Body &bod, Server &server, Response &response, 
             serverName = host.substr(0, colon);
             serverPort = host.substr(colon + 1);
         }
-		else 
+		else
 		{
             std::string listen = server.get("listen");
             std::string::size_type c = listen.find(':');
