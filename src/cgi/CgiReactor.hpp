@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CgiReactor.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 15:34:55 by zsailine          #+#    #+#             */
-/*   Updated: 2025/08/26 15:47:26 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/09/10 08:49:15 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,6 @@ private:
     CgiReactor(const CgiReactor&);
     CgiReactor& operator=(const CgiReactor&);
     std::map<int, CgiJob*> _byFd;
-    static void setNonBlocking_(int fd);
-    static void setCloExec_(int fd);
     static void parseCgiHeaders_(CgiJob* job);
     static bool childIsDone_(pid_t pid);
     void finalize_(int epfd, CgiJob* job, Request& req);

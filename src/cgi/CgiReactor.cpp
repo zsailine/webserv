@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CgiReactor.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 15:34:48 by zsailine          #+#    #+#             */
-/*   Updated: 2025/09/09 08:49:52 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/09/10 08:52:10 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,6 @@ CgiReactor& CgiReactor::instance() {
     return g;
 }
 
-void CgiReactor::setNonBlocking_(int fd) {
-    int fl = fcntl(fd, F_GETFL, 0);
-    if (fl != -1) fcntl(fd, F_SETFL, fl | O_NONBLOCK);
-}
-
-void CgiReactor::setCloExec_(int fd) {
-    int flags = fcntl(fd, F_GETFD);
-    if (flags != -1) fcntl(fd, F_SETFD, flags | FD_CLOEXEC);
-}
 
 bool CgiReactor::isCgiFd(int fd) const 
 {
@@ -46,8 +37,6 @@ void CgiReactor::registerJob(int epfd, CgiJob* job) {
     memset(&ev, 0, sizeof(ev));
 
     // cgi_out: lecture
-    setNonBlocking_(job->cgi_out);
-    setCloExec_(job->cgi_out);
     ev.data.fd = job->cgi_out;
     ev.events  = EPOLLIN | EPOLLERR | EPOLLHUP;
     if (epoll_ctl(epfd, EPOLL_CTL_ADD, job->cgi_out, &ev) < 0) {
@@ -59,8 +48,6 @@ void CgiReactor::registerJob(int epfd, CgiJob* job) {
     if (job->cgi_in >= 0) 
     {
         memset(&ev, 0, sizeof(ev));
-        setNonBlocking_(job->cgi_in);
-        setCloExec_(job->cgi_in);
         ev.data.fd = job->cgi_in;
         ev.events  = EPOLLOUT | EPOLLERR | EPOLLHUP;
         epoll_ctl(epfd, EPOLL_CTL_ADD, job->cgi_in, &ev);

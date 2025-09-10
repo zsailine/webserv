@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGI.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
+/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 15:34:41 by zsailine          #+#    #+#             */
-/*   Updated: 2025/09/09 08:41:22 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/09/10 08:52:05 by aranaivo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,19 +25,8 @@
 
 static int make_pipe_nonblock(int p[2])
 {
-    if (pipe(p) == -1) return -1;
-    int fl;
-
-    fl = fcntl(p[0], F_GETFL, 0);
-    if (fl != -1) fcntl(p[0], F_SETFL, fl | O_NONBLOCK);
-    fl = fcntl(p[1], F_GETFL, 0);
-    if (fl != -1) fcntl(p[1], F_SETFL, fl | O_NONBLOCK);
-
-    fl = fcntl(p[0], F_GETFD);
-    if (fl != -1) fcntl(p[0], F_SETFD, fl | FD_CLOEXEC);
-    fl = fcntl(p[1], F_GETFD);
-    if (fl != -1) fcntl(p[1], F_SETFD, fl | FD_CLOEXEC);
-
+    if (pipe(p) == -1) 
+        return -1;
     return 0;
 }
 
