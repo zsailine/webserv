@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:01:59 by zsailine          #+#    #+#             */
-/*   Updated: 2025/08/14 12:34:25 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/09/08 08:44:04 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,13 @@ void	Server::init_value()
 	_map.insert(std::pair<std::string, std::string>("server_name", ""));
 	_map.insert(std::pair<std::string, std::string>("routes", ""));
 	_map.insert(std::pair<std::string, std::string>("maxBodySize", ""));
+	_map.insert(std::pair<std::string, std::string>("root", ""));
 }
 
 static int oneValue(int number, std::string const &key, std::string &str, std::string &value)
 {
 	size_t pos = str.find('=');
-    if (key.compare("maxBodySize") == 0)
+    if (key.compare("maxBodySize") == 0 || key.compare("root") == 0 )
 	{
 		std::string value = str.substr(pos + 1);
 		if (nbr_of_words(value) > 1)
@@ -124,6 +125,11 @@ void	Server::check_value(int number)
 		std::cerr << "[ Server " << number << " ]\n" << "Error: routes are empty\n";
 		throw std::exception();
 	}
+	if (_map["root"].size() == 0)
+	{
+		std::cerr << "[ Server " << number << " ]\n" << "Error: root is not a defined\n";
+		throw std::exception();
+	}
 	if (_map["maxBodySize"].size() == 0)
 		_map["maxBodySize"] = "10000";
 	if (!ft_isdigit(_map["maxBodySize"]))
@@ -187,16 +193,19 @@ void	Server::addClient(int fd)
 
 Server::Server(const Server &toCopy)
 {
+	// this = &obj;
 	_socket = toCopy._socket;
 	_map = toCopy._map;
 	_routes = toCopy._routes;
 	errorPages = toCopy.errorPages;
 	index = toCopy.index;
+	epfd = toCopy.epfd;
 }
 
 Server::Server(int number, std::vector<std::string> const &block)
 {
 	index = number;
+	epfd = -1;
 	init_value();
 	for (std::vector<std::string>::const_iterator it = block.begin(); it != block.end(); it++)
 	{
@@ -218,6 +227,7 @@ const Server & Server::operator=(const Server & obj)
 		errorPages = obj.errorPages;
 		index = obj.index;
 		client_fds = obj.client_fds;
+		epfd = obj.epfd;
 	}
 	return (*this);
 }
@@ -247,7 +257,7 @@ int		Server::ft_repeat(std::string url)
 	return (1);
 }
 
-int	Server::addRoute(std::map<std::string, Router> routes)
+int	Server::addRoute(std::map<std::string, Router> &routes)
 {
 	std::stringstream split(_map["routes"]);
 	std::string word;
@@ -263,6 +273,8 @@ int	Server::addRoute(std::map<std::string, Router> routes)
 		{
 			if (it->first.compare(word) == 0 && ft_repeat(it->second.getValue("url")))
 			{
+				if (it->second.getValue("root").size() == 0)
+					it->second.setValue("root", _map["root"]);
 				_routes.push_back(it->second);
 			}
 			it++;

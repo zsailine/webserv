@@ -3,16 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   tools.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 09:58:05 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/19 22:48:58 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/09/12 14:14:06 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #include "../Parser/Body.hpp"
-#include "../Parser/Run.hpp"
 #include "../Sender/Response.hpp"
+#include "../cgi/CGI.hpp"
+#include "../Parser/Run.hpp"
+#include "../cgi/CgiReactor.hpp"
+
+
+class Run;
 
 void	printLogs( string method, string path, string version )
 {
@@ -63,7 +69,7 @@ void	printAnswer( Body &body, Response &ref )
 	delEpollEvent(run.getEpoll(), STDOUT_FILENO);
 }
 
-string	readFile( string path )
+string	getFile( string path )
 {
 	std::ifstream		file(path.c_str());
 	std::stringstream	ss;
@@ -86,27 +92,6 @@ void	writeFile( string path, string content )
 		file << content;
 		file.close();
 	}
-}
-
-void	writeDir( string file, std::vector< std::map<string, string> > c )
-{
-	std::ostringstream	oss;
-	
-	int fd = open(file.c_str(), O_CREAT | O_TRUNC | O_WRONLY, 0640);
-	if (fd == -1)
-		return ;
-	std::map<string, string>::iterator	it;
-	for (size_t i = 0; i < c.size(); i++)
-	{
-		for (it = c[i].begin(); it != c[i].end(); ++it)
-		{
-			if (it->first != "host")
-				oss << it->first << "=" << it->second << " ";
-		}
-		oss << std::endl;
-	}
-	write(fd, oss.str().c_str(), oss.str().size());
-	close(fd);
 }
 
 string	getType( string message, string toFind, string end )
@@ -140,10 +125,16 @@ string	generateHTML( int status, string description )
 
 bool	fileExist( string path )
 {
-	struct stat	st;
-	
-	if (stat(path.c_str(), &st) != 0)
-		return false;
+	if (access(path.c_str(), F_OK) != 0)
+    {
+        return false;
+    }
+    DIR *dir = opendir(path.c_str());
+    if (dir)
+    {
+		closedir(dir);
+        return false;
+    }
 	return true;
 }
 
@@ -153,3 +144,60 @@ bool	hasPermission( string path, int	mode )
 		return false;
 	return true;
 }
+
+static bool endsWith(const std::string &s, const char *suf) {
+    size_t n = strlen(suf);
+    return s.size() >= n && s.compare(s.size()-n, n, suf) == 0;
+}
+
+bool isCgi(const std::string &uri) {
+    if (endsWith(uri, ".php")) 
+		return true;
+    std::string::size_type pos = uri.find(".php?");
+	if (endsWith(uri, ".py"))
+		return true;
+	pos = uri.find(".py?");
+    return (pos != std::string::npos);
+}
+
+std::string extractRequestURI(const std::string &header) {
+    std::string::size_type eol = header.find("\r\n");
+    if (eol == std::string::npos) return "";
+    std::string first = header.substr(0, eol);
+    std::istringstream iss(first);
+    std::string method, uri, version;
+    iss >> method >> uri >> version;
+    return uri;
+}
+
+// Parse basique des headers
+void parseHeadersToMap(const std::string &header,
+                              std::map<std::string,std::string> &out) {
+    out.clear();
+    std::string::size_type pos = header.find("\r\n");
+    if (pos == std::string::npos) return;
+    std::string rest = header.substr(pos + 2);
+    while (!rest.empty()) {
+        std::string::size_type nl = rest.find("\r\n");
+        std::string line = (nl == std::string::npos) ? rest : rest.substr(0, nl);
+        if (line.empty()) break;
+        std::string::size_type col = line.find(':');
+        if (col != std::string::npos) {
+            std::string name  = line.substr(0, col);
+            std::string value = line.substr(col + 1);
+            while (!value.empty() && (value[0]==' ' || value[0]=='\t')) value.erase(0,1);
+            out[name] = value;
+        }
+        if (nl == std::string::npos) break;
+        rest = rest.substr(nl + 2);
+    }
+}
+
+// Résout le chemin disque du script via root + path (sans query)
+std::string resolveScriptFilename(const std::string &uri) {
+    std::string path = uri;
+	std::string::size_type q = path.find('?');
+    if (q != std::string::npos) path.erase(q);
+    return path;
+}
+

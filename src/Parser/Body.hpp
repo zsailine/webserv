@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Body.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 13:05:06 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/07 17:49:31 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/09/11 14:05:30 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ class Body
 		string	_version;
 		string	_boundary;
 		string	_host;
-		string	_content;
+		string	_content1;
 		string	_header;
 		string	_body;
 
@@ -36,7 +36,8 @@ class Body
 		string	getVersion() { return this->_version; }
 		string	getBoundary() { return this->_boundary; }
 		string	getHost() { return this->_host; }
-		string	getContent() { return this->_content; }
+		string	getContent1() { return this->_content1; }
+		void	setContent1( string c ) { this->_content1 = c; }
 		string	getBody() { return this->_body; }
 		string	getHeader() { return this->_header; }
 		void	setLength( int l ) { this->_bodylength = l; }
@@ -45,7 +46,6 @@ class Body
 		void	setVersion( string v ) { this->_version = v; }
 		void	setBoundary( string b ) { this->_boundary = b; }
 		void	setHost( string h ) { this->_host = h; }
-		void	setContent( string c ) { this->_content = c; }
 		void	setBody( string b ) { this->_body = b; }
 		void	setHeader( string h ) { this->_header = h; }
 		void	setFirst( std::istringstream &iss )

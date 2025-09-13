@@ -6,7 +6,7 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:56:23 by zsailine          #+#    #+#             */
-/*   Updated: 2025/08/16 08:32:31 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/27 12:20:35 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ void	Error::init_value()
 	_map.insert(std::pair<int, std::string>(431, ""));
 	_map.insert(std::pair<int, std::string>(500, ""));
 	_map.insert(std::pair<int, std::string>(501, ""));
+	_map.insert(std::pair<int, std::string>(502, ""));
 	_map.insert(std::pair<int, std::string>(505, ""));
 }
 
@@ -98,7 +99,7 @@ void	Error::check_value()
 	}
 	for(std::map<int , std::string>::iterator it = _map.begin(); it != _map.end(); it++)
 	{
-		if (!ft_exist(it->second))
+		if (!fileExist(it->second))
 		{
 			std::cerr << "[ errorPages ]\n" << "Error: " << it->first << "'s file doesn't exist\n";
 			throw std::exception();

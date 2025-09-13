@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 08:22:27 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/20 07:57:17 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/26 09:33:59 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

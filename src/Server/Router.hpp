@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Router.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 10:22:07 by zsailine          #+#    #+#             */
-/*   Updated: 2025/08/04 14:18:27 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/09/08 08:27:15 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ class Router
 				Router(const Router &toCopy);
 				~Router(){}
 				std::string getValue(std::string key);
+				void		setValue(std::string key, std::string value);
 				std::map<std::string , std::string> getMap() const;
 };
 

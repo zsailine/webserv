@@ -6,12 +6,12 @@
 /*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:55:45 by zsailine          #+#    #+#             */
-/*   Updated: 2025/08/11 14:22:49 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/27 12:20:47 by mitandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "utils.hpp"
+#include "../Parser/Run.hpp"
 
 int afterEquals(int pos, std::string str)
 {	pos++;
@@ -93,14 +93,3 @@ int ft_isdigit(std::string &str)
 	}
 	return (1);
 }
-
-int ft_exist(std::string path)
-{
-	int			fd;
-	
-	fd = open(path.c_str(), O_RDONLY);
-	if (fd == -1)
-		return (0);
-	close(fd);
-	return (1);
-}	

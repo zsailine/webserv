@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lib.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 10:02:47 by zsailine          #+#    #+#             */
-/*   Updated: 2025/08/16 08:18:53 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/09/13 14:19:43 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <dirent.h>
 #include <iostream>
+#include <sstream>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -37,6 +38,7 @@
 #include <sys/stat.h>
 #include <netdb.h>
 #include <signal.h>
+#include <sys/wait.h>
 
 // ========== COLOR ==========
 
@@ -50,9 +52,9 @@
 #define RESET "\033[0m"
 #define UNDERLINE "\033[4m"
 
-#define MAX_EVENTS 4
+#define MAX_EVENTS 128
 #define MAX_SIZE 5000
-#define BUFFER_SIZE 8192
+#define BUFFER_SIZE 4096
 #define CRLF "\r\n\r\n"
 
 typedef std::string	string;

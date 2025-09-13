@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Run.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 09:51:36 by mitandri          #+#    #+#             */
-/*   Updated: 2025/08/15 21:06:50 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/09/13 15:47:53 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,21 @@
 
 int	sig = 1;
 int	Run::_epoll;
+std::map<int, std::ifstream*> Run::files;
+
+
+void Run::ft_clean_all()
+{
+	for (std::map<int, std::ifstream*>::iterator it = files.begin(); it != files.end(); it++)
+	{
+		std::ifstream *file = it->second;
+		if (file != NULL)
+		{
+			file->close();
+			delete file;
+		}
+	}
+}
 
 int isSocket(int fd, std::vector<Server> server)
 {
@@ -61,7 +76,8 @@ void	Run::run()
 	Parser				parse(this->_parameter);
 	bool				done = false, sent = false;
 	std::vector<Server>	server = parse.getServer();
-	
+	req.setError(server[0].ft_error());
+	req.setSocket(server);
 	printInstruction(server);
 	this->runEpoll(server);
 	while(sig)
@@ -71,6 +87,11 @@ void	Run::run()
 		for (int i = 0; i < this->_client; i++)
 		{
 			int fd = this->_events[i].data.fd;
+			if (CgiReactor::instance().isCgiFd(fd)) 
+			{
+                CgiReactor::instance().handleIoEvent(this->_epoll, fd, this->_events[i].events, req);
+                continue; // on a géré cet event
+            }
 			int index = isSocket(fd, server);
 			if (index >= 0)
 				this->handleSocket(fd, server, index);
@@ -78,7 +99,10 @@ void	Run::run()
 			{
 				try { if (this->_events[i].events & EPOLLIN)
 				{
-					try { done = this->handleClient(req, server, fd, indie); }
+					try 
+					{ 
+						done = this->handleClient(req, server, fd, indie); 
+					}
 					catch ( const std::exception &e ) { done = true; }
 					if (done)
 					{
@@ -86,9 +110,9 @@ void	Run::run()
 						modifyEpollEvent(this->_epoll, fd, EPOLLOUT);
 					}
 				}
-				else if (	this->_events[i].events & EPOLLOUT)
+				if (this->_events[i].events & EPOLLOUT)
 				{
-					sent = req.sendChunks(fd, server[indie]);
+					sent = req.ft_send(fd);
 					if (sent)
 					{
 						sent = false;
@@ -96,12 +120,13 @@ void	Run::run()
 						close(fd);
 					}
 				} } catch ( const std::exception &e ) {
-					addEpollEvent(this->_epoll, STDOUT_FILENO);
-					std::cout << e.what() << std::endl;
-					delEpollEvent(this->_epoll, STDOUT_FILENO); }
+					server[indie].setfd(fd, -1);
+					continue;
+				}
 			}
 		}
 	}
+	ft_clean_all();
 	this->closeAll(server);
 }
 
@@ -119,6 +144,7 @@ void	Run::runEpoll( std::vector<Server> &server )
 	this->_epoll = epoll_create(true);
 	for (size_t i = 0; i < server.size(); i++)
 	{
+		server[i].setEpFd(this->_epoll);
 		std::vector<int> tmp = server[i].getSocket();
 		for (size_t u = 0; u < tmp.size(); u++)
 		{
@@ -126,7 +152,8 @@ void	Run::runEpoll( std::vector<Server> &server )
 			if (listen(tmp[u], 2) != 0)
 			{
 				std::cerr << "Error listening socket for Server "
-					<< server[i].getIndex() << std::endl; 
+					<< server[i].getIndex() << std::endl;
+				close(this->_epoll);
 				closeFds(server);
 			}
 		}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 14:12:25 by zsailine          #+#    #+#             */
-/*   Updated: 2025/08/12 11:58:54 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/08/27 13:00:31 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ sockaddr_in init_adress(std::string str)
 	adress.sin_addr.s_addr = INADDR_NONE;
 	if (getaddrinfo(host.c_str(), port.c_str(), NULL, &result) != 0)
 	{
-		std::cerr << "Error configuring socket for host " << host << " in port " << port <<  std::endl;
 		return adress;
 	}
 	struct sockaddr_in *tmp = (struct sockaddr_in *)result->ai_addr;
@@ -59,7 +58,7 @@ int Server::socketer(std::string tmp)
 
 	sockaddr_in adresse = init_adress(tmp);
 	if (adresse.sin_addr.s_addr == INADDR_NONE)
-		return (ft_print(sock, "", index)); 
+		return (ft_print(sock, "Error configuring socket for Server ", index)); 
 	
 	if (bind(sock, (sockaddr *)&adresse, sizeof(adresse)) != 0)
 		return (ft_print(sock,"Error binding socket for Server ", index)); 
