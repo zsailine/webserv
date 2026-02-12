@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 09:53:26 by aranaivo          #+#    #+#             */
-/*   Updated: 2025/09/09 08:14:09 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/09/12 14:48:00 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ Response::Response()
 	this->_mimetype.insert(std::pair<string, string>(".pdf", "application/pdf"));
 	// this->_mimetype.insert(std::pair<string, string>(".php", "application/pdf"));
 	this->_mimetype.insert(std::pair<string, string>(".wav", "audio/wav"));
+	this->_response.done = false;
 }
 
 void	Response::set_path(std::string index, std::string url, std::string path, int listing)
@@ -74,28 +75,32 @@ void Response::getExtension()
 		this->_mime = this->_mimetype[extension];
 }
 
-void	Response::http( Body bod )
+void	Response::http( Body &bod )
 {
-	string description = this->description(this->_status);
-
-	this->_response.append(bod.getVersion() + " ");
-	this->_response.append(toString(this->_status) + " ");
-	this->_response.append(description + "\r\n");
-	this->_response.append("Content-Type: " + this->_mime + "\r\n");
-	this->_response.append("Content-Length: ");
-	this->_response.append(toString(bod.getContent().size()) + "\r\n");
-	this->_response.append("Connection: keep-alive\r\n\r\n");
-	this->_response.append(bod.getContent());
+	if (this->_response.response.size() == 0)
+	{
+		string description = this->description(this->_status);
+	
+		this->_response.header.append(bod.getVersion() + " ");
+		this->_response.header.append(toString(this->_status) + " ");
+		this->_response.header.append(description + "\r\n");
+		this->_response.header.append("Content-Type: " + this->_mime + "\r\n");
+		this->_response.path = _path;
+		this->_response.header_sent = false;
+		this->_response.opened  = false;
+		this->_response.offset = 0;	
+	}
 }
 
 void	Response::makeRedirection(std::string redirection)
 {
 	this->set_status(301);
-	this->_response.append("HTTP/1.1 301 Moved Permanently\r\n");
-	this->_response.append("Location: " + redirection + "\r\n");
-	this->_response.append("Content-Length: 0\r\n");
-	this->_response.append("Connection: close\r\n");
-	this->_response.append("\r\n");
+	this->_response.response.append("HTTP/1.1 301 Moved Permanently\r\n");
+	this->_response.response.append("Location: " + redirection + "\r\n");
+	this->_response.response.append("Content-Length: 0\r\n");
+	this->_response.response.append("Connection: close\r\n");
+	this->_response.response.append("\r\n");
+	_response.done = true;
 }
 
 void	Response::makeListing(std::string url, Body &body, Server &server)
@@ -108,11 +113,11 @@ void	Response::makeListing(std::string url, Body &body, Server &server)
 		if (access(_path.c_str(), F_OK))
 		{
 			this->set_status(404);
-			body.setContent(ft_get(server.getError(404)));
+			_path = server.getError(404);
 			return ;
 		}
 		this->set_status(403);
-		body.setContent(ft_get(server.getError(403)));
+		_path = server.getError(404);
 		return ;
 	} 
 	else
@@ -139,11 +144,22 @@ void	Response::makeListing(std::string url, Body &body, Server &server)
         closedir(dir);
 		html += "    </ul>\n";
 		html += "</body>\n</html>\n";
-		body.setContent(html);
+		this->set_body(html);
+		string description = this->description(this->_status);
+
+		this->_response.response.append(body.getVersion() + " ");
+		this->_response.response.append(toString(this->_status) + " ");
+		this->_response.response.append(description + "\r\n");
+		this->_response.response.append("Content-Type: " + this->_mime + "\r\n");
+		this->_response.response.append("Content-Length: ");
+		this->_response.response.append(toString(this->_body.size()) + "\r\n");
+		this->_response.response.append("Connection: keep-alive\r\n\r\n");
+		this->_response.response.append(this->_body);
+		_response.done = true;
     }
 }
 
-void	Response::generateHeader( Body bod )
+void	Response::generateHeader( Body &bod )
 {
 	string	description = this->description(this->_status);
 
@@ -162,7 +178,8 @@ void	Response::pushNewHeader( string header )
 
 void	Response::response()
 {
-	this->_response = this->_header + "\r\n" + this->_body;
+	this->_response.response = this->_header + "\r\n" + this->_body;
+	this->_response.done = true;
 }
 
 void	Response::defineStatus()

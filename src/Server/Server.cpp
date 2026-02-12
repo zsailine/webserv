@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 15:01:59 by zsailine          #+#    #+#             */
-/*   Updated: 2025/09/08 08:44:04 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/09/14 08:56:55 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,11 @@ void	Server::check_value(int number)
 	if (!ft_isdigit(_map["maxBodySize"]))
 	{
 		std::cerr << "[ Server " << number << " ]\n" << "Error: maxBodySize is not a number\n";
+		throw std::exception();
+	}
+	if (ft_atoi(_map["maxBodySize"]) > 54525952)
+	{
+		std::cerr << "[ Server " << number << " ]\n" << "Error: maxBodySize can't exceed 52Mb\n";
 		throw std::exception();
 	}
 	ft_listen();

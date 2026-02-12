@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 12:02:47 by mitandri          #+#    #+#             */
-/*   Updated: 2025/09/09 08:48:24 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/09/14 08:44:51 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ bool	Request::parseRequest( int fd, string &body, int bLength, Server &server )
 		rep.set_status(headValue);
 		rep.set_mime("text/html");
 		if (bod.getMethod() != "HEAD")
-			rep.set_body(ft_get(server.getError(headValue)));
+			rep.set_body(getFile(server.getError(headValue)));
 		rep.generateHeader(bod);
 		if (headValue == 405)
 			rep.pushNewHeader("Allow: GET, POST, DELETE");
@@ -125,7 +125,7 @@ bool	Request::parseRequest( int fd, string &body, int bLength, Server &server )
 			printLogs(bod.getMethod(), bod.getPath(), bod.getVersion());
 			rep.set_status(413);
 			rep.set_mime("text/html");
-			rep.set_body(ft_get(server.getError(rep.getStatus())));
+			rep.set_body(getFile(server.getError(rep.getStatus())));
 			rep.generateHeader(bod);
 			rep.response();
 			printAnswer(bod, rep);
@@ -157,7 +157,6 @@ bool	Request::handleRequest( int fd, Body &bod, Server &server )
 		response.set_path(server.getError(404));
 		response.set_status(404);
 		response.getExtension();
-		bod.setContent(ft_get(response.getPath()));
 		response.http(bod);
 		printAnswer(bod, response);
 		this->_response[fd] = response.getResponse();
@@ -168,7 +167,6 @@ bool	Request::handleRequest( int fd, Body &bod, Server &server )
 		response.set_path(server.getError(405));
 		response.set_status(405);
 		response.getExtension();
-		bod.setContent(ft_get(response.getPath()));	
 		response.http(bod);
 		printAnswer(bod, response);
 		this->_response[fd] = response.getResponse();
@@ -183,9 +181,8 @@ bool	Request::handleRequest( int fd, Body &bod, Server &server )
 		if (bod.getMethod() == "GET")
 		{
 			sender.handleGet(server, response, bod);
-			response.getExtension();
-			bod.setContent(ft_get(response.getPath()));
-			response.http(bod);
+			// response.getExtension();
+			// response.http(bod);
 		}
 		else if (bod.getMethod() == "POST")
 			sender.postResponse(response, bod, server);
@@ -206,42 +203,111 @@ bool	Request::handleRequest( int fd, Body &bod, Server &server )
 	}
 }
 
-bool	Request::sendChunks( int &fd )
+static void	ft_remove(std::ifstream *data)
+{
+	data->close();
+    delete data;
+}
+static size_t get_file_size(std::ifstream *f)
+{
+    f->seekg(0, std::ios::end);
+    std::streampos end = f->tellg();
+    f->seekg(0, std::ios::beg);
+    if (end == -1) return 0;
+    return static_cast<size_t>(end);
+}
+
+bool sendChunks(int &fd, ResponseData &response)
+{
+	Run run;
+    if (!response.opened)
+    {
+        Run::data[fd] = new std::ifstream(response.path.c_str(), std::ios::binary);
+        response.opened     = true;
+        response.file_size  = get_file_size(Run::data[fd]);
+        response.sent       = 0;
+    }
+    if (!response.header_sent)
+    {
+        response.header.append("Content-Length: " + toString(response.file_size) + "\r\n");
+        response.header.append("Connection: close\r\n\r\n");
+        response.buffer.assign(response.header.begin(), response.header.end());
+        response.header_sent = true;
+        response.offset = 0;
+    }
+    while (response.offset < response.buffer.size())
+    {
+        ssize_t w = send(fd,
+                         response.buffer.data() + response.offset,
+                         response.buffer.size() - response.offset,
+                         MSG_DONTWAIT | MSG_NOSIGNAL);
+        if (w <= -1)
+        {
+			ft_remove(Run::data[fd]);
+            Run::data.erase(fd);
+			close(fd);
+			delEpollEvent(run.getEpoll(), fd);
+			throw std::invalid_argument("");
+        }
+        response.offset += static_cast<size_t>(w);
+    }
+    if (response.offset >= response.buffer.size())
+    {
+        response.buffer.clear();
+        response.offset = 0;
+    }
+    if (response.opened && response.sent < response.file_size)
+    {
+        char block[BUFFER_SIZE];
+        size_t want = std::min<size_t>(BUFFER_SIZE,
+                                       response.file_size - response.sent);
+        std::streamsize got = Run::data[fd]->rdbuf()->sgetn(block, want);
+        if (got > 0)
+        {
+            response.buffer.assign(block, block + got);
+            response.offset = 0;
+            response.sent        += static_cast<size_t>(got);
+        }
+        else
+        {
+            Run::data[fd]->close();
+            delete Run::data[fd];
+            Run::data.erase(fd);
+            response.opened = false;
+        }
+    }
+    if (response.buffer.empty() && !response.opened)
+    {
+        return true;
+    }
+
+    return false;
+}
+
+
+bool	Request::ft_send( int &fd )
 {
 	Run	run;
-	int	sent;
-	
-	if (this->_response.size() < BUFFER_SIZE)
-		sent = send(fd, this->_response[fd].c_str(), this->_response[fd].size(), 0);
-	else
-		sent = send(fd, this->_response[fd].c_str(), BUFFER_SIZE, 0);
-	if (sent == -1)
+	int	sent = 1;
+
+	if (_response[fd].response.size() == 0)
 	{
-		string	number = toString(fd);
-		close(fd);
-		throw std::invalid_argument("");
-	}
-	else if (sent == 0)
-	{
-		close(fd);
-		delEpollEvent(run.getEpoll(), fd);
-		throw std::invalid_argument("");
-	}
-	else
-	{
-		this->_sent[fd] += sent;
-		if (this->_sent[fd] < this->_response[fd].size())
-			return false;
-		else
+		if (sendChunks(fd, _response[fd]) ==  false)
 		{
-			this->_req[fd].clear();
-			this->_body[fd].clear();
-			this->_header[fd].clear();
-			this->_response[fd].clear();
-			this->_sent[fd] = 0;
-			return true;
+			return false;
 		}
 	}
+	else
+		sent = send(fd, this->_response[fd].response.c_str(), this->_response[fd].response.size(), 0);
+	if (sent <= 0)
+	{
+		close(fd);
+		throw std::invalid_argument("");
+	}
+	this->_req[fd].clear();
+	this->_body[fd].clear();
+	this->_header[fd].clear();
+	this->_sent[fd] = 0;
 	return true;
 }
 

@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 09:58:05 by mitandri          #+#    #+#             */
-/*   Updated: 2025/09/09 08:33:24 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/09/12 14:14:06 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void	printAnswer( Body &body, Response &ref )
 	delEpollEvent(run.getEpoll(), STDOUT_FILENO);
 }
 
-string	ft_get( string path )
+string	getFile( string path )
 {
 	std::ifstream		file(path.c_str());
 	std::stringstream	ss;
@@ -125,10 +125,16 @@ string	generateHTML( int status, string description )
 
 bool	fileExist( string path )
 {
-	struct stat	st;
-	
-	if (stat(path.c_str(), &st) != 0)
-		return false;
+	if (access(path.c_str(), F_OK) != 0)
+    {
+        return false;
+    }
+    DIR *dir = opendir(path.c_str());
+    if (dir)
+    {
+		closedir(dir);
+        return false;
+    }
 	return true;
 }
 

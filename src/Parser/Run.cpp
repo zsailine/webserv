@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 09:51:36 by mitandri          #+#    #+#             */
-/*   Updated: 2025/09/08 09:11:42 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/09/14 08:45:02 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,21 @@
 
 int	sig = 1;
 int	Run::_epoll;
+std::map<int, std::ifstream*> Run::data;
+
+
+void Run::ft_clean_all()
+{
+	for (std::map<int, std::ifstream*>::iterator it = data.begin(); it != data.end(); it++)
+	{
+		std::ifstream *file = it->second;
+		if (file != NULL)
+		{
+			file->close();
+			delete file;
+		}
+	}
+}
 
 int isSocket(int fd, std::vector<Server> server)
 {
@@ -97,7 +112,7 @@ void	Run::run()
 				}
 				if (this->_events[i].events & EPOLLOUT)
 				{
-					sent = req.sendChunks(fd);
+					sent = req.ft_send(fd);
 					if (sent)
 					{
 						sent = false;
@@ -105,12 +120,13 @@ void	Run::run()
 						close(fd);
 					}
 				} } catch ( const std::exception &e ) {
-					addEpollEvent(this->_epoll, STDOUT_FILENO);
-					std::cout << e.what() << std::endl;
-					delEpollEvent(this->_epoll, STDOUT_FILENO); }
+					server[indie].setfd(fd, -1);
+					continue;
+				}
 			}
 		}
 	}
+	ft_clean_all();
 	this->closeAll(server);
 }
 
@@ -171,7 +187,9 @@ bool	Run::handleClient( Request &req, std::vector<Server> &server, int &fd, int 
 {
 	size_t		i = 0;
 	int			flag = 1;
-	
+
+
+	req.addClient(fd);
 	while (i < server.size() && flag)
 	{
 		std::vector<int> fds = server[i].getClientFds();

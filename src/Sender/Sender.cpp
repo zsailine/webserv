@@ -6,27 +6,45 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:23:21 by mitandri          #+#    #+#             */
-/*   Updated: 2025/09/09 08:14:09 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/09/13 10:13:21 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Sender.hpp"
+#include <dirent.h>
+#include <errno.h>
 
-static void	ft_Error(Server &server, Response &response)
+static void ft_Error(Server &server, Response &response)
 {
-	if (access(response.getPath().c_str(), F_OK) != 0)
-	{
+	const std::string &path = response.getPath();
+    if (access(path.c_str(), F_OK) != 0)
+    {
 		response.set_status(404);
-		response.set_path(server.getError(404));
-		return ;
-	}
-	if (response.getPath().find("..") != std::string::npos || access(response.getPath().c_str(), R_OK) != 0)
-	{
-		response.set_status(403);
-		response.set_path(server.getError(403));
-		return ;
-	}
+        response.set_path(server.getError(404));
+        return;
+    }
+    DIR *dir = opendir(path.c_str());
+    if (dir)
+    {
+		closedir(dir);
+        response.set_status(403);
+        response.set_path(server.getError(403));
+        return;
+    }
+    else if (errno != ENOTDIR)
+    {
+        response.set_status(403);
+        response.set_path(server.getError(403));
+        return;
+    }
+    if (access(path.c_str(), R_OK) != 0)
+    {
+        response.set_status(403);
+        response.set_path(server.getError(403));
+        return;
+    }
 }
+
 
 static int ft_error_before(Server &server, Response &response)
 {
@@ -52,8 +70,7 @@ void	Sender::handleGet( Server &server, Response &response, Body &body )
 	int url = ft_error_before(server, response);
 	if (url == -1)
 	{
-		response.getExtension();
-		body.setContent(ft_get(response.getPath()));
+		response.getExtension();;
 		response.http(body);
 		return;
 	}
@@ -74,7 +91,6 @@ void	Sender::handleGet( Server &server, Response &response, Body &body )
 		response.set_path(server.getValue(url, "index"), server.getValue(url, "url"),  path, 0);
 		ft_Error(server, response);
 		response.getExtension();
-		body.setContent(ft_get(response.getPath()));
 		response.http(body);
 		return ;
 	}
@@ -124,7 +140,7 @@ void	Sender::postResponse( Response &response, Body &body, Server &server )
 	if (url < 400)
 		response.set_body(generateHTML(response.getStatus(), response.description(response.getStatus())));
 	else if (url >= 400)
-		response.set_body(ft_get(server.getError(url)));
+		response.set_body(getFile(server.getError(url)));
 	response.generateHeader(body);
 	if (url < 400)
 		response.pushNewHeader("Connection: keep-alive");
@@ -177,7 +193,7 @@ void	Sender::deleteResponse( Response &response, Body &body, Server &server )
 	if (status < 400)
 		response.set_body(generateHTML(response.getStatus(), response.description(response.getStatus())));
 	else if (status >= 400)
-		response.set_body(ft_get(server.getError(status)));
+		response.set_body(getFile(server.getError(status)));
 	response.generateHeader(body);
 	if (status < 400)
 		response.pushNewHeader("Connection: keep-alive");

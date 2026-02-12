@@ -1,7 +1,6 @@
 <?php
 header("Content-type: text/html; charset=UTF-8");
 
-sleep(5);
 $uploadDir = __DIR__ . "/uploads/";
 if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0777, true);

@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 10:33:07 by zsailine          #+#    #+#             */
-/*   Updated: 2025/09/08 08:32:40 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/09/12 14:01:42 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,7 @@ void	Router::check_value(std::string const &name)
 		_map["allowedMethods"] = "GET POST DELETE";
 	if (_map["index"].size() == 0)
 		_map["index"] = "index.html";
+	// if (_map["index"] == "..")
 	if (_map["upload_directory"].size() == 0)
 		_map["upload_directory"] = "./upload";
 	twice(name, "Route", _map["allowedMethods"]);

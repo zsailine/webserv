@@ -6,7 +6,7 @@
 /*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 10:50:05 by zsailine          #+#    #+#             */
-/*   Updated: 2025/09/09 08:32:08 by zsailine         ###   ########.fr       */
+/*   Updated: 2025/09/11 14:37:54 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int			isDirectory(std::string str);
 long long	ft_atoi(std::string number);
 int			ft_isdigit(std::string &str);
 int			afterEquals(int pos, std::string str);
-string		ft_get( string path );
+string		getFile( string path );
 string		getType( string message, string toFind, string end );
 void		writeFile( string path, string content );
 void		printAnswer( Body &body, Response &ref );

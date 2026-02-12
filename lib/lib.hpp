@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lib.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mitandri <mitandri@student.42antananari    +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 10:02:47 by zsailine          #+#    #+#             */
-/*   Updated: 2025/08/27 11:33:20 by mitandri         ###   ########.fr       */
+/*   Updated: 2025/09/13 14:19:43 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@
 
 #define MAX_EVENTS 128
 #define MAX_SIZE 5000
-#define BUFFER_SIZE 8192
+#define BUFFER_SIZE 4096
 #define CRLF "\r\n\r\n"
 
 typedef std::string	string;

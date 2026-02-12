@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGI.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranaivo <aranaivo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zsailine < zsailine@student.42antananar    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 15:34:41 by zsailine          #+#    #+#             */
-/*   Updated: 2025/09/10 08:52:05 by aranaivo         ###   ########.fr       */
+/*   Updated: 2025/09/14 08:29:49 by zsailine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,7 @@ char** CGI::generate_envp()
 bool CGI::start_cgi(Request &req, int epfd, int client_fd)
 {
     int outp[2];
+    Run run;
     
     if (make_pipe_nonblock(outp) < 0) 
         return false;
@@ -141,6 +142,8 @@ bool CGI::start_cgi(Request &req, int epfd, int client_fd)
         close(outp[1]);
         close(epfd);
         close(client_fd);
+        req.closeClient();
+        run.ft_clean_all();
         req.closeSocket();
         if (isPost) 
         { 
